@@ -62,8 +62,12 @@
         let isLive = false, allOrders = [], filteredOrders = [], currentPage = 1, itemsPerPage = 50;
 
         async function syncData() {
-            const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: true });
-            if (data) { allOrders = data; handleSearch(); }
+            // Buscamos do mais novo para o mais antigo diretamente do banco
+            const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+            if (data) { 
+                allOrders = data; 
+                handleSearch(); 
+            }
         }
 
         window.handleSearch = () => {
@@ -80,14 +84,15 @@
         };
 
         function renderTable() {
-            // Inverte para os novos aparecerem primeiro, mas o cálculo de ID se mantém global
-            const displayData = [...filteredOrders].reverse();
             const start = (currentPage - 1) * itemsPerPage;
-            const pageData = displayData.slice(start, start + itemsPerPage);
+            const pageData = filteredOrders.slice(start, start + itemsPerPage);
 
-            document.getElementById('tableBody').innerHTML = pageData.map((o) => {
-                // Inteligência de numeração: O ID é a posição real dele no banco de dados (allOrders)
-                const realId = allOrders.findIndex(item => item.id === o.id) + 1;
+            document.getElementById('tableBody').innerHTML = pageData.map((o, index) => {
+                // Cálculo de ID: Total de itens - posição atual na lista filtrada
+                // Isso faz com que a primeira venda da história seja #1 e a última seja o total
+                const totalCount = allOrders.length;
+                const realId = allOrders.length - allOrders.findIndex(item => item.id === o.id);
+
                 return `<tr>
                     <td style="color:var(--text-dim); font-weight:bold;">#${realId}</td>
                     <td>${o.email}</td>
@@ -103,7 +108,7 @@
             document.getElementById('nextBtn').disabled = currentPage >= totalPages;
         }
 
-        window.changePage = (dir) => { currentPage += dir; renderTable(); };
+        window.changePage = (dir) => { currentPage += dir; renderTable(); window.scrollTo(0,0); };
         window.toggleAudio = () => { isLive = !isLive; document.getElementById('btn-audio').innerText = isLive ? 'ÁUDIO ATIVO' : 'LIGAR ÁUDIO'; };
 
         function runRealtime() {
