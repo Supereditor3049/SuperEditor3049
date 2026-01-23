@@ -4,29 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guia de Áudios e Efeitos para YouTube</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Configuração do Cliente com a sua Anon Key fornecida
+        const _supabase = supabase.createClient(
+            'https://mtuccfhpspgmpoehxmmr.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8'
+        );
+
+        async function checkAccess() {
+            const { data: { session }, error } = await _supabase.auth.getSession();
+            
+            // Se não houver sessão ativa ou houver erro, bloqueia e redireciona
+            if (!session || error) {
+                alert("Acesso restrito. Por favor, use o link enviado no seu e-mail após a compra.");
+                window.location.href = "index.html";
+            } else {
+                // Se estiver logado, exibe o conteúdo da página
+                document.getElementById('content').style.display = 'block';
+            }
+        }
+
+        // Executa a verificação imediatamente
+        checkAccess();
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #000; color: #fff; line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: #000;
-            color: #fff;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header e título */
         header {
             text-align: center;
             padding: 60px 20px 40px;
@@ -39,10 +48,7 @@
         header::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
+            top: 0; left: 0; right: 0; height: 3px;
             background: linear-gradient(90deg, #ff0080, #00ffcc, #ffcc00);
             z-index: 1;
         }
@@ -55,89 +61,23 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 20px rgba(255, 0, 128, 0.2);
         }
 
-        .subtitle {
-            font-size: 1.2rem;
-            color: #aaa;
-            max-width: 800px;
-            margin: 0 auto 30px;
-        }
+        .subtitle { font-size: 1.2rem; color: #aaa; max-width: 800px; margin: 0 auto 30px; }
 
-        /* Seções */
-        section {
-            margin: 60px 0;
-            padding: 40px 0;
-            border-bottom: 1px solid #222;
-        }
+        section { margin: 60px 0; padding: 40px 0; border-bottom: 1px solid #222; }
+        .section-title { font-size: 2.2rem; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
+        .section-title i { color: #00ffcc; }
 
-        .section-title {
-            font-size: 2.2rem;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: #fff;
-        }
-
-        .section-title i {
-            color: #00ffcc;
-        }
-
-        /* Cards de links */
-        .link-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 20px;
-        }
-
+        .link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
         .link-card {
             background: rgba(30, 30, 40, 0.7);
             border-radius: 12px;
             padding: 25px;
-            transition: all 0.3s ease;
             border: 1px solid #333;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
+            transition: 0.3s;
         }
-
-        .link-card:hover {
-            transform: translateY(-8px);
-            border-color: #00ffcc;
-            box-shadow: 0 10px 25px rgba(0, 255, 204, 0.2);
-        }
-
-        .link-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #ff0080, #00ffcc);
-        }
-
-        .link-title {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .link-title i {
-            color: #00ffcc;
-        }
-
-        .link-description {
-            color: #aaa;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-        }
+        .link-card:hover { transform: translateY(-8px); border-color: #00ffcc; }
 
         .link-url {
             display: inline-block;
@@ -147,414 +87,57 @@
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0, 255, 204, 0.3);
         }
 
-        .link-url:hover {
-            background: rgba(0, 255, 204, 0.2);
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
-        }
-
-        /* Efeitos sonoros - estilo especial */
-        .sfx-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-        }
-
-        .sfx-category {
-            margin-bottom: 30px;
-        }
-
-        .sfx-category-title {
-            font-size: 1.4rem;
-            color: #ffcc00;
-            margin-bottom: 15px;
-            padding-left: 10px;
-            border-left: 4px solid #ffcc00;
-        }
-
-        /* Fluxo de uso */
-        .workflow {
-            background: rgba(20, 25, 40, 0.6);
-            border-radius: 15px;
-            padding: 40px;
-            margin-top: 30px;
-            border: 1px solid #333;
-        }
-
-        .workflow-step {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 25px;
-            border-bottom: 1px solid #333;
-        }
-
-        .workflow-step:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-
-        .step-icon {
-            background: rgba(0, 255, 204, 0.1);
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: #00ffcc;
-            margin-right: 20px;
-            flex-shrink: 0;
-        }
-
-        .step-content h4 {
-            font-size: 1.3rem;
-            margin-bottom: 8px;
-            color: #fff;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            color: #666;
-            font-size: 0.9rem;
-            border-top: 1px solid #222;
-            margin-top: 60px;
-        }
-
-        .highlight {
-            color: #00ffcc;
-            font-weight: 600;
-        }
-
-        /* Animações */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.6s ease forwards;
-        }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .title {
-                font-size: 2.2rem;
-            }
-            
-            .section-title {
-                font-size: 1.8rem;
-            }
-            
-            .link-grid, .sfx-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .workflow {
-                padding: 25px;
-            }
-            
-            .workflow-step {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .step-icon {
-                margin-bottom: 15px;
-            }
-        }
+        .workflow { background: rgba(20, 25, 40, 0.6); border-radius: 15px; padding: 40px; border: 1px solid #333; }
+        footer { text-align: center; padding: 40px 20px; color: #666; border-top: 1px solid #222; }
     </style>
 </head>
 <body>
-    <header class="fade-in">
+
+    <main id="content" style="display:none;">
+        <header>
+            <div class="container">
+                <h1 class="title">🎬 Guia Completo de Áudios, Efeitos e Músicas</h1>
+                <p class="subtitle">Conteúdo exclusivo para criadores de alto nível.</p>
+            </div>
+        </header>
+
         <div class="container">
-            <h1 class="title">🎬 Guia Completo de Áudios, Efeitos e Músicas para YouTube</h1>
-            <p class="subtitle">Tudo o que você precisa para criar vídeos <span class="highlight">engraçados, tensos, emocionantes ou dinâmicos</span>, incluindo memes, efeitos sonoros, soundboards e músicas de fundo sem copyright.</p>
+            <section>
+                <h2 class="section-title"><i class="fas fa-microphone-alt"></i> 🔊 ÁUDIOS DE MEMES</h2>
+                <div class="link-grid">
+                    <div class="link-card">
+                        <h3>Sound Instants</h3>
+                        <p>Memes prontos para download.</p><br>
+                        <a href="https://soundinstants.com/pt/" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>MyInstants</h3>
+                        <p>O maior soundboard da internet.</p><br>
+                        <a href="https://www.myinstants.com" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-title"><i class="fas fa-sitemap"></i> 🧠 FLUXO DE USO</h2>
+                <div class="workflow">
+                    <p>Use os links acima para turbinar suas edições!</p>
+                </div>
+            </section>
         </div>
-    </header>
 
-    <div class="container">
-        <!-- Seção 1: Áudios de Memes -->
-        <section class="fade-in">
-            <h2 class="section-title"><i class="fas fa-microphone-alt"></i> 🔊 ÁUDIOS DE MEMES / FALAS FAMOSAS</h2>
-            <div class="link-grid">
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fas fa-download"></i> Sound Instants</h3>
-                    <p class="link-description">Coleção de áudios de memes instantâneos para download</p>
-                    <a href="https://soundinstants.com/pt/" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fas fa-volume-up"></i> MyInstants</h3>
-                    <p class="link-description">Soundboard com milhares de efeitos sonoros e memes</p>
-                    <a href="https://www.myinstants.com" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fas fa-comment-dots"></i> Voicy</h3>
-                    <p class="link-description">Biblioteca de áudios e vozes para criadores de conteúdo</p>
-                    <a href="https://www.voicy.network" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-            </div>
-        </section>
+        <footer>
+            <p>© 2024 Guia de Edição - Conteúdo Exclusivo</p>
+            <p>
+                <button onclick="_supabase.auth.signOut().then(() => window.location.href='index.html')" 
+                        style="background: none; border: none; color: #ff0080; cursor: pointer; text-decoration: underline; margin-top: 10px;">
+                    Sair da Conta (Logout)
+                </button>
+            </p>
+        </footer>
+    </main>
 
-        <!-- Seção 2: Vídeos de Memes -->
-        <section class="fade-in">
-            <h2 class="section-title"><i class="fas fa-video"></i> 🎬 VÍDEOS DE MEMES</h2>
-            <div class="link-grid">
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fas fa-brain"></i> Know Your Meme</h3>
-                    <p class="link-description">Enciclopédia de memes com origem e evolução</p>
-                    <a href="https://knowyourmeme.com" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fab fa-youtube"></i> YouTube</h3>
-                    <p class="link-description">Fonte principal para vídeos originais e clipes</p>
-                    <a href="https://www.youtube.com" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fab fa-reddit"></i> Reddit</h3>
-                    <p class="link-description">Comunidades especializadas em memes e conteúdo viral</p>
-                    <a href="https://www.reddit.com" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fab fa-tiktok"></i> TikTok</h3>
-                    <p class="link-description">Para memes atuais e tendências virais</p>
-                    <a href="https://www.tiktok.com" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Seção 3: Reações em Vídeo -->
-        <section class="fade-in">
-            <h2 class="section-title"><i class="fas fa-laugh-beam"></i> 😂 REAÇÕES EM VÍDEO CURTO / GIFs</h2>
-            <div class="link-grid">
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fas fa-gift"></i> Tenor</h3>
-                    <p class="link-description">Plataforma de GIFs e reações para qualquer situação</p>
-                    <a href="https://tenor.com" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fas fa-film"></i> Giphy</h3>
-                    <p class="link-description">Biblioteca gigante de GIFs e clipes curtos</p>
-                    <a href="https://giphy.com" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Seção 4: Músicas de Background -->
-        <section class="fade-in">
-            <h2 class="section-title"><i class="fas fa-music"></i> 🎵 MÚSICAS DE BACKGROUND SEM COPYRIGHT</h2>
-            <div class="link-grid">
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fab fa-youtube"></i> YouTube Audio Library</h3>
-                    <p class="link-description">Biblioteca oficial do YouTube com músicas gratuitas</p>
-                    <a href="https://www.youtube.com/audiolibrary" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fas fa-guitar"></i> Pixabay Music</h3>
-                    <p class="link-description">Músicas grátis de vários estilos e gêneros</p>
-                    <a href="https://pixabay.com/pt/music/" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fas fa-headphones"></i> NoCopyrightSounds</h3>
-                    <p class="link-description">Eletrônica, trap, hype e músicas para gaming</p>
-                    <a href="https://ncs.io" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-                <div class="link-card">
-                    <h3 class="link-title"><i class="fas fa-robot"></i> MusicHero.ai</h3>
-                    <p class="link-description">Gerador de música sem copyright com IA</p>
-                    <a href="https://musichero.ai/pt/features/copyright-free-music-generator" target="_blank" class="link-url">Acessar Site</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Seção 5: Efeitos Sonoros -->
-        <section class="fade-in">
-            <h2 class="section-title"><i class="fas fa-wave-square"></i> 🔊 EFEITOS SONOROS POPULARES</h2>
-            
-            <div class="sfx-grid">
-                <div class="sfx-category">
-                    <h3 class="sfx-category-title">Ação e Impacto</h3>
-                    <div class="link-card">
-                        <h3 class="link-title"><i class="fas fa-coins"></i> Sons de Coleta / "Coin"</h3>
-                        <p class="link-description">Efeitos sonoros de coleta e moedas</p>
-                        <a href="https://www.reddit.com/r/u_Sellbuymusic/comments/13y482d?utm_source=chatgpt.com" target="_blank" class="link-url">Acessar Link</a>
-                    </div>
-                    <div class="link-card">
-                        <h3 class="link-title"><i class="fas fa-bomb"></i> Explosão / Boom</h3>
-                        <p class="link-description">Sons de explosão e impacto forte</p>
-                        <a href="https://www.epidemicsound.com/pt/youtube/meme-sound-effects/?utm_source=chatgpt.com" target="_blank" class="link-url">Acessar Link</a>
-                    </div>
-                    <div class="link-card">
-                        <h3 class="link-title"><i class="fas fa-fist-raised"></i> Impact / Hit</h3>
-                        <p class="link-description">Efeitos para corte ou mudança de cena</p>
-                        <a href="https://www.reddit.com/r/VideoEditing/comments/1kttbii?utm_source=chatgpt.com" target="_blank" class="link-url">Acessar Link</a>
-                    </div>
-                </div>
-                
-                <div class="sfx-category">
-                    <h3 class="sfx-category-title">Transições e Efeitos</h3>
-                    <div class="link-card">
-                        <h3 class="link-title"><i class="fas fa-wind"></i> Whoosh / Swoosh</h3>
-                        <p class="link-description">Transições rápidas e efeitos de movimento</p>
-                        <a href="https://www.kapwing.com/pt-br/tools/add-audio/sound-effects?utm_source=chatgpt.com" target="_blank" class="link-url">Acessar Link</a>
-                    </div>
-                    <div class="link-card">
-                        <h3 class="link-title"><i class="fas fa-bell"></i> Ding / Notification</h3>
-                        <p class="link-description">Som clássico de destaque ou notificação</p>
-                        <a href="https://www.reddit.com/r/VideoEditing/comments/wnjg4o?utm_source=chatgpt.com" target="_blank" class="link-url">Acessar Link</a>
-                    </div>
-                    <div class="link-card">
-                        <h3 class="link-title"><i class="fas fa-mouse-pointer"></i> Clicks / Cliques</h3>
-                        <p class="link-description">Sons de câmera, botões e interfaces</p>
-                        <a href="https://www.reddit.com/r/u_Sellbuymusic/comments/13y482d?utm_source=chatgpt.com" target="_blank" class="link-url">Acessar Link</a>
-                    </div>
-                </div>
-                
-                <div class="sfx-category">
-                    <h3 class="sfx-category-title">Humor e Reações</h3>
-                    <div class="link-card">
-                        <h3 class="link-title"><i class="fas fa-laugh"></i> Gargalhada Alegre</h3>
-                        <p class="link-description">Risadas exageradas e engraçadas</p>
-                        <a href="https://www.epidemicsound.com/pt/youtube/happy-sound-effects/?utm_source=chatgpt.com" target="_blank" class="link-url">Acessar Link</a>
-                    </div>
-                    <div class="link-card">
-                        <h3 class="link-title"><i class="fas fa-users"></i> Público Rindo</h3>
-                        <p class="link-description">Plateia e risadas em grupo</p>
-                        <a href="https://elevenlabs.io/pt/sound-effects/crowd-laughing?utm_source=chatgpt.com" target="_blank" class="link-url">Acessar Link</a>
-                    </div>
-                    <div class="link-card">
-                        <h3 class="link-title"><i class="fas fa-exclamation-triangle"></i> Som de "Erro"</h3>
-                        <p class="link-description">Censor tone e sons de erro clássicos</p>
-                        <a href="https://www.epidemicsound.com/pt/youtube/meme-sound-effects/?utm_source=chatgpt.com" target="_blank" class="link-url">Acessar Link</a>
-                    </div>
-                </div>
-                
-                <div class="sfx-category">
-                    <h3 class="sfx-category-title">Multidão e Celebração</h3>
-                    <div class="link-card">
-                        <h3 class="link-title"><i class="fas fa-hands-clapping"></i> Aplausos de Multidão</h3>
-                        <p class="link-description">Efeitos de aplausos e celebração</p>
-                        <a href="https://elevenlabs.io/pt/sound-effects/cheering?utm_source=chatgpt.com" target="_blank" class="link-url">Acessar Link</a>
-                    </div>
-                    <div class="link-card">
-                        <h3 class="link-title"><i class="fas fa-people-arrows"></i> Torcida Animada</h3>
-                        <p class="link-description">Vibração de estádio e torcida</p>
-                        <a href="https://www.epidemicsound.com/pt/youtube/happy-sound-effects/?utm_source=chatgpt.com" target="_blank" class="link-url">Acessar Link</a>
-                    </div>
-                    <div class="link-card">
-                        <h3 class="link-title"><i class="fas fa-surprise"></i> Gritos de Surpresa</h3>
-                        <p class="link-description">Reações de choque e surpresa</p>
-                        <a href="https://www.epidemicsound.com/pt/youtube/happy-sound-effects/?utm_source=chatgpt.com" target="_blank" class="link-url">Acessar Link</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Seção 6: Fluxo de Uso -->
-        <section class="fade-in">
-            <h2 class="section-title"><i class="fas fa-sitemap"></i> 🧠 FLUXO DE USO RECOMENDADO</h2>
-            <div class="workflow">
-                <div class="workflow-step">
-                    <div class="step-icon">1</div>
-                    <div class="step-content">
-                        <h4>Nome do meme</h4>
-                        <p>Consulte a origem no <a href="https://knowyourmeme.com" target="_blank" class="link-url">Know Your Meme</a></p>
-                    </div>
-                </div>
-                <div class="workflow-step">
-                    <div class="step-icon">2</div>
-                    <div class="step-content">
-                        <h4>Vídeo original</h4>
-                        <p>Encontre no <a href="https://www.youtube.com" target="_blank" class="link-url">YouTube</a> ou <a href="https://www.reddit.com" target="_blank" class="link-url">Reddit</a></p>
-                    </div>
-                </div>
-                <div class="workflow-step">
-                    <div class="step-icon">3</div>
-                    <div class="step-content">
-                        <h4>Meme atual / viral</h4>
-                        <p>Verifique tendências no <a href="https://www.tiktok.com" target="_blank" class="link-url">TikTok</a></p>
-                    </div>
-                </div>
-                <div class="workflow-step">
-                    <div class="step-icon">4</div>
-                    <div class="step-content">
-                        <h4>Só o áudio / fala</h4>
-                        <p>Use <a href="https://soundinstants.com" target="_blank" class="link-url">Sound Instants</a>, <a href="https://www.myinstants.com" target="_blank" class="link-url">MyInstants</a> ou <a href="https://www.voicy.network" target="_blank" class="link-url">Voicy</a></p>
-                    </div>
-                </div>
-                <div class="workflow-step">
-                    <div class="step-icon">5</div>
-                    <div class="step-content">
-                        <h4>Reação curta</h4>
-                        <p>Adicione GIFs do <a href="https://tenor.com" target="_blank" class="link-url">Tenor</a> ou <a href="https://giphy.com" target="_blank" class="link-url">Giphy</a></p>
-                    </div>
-                </div>
-                <div class="workflow-step">
-                    <div class="step-icon">6</div>
-                    <div class="step-content">
-                        <h4>Música sem copyright</h4>
-                        <p>Complete com <a href="https://www.youtube.com/audiolibrary" target="_blank" class="link-url">YouTube Audio Library</a>, <a href="https://pixabay.com/music/" target="_blank" class="link-url">Pixabay Music</a> ou <a href="https://ncs.io" target="_blank" class="link-url">NCS</a></p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <footer class="fade-in">
-        <div class="container">
-            <p>Guia Completo de Áudios e Efeitos para YouTube • 2025–2026</p>
-            <p>Recursos para criadores de conteúdo • Todos os links são externos</p>
-        </div>
-    </footer>
-
-    <script>
-        // Efeito de fade-in ao rolar a página
-        document.addEventListener('DOMContentLoaded', function() {
-            const fadeElements = document.querySelectorAll('.fade-in');
-            
-            const fadeInOnScroll = function() {
-                fadeElements.forEach(element => {
-                    const elementTop = element.getBoundingClientRect().top;
-                    const elementVisible = 150;
-                    
-                    if (elementTop < window.innerHeight - elementVisible) {
-                        element.style.opacity = "1";
-                        element.style.transform = "translateY(0)";
-                    }
-                });
-            };
-            
-            // Configura estado inicial
-            fadeElements.forEach(element => {
-                element.style.opacity = "0";
-                element.style.transform = "translateY(20px)";
-                element.style.transition = "opacity 0.6s ease, transform 0.6s ease";
-            });
-            
-            // Verifica ao carregar e ao rolar
-            fadeInOnScroll();
-            window.addEventListener('scroll', fadeInOnScroll);
-            
-            // Efeito de destaque nos cards ao passar o mouse
-            const linkCards = document.querySelectorAll('.link-card');
-            linkCards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-8px)';
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                });
-            });
-        });
-    </script>
 </body>
 </html>
