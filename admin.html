@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard Pro</title>
+    <title>Admin Dashboard | Live</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -12,84 +12,94 @@
             --border: #1a1a1a; --text: #ffffff; --text-dim: #888888;
         }
         
-        * { box-sizing: border-box; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; margin: 0; line-height: 1.5; }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
 
-        /* HEADER RESPONSIVO */
-        header { 
-            padding: 1rem; border-bottom: 1px solid var(--border); 
-            display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;
-            background: rgba(0,0,0,0.9); sticky; top: 0; z-index: 100;
-        }
+        /* HEADER SEM NAV - APENAS LOGO E BOTÃO */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: bold; letter-spacing: 1px; }
 
+        /* BARRA DE BUSCA ACIMA DOS CARDS */
+        .search-container { margin-bottom: 20px; width: 100%; max-width: 400px; position: relative; }
         .search-box { 
-            background: var(--card); border: 1px solid var(--border); padding: 10px; 
-            border-radius: 8px; color: white; min-width: 200px; flex-grow: 1;
+            width: 100%; background: var(--card); border: 1px solid var(--border); 
+            padding: 12px 15px 12px 40px; border-radius: 12px; color: white; outline: none;
         }
+        .search-box:focus { border-color: var(--accent); }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
 
-        /* GRID DE CARDS RESPONSIVO */
-        main { padding: 1rem; max-width: 1400px; margin: 0 auto; }
+        /* GRID DE CARDS */
         .grid { 
-            display: grid; gap: 1rem; 
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
-            margin-bottom: 2rem; 
+            display: grid; gap: 15px; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            margin-bottom: 30px; 
         }
-        @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 16px; position: relative; overflow: hidden; }
+        .card::after { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: var(--accent); opacity: 0.5; }
+        .card span { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 600; }
+        .card b { font-size: 1.6rem; display: block; margin-top: 8px; color: var(--accent); }
+        
+        .cost-input { background: rgba(255,255,255,0.05); border: none; color: #ff4d4d; width: 70px; border-radius: 4px; padding: 2px 5px; font-weight: bold; }
 
-        .card { background: var(--card); border: 1px solid var(--border); padding: 1rem; border-radius: 12px; }
-        .card b { font-size: 1.2rem; display: block; color: var(--accent); }
-
-        /* TABELA RESPONSIVA */
-        .table-wrapper { 
-            background: var(--card); border: 1px solid var(--border); 
-            border-radius: 12px; overflow-x: auto; /* Scroll horizontal no celular */
-        }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
-        th { background: #111; padding: 12px; font-size: 0.75rem; color: var(--text-dim); text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        /* TABELA MODERNA */
+        .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { padding: 18px; background: #0a0a0a; color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; text-align: left; }
+        td { padding: 16px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        
+        .badge { padding: 5px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+        .badge.approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
+        .badge.pending { background: rgba(255, 187, 0, 0.1); color: #ffbb00; }
 
         /* PAGINAÇÃO */
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 1.5rem; flex-wrap: wrap; }
-        .page-btn { background: var(--card); border: 1px solid var(--border); color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
-        
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
-        .approved { background: rgba(0,255,163,0.1); color: var(--accent); }
-        .pending { background: rgba(255,187,0,0.1); color: #ffbb00; }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 30px; }
+        .btn { background: var(--card); border: 1px solid var(--border); color: white; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+        .btn:disabled { opacity: 0.2; cursor: not-allowed; }
+
+        @media (max-width: 600px) {
+            body { padding: 15px; }
+            .top-bar { flex-direction: column; gap: 15px; align-items: flex-start; }
+        }
     </style>
 </head>
 <body>
 
-<header>
-    <div style="display:flex; align-items:center; gap:10px;">
-        <h2 style="font-size:1rem; margin:0; color:var(--accent)">DASHBOARD</h2>
-        <input type="text" id="searchInput" class="search-box" placeholder="Buscar e-mail..." oninput="handleSearch()">
-    </div>
-    <div style="display:flex; align-items:center; gap:10px;">
-        <div class="card" style="padding:5px 10px; border:none; background:transparent">
-            <span style="font-size:0.7rem; color:var(--text-dim)">CUSTO:</span>
-            <input type="number" id="basePrice" value="5.00" style="background:none; border:1px solid var(--border); color:white; width:60px; border-radius:4px;" onchange="updateCosts()">
+    <div class="top-bar">
+        <div class="logo">
+            <i data-lucide="zap" fill="var(--accent)" color="var(--accent)"></i>
+            <span>LIVEPAY ADMIN</span>
         </div>
-        <button id="btn-audio" class="page-btn" onclick="toggleAudio()" style="border-color: #ff4d4d; color:#ff4d4d">LIGAR SOM</button>
+        <button class="btn" id="btn-audio" onclick="toggleAudio()" style="border-color: #ff4d4d; color: #ff4d4d;">
+            LIGAR SOM
+        </button>
     </div>
-</header>
 
-<main>
+    <div class="search-container">
+        <i data-lucide="search" class="search-icon" size="18"></i>
+        <input type="text" id="searchInput" class="search-box" placeholder="Buscar cliente por e-mail..." oninput="handleSearch()">
+    </div>
+
     <div class="grid">
-        <div class="card"><span>Bruto</span><b id="stat-rev">R$ 0,00</b></div>
-        <div class="card"><span>Custo</span><b id="stat-cost" style="color:#ff4d4d">R$ 0,00</b></div>
-        <div class="card"><span>Lucro</span><b id="stat-profit">R$ 0,00</b></div>
-        <div class="card"><span>Vendas</span><b id="stat-ok">0</b></div>
+        <div class="card"><span>Faturamento Bruto</span><b id="stat-rev">R$ 0,00</b></div>
+        <div class="card">
+            <span>Custo do Produto</span>
+            <input type="number" id="basePrice" class="cost-input" value="5.00" onchange="updateCosts()">
+            <b id="stat-cost" style="color: #ff4d4d;">R$ 0,00</b>
+        </div>
+        <div class="card"><span>Lucro Líquido</span><b id="stat-profit">R$ 0,00</b></div>
+        <div class="card"><span>Vendas Pagas</span><b id="stat-ok">0</b></div>
     </div>
 
-    <div class="table-wrapper">
+    <div class="table-container">
         <table>
             <thead>
                 <tr>
-                    <th>ID #</th>
-                    <th>CLIENTE</th>
-                    <th>STATUS</th>
-                    <th>DATA/HORA</th>
-                    <th>VALOR</th>
+                    <th># ID</th>
+                    <th>E-mail do Cliente</th>
+                    <th>Status</th>
+                    <th>Data e Hora</th>
+                    <th>Valor</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -97,101 +107,106 @@
     </div>
 
     <div class="pagination">
-        <button class="page-btn" id="prevBtn" onclick="changePage(-1)">Anterior</button>
-        <span id="page-info"></span>
-        <button class="page-btn" id="nextBtn" onclick="changePage(1)">Próxima</button>
+        <button class="btn" id="prevBtn" onclick="changePage(-1)">Anterior</button>
+        <span id="page-info" style="font-size: 0.8rem; color: var(--text-dim);"></span>
+        <button class="btn" id="nextBtn" onclick="changePage(1)">Próxima</button>
     </div>
-</main>
 
-<script type="module">
-    // Mantenha suas chaves do Supabase aqui
-    const SUPABASE_URL = "https://mtuccfhpspgmpoehxmmr.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <script type="module">
+        const SUPABASE_URL = "https://mtuccfhpspgmpoehxmmr.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const sound = new Audio('audio.wav');
-    sound.volume = 0.5;
-    let isLive = false;
-    let allOrders = [];
-    let filteredOrders = [];
-    let currentPage = 1;
-    const itemsPerPage = 50; // Agora fixo em 50
+        const sound = new Audio('audio.wav');
+        sound.volume = 0.5;
+        let isLive = false;
+        let allOrders = [];
+        let filteredOrders = [];
+        let currentPage = 1;
+        const itemsPerPage = 50;
 
-    async function syncData() {
-        const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: true });
-        if (!data) return;
-        allOrders = data;
-        handleSearch();
-    }
+        async function syncData() {
+            // Buscamos em ordem ASC (mais antiga primeiro) para o ID ser fixo
+            const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: true });
+            if (!data) return;
+            allOrders = data;
+            handleSearch();
+        }
 
-    window.handleSearch = () => {
-        const term = document.getElementById('searchInput').value.toLowerCase();
-        filteredOrders = allOrders.filter(o => o.email.toLowerCase().includes(term));
-        // Inverte para mostrar as mais recentes primeiro na visualização, mas mantém o ID fixo
-        const displayData = [...filteredOrders].reverse();
-        updateStats();
-        renderTable(displayData);
-    };
+        window.handleSearch = () => {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            filteredOrders = allOrders.filter(o => o.email.toLowerCase().includes(term));
+            updateStats();
+            renderTable();
+        };
 
-    function renderTable(data) {
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const pageData = data.slice(start, end);
-        
-        document.getElementById('tableBody').innerHTML = pageData.map((o) => {
-            const globalIndex = allOrders.findIndex(item => item.id === o.id) + 1;
-            return `
-            <tr>
-                <td style="color:var(--text-dim)">#${globalIndex}</td>
-                <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis;">${o.email}</td>
-                <td><span class="badge ${o.status}">${o.status === 'approved' ? 'PAGO' : 'PENDENTE'}</span></td>
-                <td>${new Date(o.created_at).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'})}</td>
-                <td style="color:var(--accent)">R$ 12,90</td>
-            </tr>
-        `}).join('');
+        function renderTable() {
+            // Para a visualização, queremos a mais recente no topo
+            const displayData = [...filteredOrders].reverse();
+            const start = (currentPage - 1) * itemsPerPage;
+            const pageData = displayData.slice(start, start + itemsPerPage);
+            
+            document.getElementById('tableBody').innerHTML = pageData.map((o) => {
+                // O ID é a posição original dele no array de todas as ordens + 1
+                const originalId = allOrders.findIndex(item => item.id === o.id) + 1;
+                return `
+                <tr>
+                    <td style="color: var(--text-dim); font-weight: bold;">#${originalId}</td>
+                    <td>${o.email}</td>
+                    <td><span class="badge ${o.status}">${o.status === 'approved' ? 'Pago' : 'Pendente'}</span></td>
+                    <td>${new Date(o.created_at).toLocaleString('pt-BR')}</td>
+                    <td style="color: var(--accent); font-weight: bold;">R$ 12,90</td>
+                </tr>
+            `}).join('');
 
-        const totalPages = Math.ceil(data.length / itemsPerPage) || 1;
-        document.getElementById('page-info').innerText = `Página ${currentPage} de ${totalPages}`;
-        document.getElementById('prevBtn').disabled = currentPage === 1;
-        document.getElementById('nextBtn').disabled = currentPage >= totalPages;
-    }
+            const totalPages = Math.ceil(filteredOrders.length / itemsPerPage) || 1;
+            document.getElementById('page-info').innerText = `Página ${currentPage} de ${totalPages}`;
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+        }
 
-    window.updateCosts = () => {
-        localStorage.setItem('custoUnitario', document.getElementById('basePrice').value);
-        updateStats();
-    };
+        window.updateCosts = () => {
+            localStorage.setItem('custoUnitario', document.getElementById('basePrice').value);
+            updateStats();
+        };
 
-    function updateStats() {
-        const custoUni = parseFloat(document.getElementById('basePrice').value) || 0;
-        const paid = allOrders.filter(o => o.status === 'approved');
-        const bruto = paid.length * 12.90;
-        const lucro = bruto - (paid.length * custoUni);
-        document.getElementById('stat-rev').innerText = bruto.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        document.getElementById('stat-cost').innerText = (paid.length * custoUni).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        document.getElementById('stat-profit').innerText = lucro.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        document.getElementById('stat-ok').innerText = paid.length;
-    }
+        function updateStats() {
+            const custoUni = parseFloat(document.getElementById('basePrice').value) || 0;
+            const paid = allOrders.filter(o => o.status === 'approved');
+            const bruto = paid.length * 12.90;
+            const lucro = bruto - (paid.length * custoUni);
 
-    window.changePage = (dir) => { currentPage += dir; handleSearch(); };
+            document.getElementById('stat-rev').innerText = bruto.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            document.getElementById('stat-cost').innerText = (paid.length * custoUni).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            document.getElementById('stat-profit').innerText = lucro.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            document.getElementById('stat-ok').innerText = paid.length;
+        }
 
-    window.toggleAudio = () => {
-        isLive = !isLive;
-        document.getElementById('btn-audio').style.color = isLive ? 'var(--accent)' : '#ff4d4d';
-        document.getElementById('btn-audio').style.borderColor = isLive ? 'var(--accent)' : '#ff4d4d';
-        document.getElementById('btn-audio').innerText = isLive ? 'SOM ATIVO' : 'LIGAR SOM';
-    };
+        window.changePage = (dir) => { currentPage += dir; renderTable(); window.scrollTo(0,0); };
 
-    function runRealtime() {
-        supabase.channel('sales').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
-            syncData();
-            if (isLive && p.new && p.new.status === 'approved' && (!p.old || p.old.status !== 'approved')) {
-                sound.currentTime = 0;
-                sound.play().catch(()=>{});
-            }
-        }).subscribe();
-    }
+        window.toggleAudio = () => {
+            isLive = !isLive;
+            const btn = document.getElementById('btn-audio');
+            btn.style.color = isLive ? 'var(--accent)' : '#ff4d4d';
+            btn.style.borderColor = isLive ? 'var(--accent)' : '#ff4d4d';
+            btn.innerText = isLive ? 'SOM ATIVO' : 'LIGAR SOM';
+            if(isLive) { sound.play().then(()=> {sound.pause(); sound.currentTime=0;}).catch(()=>{}); }
+        };
 
-    window.onload = () => { syncData(); runRealtime(); };
-</script>
+        function runRealtime() {
+            supabase.channel('sales').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
+                syncData();
+                if (isLive && p.new && p.new.status === 'approved' && (!p.old || p.old.status !== 'approved')) {
+                    sound.currentTime = 0;
+                    sound.play().catch(()=>{});
+                }
+            }).subscribe();
+        }
+
+        window.onload = () => { 
+            if(localStorage.getItem('custoUnitario')) document.getElementById('basePrice').value = localStorage.getItem('custoUnitario');
+            syncData(); runRealtime(); lucide.createIcons(); 
+        };
+    </script>
 </body>
 </html>
