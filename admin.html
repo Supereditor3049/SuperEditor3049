@@ -2,87 +2,50 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" type="image/png">
-    <title>Painel Admin Profissional | Real-Time</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin OS | Secure</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #050505; --card: #0f0f0f; --accent: #00ffa3;
-            --text-main: #ffffff; --text-dim: #888888; --border: #1f1f1f;
-            --danger: #ff4444; --warning: #ffbb00;
+            --bg: #050505; --card: #111111; --accent: #00ffa3;
+            --text-main: #ffffff; --text-dim: #888888; --border: #222222;
         }
 
-        body { 
-            background: var(--bg); color: var(--text-main); 
-            font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; 
-        }
+        body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; }
 
-        /* --- LOGIN --- */
-        #login-screen {
-            position: fixed; inset: 0; background: var(--bg);
-            display: flex; align-items: center; justify-content: center; z-index: 9999;
-        }
-        .login-box {
+        /* LOGIN */
+        #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .login-box { background: var(--card); border: 1px solid var(--border); padding: 2.5rem; border-radius: 24px; width: 90%; max-width: 400px; text-align: center; }
+        .login-box input { width: 100%; background: #000; border: 1px solid var(--border); color: white; padding: 14px; border-radius: 12px; margin: 10px 0; outline: none; box-sizing: border-box; }
+        .login-box button { width: 100%; background: var(--accent); color: #000; font-weight: bold; border: none; padding: 14px; border-radius: 12px; cursor: pointer; }
+
+        /* DASHBOARD */
+        #admin-content { display: none; flex-direction: row; min-height: 100vh; }
+        aside { width: 260px; border-right: 1px solid var(--border); padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+        main { flex: 1; padding: 2rem; overflow-y: auto; }
+
+        /* BOTÃO ESTILO ANTIGO */
+        .notif-btn {
             background: var(--card); border: 1px solid var(--border);
-            padding: 2.5rem; border-radius: 24px; width: 90%; max-width: 400px;
-            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            padding: 10px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px;
+            cursor: pointer; transition: 0.3s;
         }
-        .login-box input {
-            width: 100%; background: #000; border: 1px solid var(--border);
-            color: white; padding: 14px; border-radius: 12px; margin: 10px 0; outline: none; box-sizing: border-box;
-        }
-        .login-box button {
-            width: 100%; background: var(--accent); color: #000; font-weight: 800;
-            border: none; padding: 14px; border-radius: 12px; cursor: pointer; margin-top: 10px;
-        }
+        .notif-btn.active { border-color: var(--accent); box-shadow: 0 0 10px rgba(0,255,163,0.1); }
+        .notif-btn.pulse { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0% { border-color: #ff4444; } 50% { border-color: transparent; } 100% { border-color: #ff4444; } }
 
-        /* --- LAYOUT PRINCIPAL --- */
-        #admin-content { display: none; min-height: 100vh; flex-direction: column; }
-        
-        nav {
-            border-bottom: 1px solid var(--border); padding: 1rem 2rem;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(5,5,5,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100;
-        }
-
-        main { padding: 2rem; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; }
-
-        /* --- NOTIF SWITCH --- */
-        #notif-trigger {
-            cursor: pointer; background: var(--card); border: 1px solid var(--border);
-            padding: 10px 20px; border-radius: 50px; display: flex; align-items: center; gap: 12px;
-            transition: 0.3s ease;
-        }
-        #notif-trigger.active { border-color: var(--accent); box-shadow: 0 0 15px rgba(0, 255, 163, 0.2); }
-
-        /* --- CARDS --- */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .card { 
-            background: var(--card); border: 1px solid var(--border); padding: 1.5rem; 
-            border-radius: 20px; transition: 0.3s; position: relative;
-        }
-        .card:hover { border-color: var(--accent); transform: translateY(-3px); }
-        .card span { color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; font-weight: 600; }
-        .card b { color: var(--accent); font-size: 2.2rem; display: block; margin-top: 10px; }
-
-        /* --- TABELA --- */
-        .table-container { 
-            background: var(--card); border: 1px solid var(--border); 
-            border-radius: 24px; overflow: hidden; margin-top: 2rem;
-        }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { padding: 1.2rem; background: rgba(255,255,255,0.03); color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; }
-        td { padding: 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-        
-        .status-badge { padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; display: inline-block; }
-        .status-approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
-        .status-pending { background: rgba(255, 187, 0, 0.1); color: var(--warning); }
-        
-        .row-num { color: var(--text-dim); font-weight: bold; width: 30px; }
-
+        /* CARDS E TABELA */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 20px; border-left: 4px solid var(--accent); }
+        .card b { color: var(--accent); font-size: 2rem; display: block; margin-top: 8px; }
+        .table-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 1.2rem; border-bottom: 1px solid var(--border); text-align: left; }
+        .status-badge { padding: 5px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; }
+        .approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
+        .pending { background: rgba(255, 187, 0, 0.1); color: #ffbb00; }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -90,50 +53,40 @@
 
     <div id="login-screen">
         <div class="login-box">
-            <i data-lucide="shield-check" size="48" style="color: var(--accent); margin-bottom: 1rem;"></i>
-            <h2 style="margin:0">Admin Control</h2>
-            <p style="color:var(--text-dim); font-size: 0.8rem; margin-bottom: 2rem;">Acesso restrito ao terminal de vendas</p>
-            <input type="email" id="email" placeholder="E-mail administrador">
+            <i data-lucide="shield-check" style="color: var(--accent); margin-bottom: 10px;"></i>
+            <h2>Acesso Restrito</h2>
+            <input type="email" id="email" placeholder="E-mail">
             <input type="password" id="password" placeholder="Senha">
-            <button onclick="handleLogin()">ENTRAR NO SISTEMA</button>
-            <p id="login-error" style="color: var(--danger); font-size: 0.8rem; margin-top: 15px; display: none;"></p>
+            <button onclick="handleLogin()">Entrar</button>
+            <p id="login-error" style="color: #ff4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
         </div>
     </div>
 
     <div id="admin-content">
-        <nav>
-            <div style="display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--accent);">
-                <i data-lucide="zap"></i> VENDAS LIVE
-            </div>
-            
-            <div id="notif-trigger" onclick="activateNotifs()">
-                <i id="notif-icon" data-lucide="volume-x" style="color: var(--danger);"></i>
-                <span id="notif-text" style="font-size: 0.7rem; font-weight: 800; color: var(--text-dim);">SISTEMA MUDO</span>
-            </div>
-
-            <button onclick="handleLogout()" style="background:none; border:none; color:var(--text-dim); cursor:pointer;">
-                <i data-lucide="log-out"></i>
-            </button>
-        </nav>
-
+        <aside>
+            <div style="color: var(--accent); font-weight: 800; display: flex; gap: 10px;"><i data-lucide="zap"></i> DASHBOARD</div>
+            <button onclick="handleLogout()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; display:flex; gap:10px;"><i data-lucide="log-out"></i> Sair</button>
+        </aside>
+        
         <main>
+            <header style="display: flex; justify-content: space-between; align-items: center;">
+                <div><h1 style="margin:0">Vendas</h1><small id="user-mail" style="color:var(--text-dim)"></small></div>
+                
+                <div class="notif-btn pulse" id="notif-btn" onclick="manualEnable()">
+                    <i id="notif-icon" data-lucide="volume-x" style="color: #ff4444;"></i>
+                    <span id="notif-text" style="font-size: 0.8rem; font-weight: bold;">LIGAR NOTIFICAÇÕES</span>
+                </div>
+            </header>
+
             <div class="stats-grid">
-                <div class="card"><span>Faturamento Bruto</span><b id="stat-revenue">R$ 0,00</b></div>
-                <div class="card"><span>Vendas Pagas</span><b id="stat-approved">0</b></div>
-                <div class="card"><span>Aguardando Pix</span><b id="stat-pending">0</b></div>
+                <div class="card"><span>Total Pago</span><b id="stat-rev">R$ 0,00</b></div>
+                <div class="card"><span>Vendas</span><b id="stat-count">0</b></div>
+                <div class="card"><span>Pendentes</span><b id="stat-pend">0</b></div>
             </div>
 
-            <div class="table-container">
+            <div class="table-wrapper">
                 <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 50px; text-align: center;">#</th>
-                            <th>CLIENTE / EMAIL</th>
-                            <th>STATUS</th>
-                            <th>DATA DA COMPRA</th>
-                            <th>VALOR</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>#</th><th>CLIENTE</th><th>STATUS</th><th>DATA</th></tr></thead>
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
@@ -141,121 +94,95 @@
     </div>
 
     <script type="module">
-        // Configurações Supabase
         const SUPABASE_URL = "https://mtuccfhpspgmpoehxmmr.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        const salesAudio = new Audio('https://www.myinstants.com/media/sounds/caixa-registradora-venda.mp3');
-        let isAudioUnlocked = false;
+        const sound = new Audio('https://www.myinstants.com/media/sounds/caixa-registradora-venda.mp3');
+        let active = false;
 
-        // --- ATIVAR ÁUDIO E NOTIFICAÇÕES (Gatilho de Segurança do Browser) ---
-        window.activateNotifs = async () => {
+        // Tenta ativar sozinho
+        async function autoEnable() {
             const permission = await Notification.requestPermission();
-            if (permission === "granted") {
-                isAudioUnlocked = true;
-                // Tocar silêncio para desbloquear o canal de áudio
-                salesAudio.play().then(() => { 
-                    salesAudio.pause(); 
-                    salesAudio.currentTime = 0; 
-                }).catch(() => {});
-
-                document.getElementById('notif-trigger').classList.add('active');
-                document.getElementById('notif-icon').setAttribute('data-lucide', 'volume-2');
-                document.getElementById('notif-icon').style.color = 'var(--accent)';
-                document.getElementById('notif-text').innerText = "NOTIFICAÇÕES ATIVAS";
-                document.getElementById('notif-text').style.color = 'var(--accent)';
-                lucide.createIcons();
-            }
-        };
-
-        // --- FUNÇÃO DE NOTIFICAÇÃO ---
-        function notify(title, body) {
-            if (isAudioUnlocked) {
-                salesAudio.play().catch(()=>{});
-                new Notification(title, { 
-                    body: body, 
-                    icon: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' 
+            if (permission === 'granted') {
+                // Tenta tocar um som curto. Se o browser deixar, ativa tudo.
+                sound.play().then(() => {
+                    sound.pause(); sound.currentTime = 0;
+                    setNotifUI(true);
+                }).catch(() => {
+                    // Browser bloqueou auto-play. Precisa de um clique.
+                    setNotifUI(false);
                 });
             }
         }
 
-        // --- CARREGAR DADOS REAIS ---
-        async function refreshData() {
-            const { data: orders, error } = await supabase
-                .from('orders')
-                .select('*')
-                .order('created_at', { ascending: false });
+        window.manualEnable = () => {
+            Notification.requestPermission().then(perm => {
+                if(perm === 'granted') {
+                    sound.play().then(() => { sound.pause(); sound.currentTime = 0; });
+                    setNotifUI(true);
+                }
+            });
+        };
 
-            if (error) return;
+        function setNotifUI(isOn) {
+            active = isOn;
+            const btn = document.getElementById('notif-btn');
+            const icon = document.getElementById('notif-icon');
+            const text = document.getElementById('notif-text');
+            
+            if (isOn) {
+                btn.classList.remove('pulse'); btn.classList.add('active');
+                icon.setAttribute('data-lucide', 'volume-2'); icon.style.color = 'var(--accent)';
+                text.innerText = "SISTEMA ATIVO"; text.style.color = 'var(--accent)';
+            } else {
+                btn.classList.add('pulse'); btn.classList.remove('active');
+                icon.setAttribute('data-lucide', 'volume-x'); icon.style.color = '#ff4444';
+                text.innerText = "CLIQUE PARA ATIVAR ÁUDIO";
+            }
+            lucide.createIcons();
+        }
 
-            const approvedCount = orders.filter(o => o.status === 'approved').length;
-            const revenue = approvedCount * 12.90;
-
-            document.getElementById('stat-revenue').innerText = revenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            document.getElementById('stat-approved').innerText = approvedCount;
-            document.getElementById('stat-pending').innerText = orders.length - approvedCount;
-
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = orders.map((o, i) => `
-                <tr>
-                    <td class="row-num">${i + 1}</td>
-                    <td style="font-weight: 600;">${o.email}</td>
-                    <td><span class="status-badge status-${o.status}">${o.status === 'approved' ? 'PAGO' : 'PENDENTE'}</span></td>
-                    <td style="color: var(--text-dim);">${new Date(o.created_at).toLocaleString('pt-BR')}</td>
-                    <td style="color: var(--accent); font-weight: 800;">R$ 12,90</td>
-                </tr>
+        async function load() {
+            const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+            if (!data) return;
+            const paid = data.filter(o => o.status === 'approved');
+            document.getElementById('stat-rev').innerText = (paid.length * 12.9).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            document.getElementById('stat-count').innerText = paid.length;
+            document.getElementById('stat-pend').innerText = data.length - paid.length;
+            document.getElementById('tableBody').innerHTML = data.map((o,i) => `
+                <tr><td>${i+1}</td><td>${o.email}</td><td><span class="status-badge ${o.status}">${o.status.toUpperCase()}</span></td><td>${new Date(o.created_at).toLocaleDateString()}</td></tr>
             `).join('');
         }
 
-        // --- REALTIME (Ouvindo o Banco) ---
-        function initRealtime() {
-            supabase.channel('db-changes')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
-                refreshData(); // Atualiza a tela imediatamente
-                
-                if (payload.eventType === 'INSERT') {
-                    notify("🆕 Nova Ordem Criada", payload.new.email);
-                } else if (payload.eventType === 'UPDATE' && payload.new.status === 'approved') {
-                    notify("💰 VENDA APROVADA!", `O cliente ${payload.new.email} acabou de pagar!`);
-                }
+        function listen() {
+            supabase.channel('any').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
+                load();
+                if (!active) return;
+                sound.play().catch(()=>{});
+                new Notification(p.eventType === 'INSERT' ? "🆕 Ordem Criada" : "💰 VENDA PAGA!", { body: p.new.email });
             }).subscribe();
         }
 
-        // --- LOGIN E AUTH ---
         window.handleLogin = async () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const btn = document.querySelector('.login-box button');
-            
-            btn.innerText = "AUTENTICANDO...";
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-            if (error) {
-                btn.innerText = "ENTRAR NO SISTEMA";
-                document.getElementById('login-error').style.display = 'block';
-                document.getElementById('login-error').innerText = "Credenciais inválidas.";
-            } else {
-                showDashboard();
-            }
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: document.getElementById('email').value, password: document.getElementById('password').value
+            });
+            if (!error) show(data.user.email);
+            else { document.getElementById('login-error').style.display = 'block'; document.getElementById('login-error').innerText = "Erro."; }
         };
 
-        function showDashboard() {
+        function show(mail) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('admin-content').style.display = 'flex';
-            refreshData();
-            initRealtime();
+            document.getElementById('user-mail').innerText = mail;
+            load(); listen(); autoEnable();
         }
 
-        window.handleLogout = async () => { 
-            await supabase.auth.signOut(); 
-            window.location.reload(); 
-        };
-
+        window.handleLogout = async () => { await supabase.auth.signOut(); window.location.reload(); };
         window.addEventListener('load', async () => {
             lucide.createIcons();
             const { data: { session } } = await supabase.auth.getSession();
-            if (session) showDashboard();
+            if (session) show(session.user.email);
         });
     </script>
 </body>
