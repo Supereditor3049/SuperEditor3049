@@ -106,7 +106,7 @@
 async function comprar() {
   const email = prompt("Digite seu email:");
   if (!email) {
-    alert("Por favor, digite um email válido!");
+    alert("Digite um email válido.");
     return;
   }
 
@@ -118,10 +118,10 @@ async function comprar() {
       "https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor",
       {
         method: "POST",
+        mode: "cors",
         headers: {
           "Content-Type": "application/json",
-          "apikey": SUPABASE_ANON_KEY,
-          "Authorization": "Bearer " + SUPABASE_ANON_KEY
+          "apikey": SUPABASE_ANON_KEY
         },
         body: JSON.stringify({
           email: email,
@@ -135,7 +135,7 @@ async function comprar() {
     }
 
     const data = await res.json();
-    console.log("Resposta da função:", data);
+    console.log("Resposta:", data);
 
     if (data.checkout_url) {
       window.location.href = data.checkout_url;
@@ -149,6 +149,7 @@ async function comprar() {
   }
 }
 </script>
+
 
 </body>
 </html>
