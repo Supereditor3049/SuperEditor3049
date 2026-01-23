@@ -10,11 +10,12 @@
         :root {
             --bg: #050505; --card: #111111; --accent: #00ffa3;
             --text-main: #ffffff; --text-dim: #888888; --border: #222222;
+            --danger: #ff4444;
         }
 
         body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
 
-        /* --- TELA DE LOGIN --- */
+        /* --- LOGIN --- */
         #login-screen {
             position: fixed; inset: 0; background: var(--bg);
             display: flex; align-items: center; justify-content: center; z-index: 9999;
@@ -22,7 +23,7 @@
         .login-box {
             background: var(--card); border: 1px solid var(--border);
             padding: 2.5rem; border-radius: 24px; width: 90%; max-width: 400px;
-            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            text-align: center;
         }
         .login-box input {
             width: 100%; background: #000; border: 1px solid var(--border);
@@ -30,7 +31,7 @@
         }
         .login-box button {
             width: 100%; background: var(--accent); color: #000; font-weight: bold;
-            border: none; padding: 14px; border-radius: 12px; cursor: pointer; margin-top: 10px; font-size: 1rem;
+            border: none; padding: 14px; border-radius: 12px; cursor: pointer; margin-top: 10px;
         }
 
         /* --- DASHBOARD --- */
@@ -38,10 +39,18 @@
         aside { width: 260px; border-right: 1px solid var(--border); padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
         main { flex: 1; padding: 2rem; overflow-y: auto; }
 
+        /* --- NOTIF SWITCH --- */
+        #notif-status {
+            cursor: pointer; background: var(--card); border: 1px solid var(--border);
+            padding: 10px 18px; border-radius: 14px; display: flex; align-items: center; 
+            gap: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+        #notif-status.active { border-color: var(--accent); background: rgba(0, 255, 163, 0.05); }
+
+        /* --- STATS --- */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
-        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 20px; position: relative; overflow: hidden; }
-        .card::after { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: var(--accent); opacity: 0.5; }
-        .card span { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 20px; border-left: 4px solid var(--border); }
         .card b { color: var(--accent); font-size: 2rem; display: block; margin-top: 8px; font-family: monospace; }
 
         /* --- TABELA --- */
@@ -51,15 +60,15 @@
         td { padding: 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         .index-col { width: 40px; color: var(--text-dim); font-weight: bold; text-align: center; }
 
-        .status { padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.5px; }
-        .approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); border: 1px solid rgba(0, 255, 163, 0.2); }
-        .pending { background: rgba(255, 187, 0, 0.1); color: #ffbb00; border: 1px solid rgba(255, 187, 0, 0.2); }
+        .status { padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; }
+        .approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
+        .pending { background: rgba(255, 187, 0, 0.1); color: #ffbb00; }
 
         .hidden { display: none !important; }
 
         @media (max-width: 768px) {
             #admin-content { flex-direction: column; }
-            aside { width: 100%; height: auto; flex-direction: row; border-right: none; border-bottom: 1px solid var(--border); padding: 1rem; }
+            aside { width: 100%; height: auto; flex-direction: row; border: none; border-bottom: 1px solid var(--border); padding: 1rem; }
             aside span { display: none; }
         }
     </style>
@@ -69,12 +78,11 @@
     <div id="login-screen">
         <div class="login-box">
             <i data-lucide="shield-check" size="48" style="color: var(--accent); margin-bottom: 1rem;"></i>
-            <h2 style="margin:0">Admin Control</h2>
-            <p style="color:var(--text-dim); font-size:0.8rem; margin-top:5px; margin-bottom:1.5rem">Digite suas credenciais do Supabase</p>
+            <h2>Admin Control</h2>
             <input type="email" id="email" placeholder="E-mail">
             <input type="password" id="password" placeholder="Senha">
-            <button onclick="handleLogin()" id="btn-entrar">Entrar no Sistema</button>
-            <p id="login-error" style="color: #ff4444; font-size: 0.8rem; margin-top: 15px; display: none;"></p>
+            <button onclick="handleLogin()" id="btn-entrar">Acessar Painel</button>
+            <p id="login-error" style="color: var(--danger); font-size: 0.8rem; margin-top: 15px; display: none;"></p>
         </div>
     </div>
 
@@ -83,21 +91,22 @@
             <div style="color: var(--accent); font-weight: 800; display: flex; gap: 10px; align-items: center;">
                 <i data-lucide="zap"></i><span>DASHBOARD</span>
             </div>
-            <nav style="display: flex; flex-direction: column; gap: 10px; flex: 1;">
-                <a href="#" style="color: var(--accent); text-decoration: none; display: flex; gap: 10px; padding: 10px; background: rgba(0,255,163,0.05); border-radius: 10px;"><i data-lucide="bar-chart"></i><span>Vendas</span></a>
+            <nav style="flex: 1;">
+                <a href="#" style="color: var(--accent); text-decoration: none; display: flex; gap: 10px; padding: 10px;"><i data-lucide="bar-chart"></i><span>Vendas</span></a>
             </nav>
             <button onclick="handleLogout()" style="background: none; border: none; color: var(--text-dim); cursor: pointer; display: flex; gap: 10px; padding: 10px;"><i data-lucide="log-out"></i><span>Sair</span></button>
         </aside>
         
         <main>
-            <header style="display: flex; justify-content: space-between; align-items: center;">
+            <header style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                 <div>
                     <h1 style="margin:0">Relatório de Vendas</h1>
                     <p id="admin-email" style="color: var(--text-dim); margin: 5px 0 0; font-size: 0.85rem;"></p>
                 </div>
-                <div style="background: var(--card); border: 1px solid var(--border); padding: 10px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent);"></div>
-                    <span style="font-weight: bold; font-size: 0.8rem;">REALTIME ATIVO</span>
+
+                <div id="notif-status" onclick="toggleNotifications()">
+                    <i id="notif-icon" data-lucide="volume-x" style="color: var(--danger);"></i>
+                    <span id="notif-text" style="font-size: 0.75rem; font-weight: bold; color: var(--text-dim);">NOTIFICAÇÕES OFF</span>
                 </div>
             </header>
 
@@ -129,31 +138,51 @@
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
         
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const salesAudio = new Audio('https://www.myinstants.com/media/sounds/caixa-registradora-venda.mp3');
+        let notificationsActive = false;
 
-        // --- SISTEMA DE NOTIFICAÇÃO ---
-        async function dispararNotificacao(email) {
-            // Tenta tocar som de caixa registradora
-            const som = new Audio('https://www.myinstants.com/media/sounds/caixa-registradora-venda.mp3');
-            som.play().catch(() => console.log("Som aguardando interação..."));
-
-            if (Notification.permission === "granted") {
-                new Notification("💰 VENDA REALIZADA!", {
-                    body: `Cliente: ${email}\nValor: R$ 12,90`,
-                    icon: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
-                });
+        // --- LIGAR/DESLIGAR NOTIFICAÇÕES ---
+        window.toggleNotifications = async () => {
+            if (!notificationsActive) {
+                const permission = await Notification.requestPermission();
+                if (permission === "granted") {
+                    notificationsActive = true;
+                    // Desbloqueia o áudio no navegador
+                    salesAudio.play().then(() => { salesAudio.pause(); salesAudio.currentTime = 0; });
+                    
+                    document.getElementById('notif-status').classList.add('active');
+                    document.getElementById('notif-icon').setAttribute('data-lucide', 'volume-2');
+                    document.getElementById('notif-icon').style.color = 'var(--accent)';
+                    document.getElementById('notif-text').innerText = "NOTIFICAÇÕES ON";
+                    document.getElementById('notif-text').style.color = 'var(--accent)';
+                } else {
+                    alert("Por favor, permita as notificações no seu navegador.");
+                }
+            } else {
+                notificationsActive = false;
+                document.getElementById('notif-status').classList.remove('active');
+                document.getElementById('notif-icon').setAttribute('data-lucide', 'volume-x');
+                document.getElementById('notif-icon').style.color = 'var(--danger)';
+                document.getElementById('notif-text').innerText = "NOTIFICAÇÕES OFF";
+                document.getElementById('notif-text').style.color = 'var(--text-dim)';
             }
+            lucide.createIcons();
+        };
+
+        async function dispararNotificacao(email) {
+            if (!notificationsActive) return;
+            salesAudio.play().catch(() => {});
+            new Notification("💰 NOVA VENDA!", {
+                body: `Cliente: ${email}\nValor: R$ 12,90`,
+                icon: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
+            });
         }
 
-        // --- ESCUTAR MUDANÇAS NO BANCO (REALTIME) ---
+        // --- REALTIME ---
         function ligarRealtime() {
             supabase
                 .channel('vendas_agora')
-                .on('postgres_changes', { 
-                    event: 'UPDATE', 
-                    schema: 'public', 
-                    table: 'orders',
-                    filter: 'status=eq.approved' 
-                }, (payload) => {
+                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: 'status=eq.approved' }, (payload) => {
                     dispararNotificacao(payload.new.email);
                     carregarDados();
                 })
@@ -162,27 +191,20 @@
 
         // --- CARREGAR DADOS ---
         async function carregarDados() {
-            const { data: orders, error } = await supabase
-                .from('orders')
-                .select('*')
-                .order('created_at', { ascending: false });
-            
-            if (error) return;
+            const { data: orders } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+            if (!orders) return;
 
             const aprovadas = orders.filter(o => o.status === 'approved');
-            const pendentes = orders.filter(o => o.status === 'pending');
-
             document.getElementById('stat-revenue').innerText = (aprovadas.length * 12.90).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('stat-approved').innerText = aprovadas.length;
-            document.getElementById('stat-pending').innerText = pendentes.length;
+            document.getElementById('stat-pending').innerText = orders.filter(o => o.status === 'pending').length;
 
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = orders.map((o, i) => `
+            document.getElementById('tableBody').innerHTML = orders.map((o, i) => `
                 <tr>
                     <td class="index-col">${i + 1}</td>
                     <td style="font-weight:bold">${o.email}</td>
                     <td><span class="status ${o.status}">${o.status === 'approved' ? 'PAGO' : 'PENDENTE'}</span></td>
-                    <td>${new Date(o.created_at).toLocaleDateString('pt-BR')}</td>
+                    <td>${new Date(o.created_at).toLocaleDateString()}</td>
                     <td style="color:var(--accent); font-weight:bold">R$ 12,90</td>
                 </tr>
             `).join('');
@@ -192,18 +214,11 @@
         window.handleLogin = async () => {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const btn = document.getElementById('btn-entrar');
-            
-            btn.innerText = "Autenticando...";
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
             if (error) {
-                btn.innerText = "Entrar no Sistema";
-                const errBox = document.getElementById('login-error');
-                errBox.innerText = "Acesso negado. Verifique e-mail e senha.";
-                errBox.style.display = 'block';
+                document.getElementById('login-error').style.display = 'block';
+                document.getElementById('login-error').innerText = "Credenciais inválidas.";
             } else {
-                if (Notification.permission !== "granted") await Notification.requestPermission();
                 showAdmin(data.user.email);
             }
         };
@@ -211,18 +226,13 @@
         function showAdmin(email) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('admin-content').style.display = 'flex';
-            document.getElementById('admin-email').innerText = `Logado como: ${email}`;
+            document.getElementById('admin-email').innerText = `Admin: ${email}`;
             carregarDados();
             ligarRealtime();
         }
 
         window.handleLogout = async () => { await supabase.auth.signOut(); window.location.reload(); };
-
-        window.addEventListener('load', async () => {
-            lucide.createIcons();
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) showAdmin(session.user.email);
-        });
+        window.addEventListener('load', () => lucide.createIcons());
     </script>
 </body>
 </html>
