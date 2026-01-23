@@ -4,23 +4,81 @@
   <meta charset="UTF-8" />
   <title>Guia de Áudios e Efeitos para YouTube</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
-    body { font-family: system-ui, sans-serif; background: #000; color: #fff; margin: 0; }
-    .container { max-width: 900px; margin: auto; padding: 40px 20px; }
-    h1 { font-size: 2.5rem; background: linear-gradient(90deg,#ff0080,#00ffcc); -webkit-background-clip: text; color: transparent; }
-    .hero p { font-size: 1.2rem; color: #aaa; }
-    .box { background: #111; border: 1px solid #333; border-radius: 12px; padding: 25px; margin: 30px 0; }
-    ul li { margin-bottom: 10px; }
-    .price { font-size: 2rem; color: #00ffcc; margin: 20px 0; }
-    button { background: #00ffcc; color: #000; font-size: 1.1rem; padding: 15px 30px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
-    button:hover { opacity: 0.9; }
-    .guarantee { font-size: 0.9rem; color: #777; margin-top: 15px; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #000;
+      color: #fff;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, #ff0080, #00ffcc);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: #aaa;
+    }
+
+    .box {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 25px;
+      margin: 30px 0;
+    }
+
+    ul li {
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-size: 2rem;
+      color: #00ffcc;
+      margin: 20px 0;
+    }
+
+    button {
+      background: #00ffcc;
+      color: #000;
+      font-size: 1.1rem;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .guarantee {
+      font-size: 0.9rem;
+      color: #777;
+      margin-top: 15px;
+    }
   </style>
 </head>
+
 <body>
   <div class="container hero">
     <h1>🎬 Guia Completo de Áudios e Efeitos para YouTube</h1>
-    <p>Todos os sites, ferramentas e atalhos que criadores usam para deixar vídeos mais engraçados, dinâmicos e profissionais.</p>
+    <p>
+      Todos os sites, ferramentas e atalhos que criadores usam para deixar vídeos
+      mais engraçados, dinâmicos e profissionais.
+    </p>
 
     <div class="box">
       <h2>📦 O que você recebe</h2>
@@ -45,41 +103,46 @@
   </div>
 
   <script>
-async function comprar() {
-  const email = prompt("Digite seu email:");
-  if (!email) {
-    alert("Por favor, digite um email válido!");
-    return;
-  }
+    async function comprar() {
+      const email = prompt("Digite seu email:");
+      if (!email) {
+        alert("Por favor, digite um email válido!");
+        return;
+      }
 
-  try {
-    const res = await fetch("https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: email,
-        product_id: "Editor"
-      })
-    });
+      try {
+        const res = await fetch(
+          "https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              email: email,
+              product_id: "Editor"
+            })
+          }
+        );
 
-    if (!res.ok) {
-      throw new Error("Erro na requisição: " + res.status);
+        if (!res.ok) {
+          throw new Error("Erro HTTP: " + res.status);
+        }
+
+        const data = await res.json();
+        console.log("Resposta:", data);
+
+        if (data.checkout_url) {
+          window.location.href = data.checkout_url;
+        } else {
+          alert("Erro ao criar pagamento.");
+        }
+
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao chamar a função: " + err.message);
+      }
     }
-
-    const data = await res.json();
-    console.log(data);
-
-    if (data.checkout_url) {
-      window.location.href = data.checkout_url;
-    } else {
-      alert("Erro ao criar pagamento: " + (data.error || "Desconhecido"));
-    }
-
-  } catch (err) {
-    alert("Erro ao chamar a função: " + err.message);
-    console.error(err);
-  }
-}
   </script>
 </body>
 </html>
