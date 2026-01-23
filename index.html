@@ -103,46 +103,52 @@
   </div>
 
   <script>
-    async function comprar() {
-      const email = prompt("Digite seu email:");
-      if (!email) {
-        alert("Por favor, digite um email válido!");
-        return;
+async function comprar() {
+  const email = prompt("Digite seu email:");
+  if (!email) {
+    alert("Por favor, digite um email válido!");
+    return;
+  }
+
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
+
+  try {
+    const res = await fetch(
+      "https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({
+          email: email,
+          product_id: "Editor"
+        })
       }
+    );
 
-      try {
-        const res = await fetch(
-          "https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              email: email,
-              product_id: "Editor"
-            })
-          }
-        );
-
-        if (!res.ok) {
-          throw new Error("Erro HTTP: " + res.status);
-        }
-
-        const data = await res.json();
-        console.log("Resposta:", data);
-
-        if (data.checkout_url) {
-          window.location.href = data.checkout_url;
-        } else {
-          alert("Erro ao criar pagamento.");
-        }
-
-      } catch (err) {
-        console.error(err);
-        alert("Erro ao chamar a função: " + err.message);
-      }
+    if (!res.ok) {
+      throw new Error("Erro HTTP: " + res.status);
     }
-  </script>
+
+    const data = await res.json();
+    console.log("Resposta da função:", data);
+
+    if (data.checkout_url) {
+      window.location.href = data.checkout_url;
+    } else {
+      alert("Erro ao criar pagamento.");
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao chamar a função: " + err.message);
+  }
+}
+</script>
+
 </body>
 </html>
