@@ -4,111 +4,64 @@
     <meta charset="UTF-8">
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin OS | Secure Live</title>
+    <title>Admin Gold | Live</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root {
-            --bg: #050505; --card: #111111; --accent: #00ffa3;
-            --text-main: #ffffff; --text-dim: #888888; --border: #222222;
-            --warning: #ffbb00; --danger: #ff4444;
-        }
-
-        body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; }
-
-        /* LOGIN */
+        :root { --bg: #050505; --card: #0d0d0d; --accent: #00ffa3; --border: #1a1a1a; --danger: #ff4d4d; }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; }
         #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .login-box { background: var(--card); border: 1px solid var(--border); padding: 2.5rem; border-radius: 24px; width: 90%; max-width: 400px; text-align: center; }
-        .login-box input { width: 100%; background: #000; border: 1px solid var(--border); color: white; padding: 14px; border-radius: 12px; margin: 10px 0; outline: none; box-sizing: border-box; }
-        .login-box button { width: 100%; background: var(--accent); color: #000; font-weight: bold; border: none; padding: 14px; border-radius: 12px; cursor: pointer; }
-
-        /* LAYOUT */
-        #admin-content { display: none; min-height: 100vh; flex-direction: column; }
-        header { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        main { padding: 2rem; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; }
-
-        /* BOTÃO INTERRUPTOR */
-        .notif-btn {
-            background: var(--card); border: 1px solid var(--border); padding: 10px 20px; border-radius: 12px; 
-            display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s;
-            outline: none !important; user-select: none;
-        }
-        .notif-btn.active { border-color: var(--accent); background: rgba(0, 255, 163, 0.1); }
-        .notif-btn.pulse { animation: pulse-red 2s infinite; border-color: var(--danger); }
-        
-        @keyframes pulse-red { 
-            0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.4); } 
-            70% { box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); } 
-        }
-
-        /* CARDS */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 20px; border-left: 4px solid var(--border); }
-        .card.highlight { border-left-color: var(--accent); }
-        .card span { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; }
-        .card b { color: var(--accent); font-size: 2rem; display: block; margin-top: 10px; font-family: monospace; }
-
-        /* TABELA */
-        .table-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { padding: 1.2rem; text-align: left; color: var(--text-dim); font-size: 0.75rem; border-bottom: 1px solid var(--border); }
-        td { padding: 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-        
-        .status-badge { padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; }
-        .status-badge.approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
-        .status-badge.pending { background: rgba(255, 187, 0, 0.1); color: var(--warning); }
-
-        .hidden { display: none !important; }
+        .login-box { background: var(--card); border: 1px solid var(--border); padding: 2rem; border-radius: 20px; text-align: center; width: 320px; }
+        .login-box input { width: 100%; background: #000; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 10px; margin: 8px 0; outline: none; box-sizing: border-box; }
+        .login-box button { width: 100%; background: var(--accent); color: #000; font-weight: bold; border: none; padding: 12px; border-radius: 10px; cursor: pointer; }
+        header { padding: 1rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #000; position: sticky; top: 0; z-index: 10; }
+        .notif-btn { background: var(--card); border: 1px solid var(--border); padding: 8px 16px; border-radius: 10px; display: flex; align-items: center; gap: 8px; cursor: pointer; outline: none; }
+        .notif-btn.active { border-color: var(--accent); color: var(--accent); }
+        .notif-btn.pulse { border-color: var(--danger); animation: pulse 1.5s infinite; color: var(--danger); }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        main { padding: 2rem; max-width: 1000px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 15px; border-left: 3px solid var(--accent); }
+        .card b { font-size: 1.8rem; display: block; margin-top: 5px; color: var(--accent); }
+        .table-box { background: var(--card); border: 1px solid var(--border); border-radius: 15px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 1rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        .badge { padding: 4px 8px; border-radius: 5px; font-size: 0.65rem; font-weight: bold; }
+        .badge.approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
+        .badge.pending { background: rgba(255, 187, 0, 0.1); color: #ffbb00; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
-            <i data-lucide="shield-check" style="color: var(--accent); width: 48px; height: 48px; margin-bottom: 1rem;"></i>
-            <h2>Admin Login</h2>
+            <h3>Painel de Vendas</h3>
             <input type="email" id="email" placeholder="E-mail">
             <input type="password" id="password" placeholder="Senha">
             <button onclick="handleLogin()">ENTRAR</button>
-            <p id="login-error" style="color: var(--danger); font-size: 0.8rem; margin-top: 15px; display: none;"></p>
         </div>
     </div>
 
-    <div id="admin-content">
+    <div id="admin-content" style="display:none">
         <header>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <i data-lucide="bar-chart-3" style="color: var(--accent)"></i>
-                <h2 style="margin:0; font-size: 1.2rem;">Monitor de Vendas</h2>
-            </div>
-            
-            <div class="notif-btn pulse" id="notif-btn" onclick="toggleAudio()">
-                <i id="notif-icon" data-lucide="volume-x" style="color: var(--danger);"></i>
-                <span id="notif-text" style="font-size: 0.75rem; font-weight: 800; color: var(--danger);">LIGAR ÁUDIO</span>
+            <div style="font-weight:bold;">LIVE MONITOR</div>
+            <div class="notif-btn pulse" id="btn" onclick="toggle()">
+                <i id="icon" data-lucide="volume-x"></i>
+                <span id="txt">ÁUDIO OFF</span>
             </div>
         </header>
-
         <main>
-            <div class="stats-grid">
-                <div class="card highlight"><span>Faturamento</span><b id="stat-rev">R$ 0,00</b></div>
-                <div class="card"><span>Pagos</span><b id="stat-count">0</b></div>
-                <div class="card"><span>Pendentes</span><b id="stat-pend">0</b></div>
+            <div class="grid">
+                <div class="card"><span>Faturamento</span><b id="stat-rev">R$ 0,00</b></div>
+                <div class="card"><span>Pagos</span><b id="stat-ok">0</b></div>
+                <div class="card"><span>Pendentes</span><b id="stat-wait">0</b></div>
             </div>
-
-            <div class="table-wrapper">
+            <div class="table-box">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>CLIENTE</th>
-                            <th>STATUS</th>
-                            <th>DATA</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>CLIENTE</th><th>STATUS</th><th>DATA</th></tr></thead>
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
-            <button onclick="handleLogout()" style="margin-top: 2rem; background: none; border: 1px solid var(--border); color: var(--text-dim); padding: 8px 16px; border-radius: 8px; cursor: pointer;">Sair</button>
         </main>
     </div>
 
@@ -117,90 +70,77 @@
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
-        // Som de teste alternativo
-        const alertSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
-        let audioActive = false;
+        // --- CORREÇÃO DE ÁUDIO ---
+        const sound = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
+        sound.preload = 'auto';
+        let isLive = false;
 
-        window.toggleAudio = async () => {
-            try {
-                const permission = await Notification.requestPermission();
-                if (permission === 'granted') {
-                    audioActive = !audioActive;
-                    updateUI(audioActive);
-                    if(audioActive) alertSound.play();
-                } else {
-                    alert("Por favor, permita as notificações nas configurações do navegador (clique no cadeado na barra de endereço).");
+        window.toggle = async () => {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                isLive = !isLive;
+                if(isLive) {
+                    // Toca e pausa rápido para "desbloquear" o canal de áudio no navegador
+                    sound.play().then(() => { sound.pause(); sound.currentTime = 0; }).catch(e => console.log(e));
                 }
-            } catch (err) {
-                console.error("Erro ao solicitar permissão:", err);
+                updateUI();
+            } else {
+                alert("Ative as notificações no cadeado da URL!");
             }
         };
 
-        function updateUI(active) {
-            const btn = document.getElementById('notif-btn');
-            const icon = document.getElementById('notif-icon');
-            const text = document.getElementById('notif-text');
-            
-            if (active) {
-                btn.classList.remove('pulse'); btn.classList.add('active');
-                icon.setAttribute('data-lucide', 'volume-2'); icon.style.color = 'var(--accent)';
-                text.innerText = "ÁUDIO ATIVO"; text.style.color = 'var(--accent)';
+        function updateUI() {
+            const b = document.getElementById('btn'), i = document.getElementById('icon'), t = document.getElementById('txt');
+            if (isLive) {
+                b.className = 'notif-btn active'; i.setAttribute('data-lucide', 'volume-2'); t.innerText = "ÁUDIO ON";
             } else {
-                btn.classList.add('pulse'); btn.classList.remove('active');
-                icon.setAttribute('data-lucide', 'volume-x'); icon.style.color = 'var(--danger)';
-                text.innerText = "LIGAR ÁUDIO"; text.style.color = 'var(--danger)';
+                b.className = 'notif-btn pulse'; i.setAttribute('data-lucide', 'volume-x'); t.innerText = "ÁUDIO OFF";
             }
             lucide.createIcons();
         }
 
-        async function syncData() {
-            const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-            if (error) return;
+        async function sync() {
+            const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+            if (!data) return;
             const paid = data.filter(o => o.status === 'approved');
-            document.getElementById('stat-rev').innerText = (paid.length * 12.9).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            document.getElementById('stat-count').innerText = paid.length;
-            document.getElementById('stat-pend').innerText = data.length - paid.length;
-            document.getElementById('tableBody').innerHTML = data.map((o, i) => `
-                <tr>
-                    <td>${i+1}</td>
-                    <td>${o.email}</td>
-                    <td><span class="status-badge ${o.status}">${o.status === 'approved' ? 'PAGO' : 'PENDENTE'}</span></td>
-                    <td>${new Date(o.created_at).toLocaleDateString()}</td>
-                </tr>
+            document.getElementById('stat-rev').innerText = (paid.length * 12.9).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            document.getElementById('stat-ok').innerText = paid.length;
+            document.getElementById('stat-wait').innerText = data.length - paid.length;
+            document.getElementById('tableBody').innerHTML = data.map(o => `
+                <tr><td>${o.email}</td><td><span class="badge ${o.status}">${o.status === 'approved' ? 'PAGO' : 'PENDENTE'}</span></td><td>${new Date(o.created_at).toLocaleDateString()}</td></tr>
             `).join('');
         }
 
-        function initRealtime() {
-            supabase.channel('custom-all-channel')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
-                syncData();
-                if (audioActive) {
-                    alertSound.play().catch(e => console.log("Erro áudio:", e));
-                    new Notification(payload.eventType === 'INSERT' ? "🆕 Nova Ordem" : "💰 VENDA PAGA!", { body: payload.new.email });
+        function runRealtime() {
+            supabase.channel('sales').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
+                sync();
+                if (isLive) {
+                    sound.currentTime = 0;
+                    sound.play().catch(e => console.log("Erro som:", e));
+                    new Notification(p.eventType === 'INSERT' ? "Nova Ordem" : "Venda Aprovada!", { body: p.new.email });
                 }
             }).subscribe();
         }
 
         window.handleLogin = async () => {
             const { data, error } = await supabase.auth.signInWithPassword({
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value
+                email: document.getElementById('email').value, password: document.getElementById('password').value
             });
-            if (!error) showApp();
-            else document.getElementById('login-error').style.display = 'block';
+            if (!error) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-content').style.display = 'block';
+                sync(); runRealtime(); lucide.createIcons();
+            }
         };
 
-        function showApp() {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('admin-content').style.display = 'flex';
-            syncData(); initRealtime();
-        }
-
-        window.handleLogout = async () => { await supabase.auth.signOut(); window.location.reload(); };
         window.addEventListener('load', async () => {
             lucide.createIcons();
             const { data: { session } } = await supabase.auth.getSession();
-            if (session) showApp();
+            if (session) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-content').style.display = 'block';
+                sync(); runRealtime();
+            }
         });
     </script>
 </body>
