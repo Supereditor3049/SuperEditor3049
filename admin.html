@@ -26,20 +26,30 @@
         aside { width: 260px; border-right: 1px solid var(--border); padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
         main { flex: 1; padding: 2rem; overflow-y: auto; }
 
-        /* BOTÃO ESTILO ANTIGO */
+        /* BOTÃO REFINADO (SEM QUADRADO) */
         .notif-btn {
             background: var(--card); border: 1px solid var(--border);
             padding: 10px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px;
             cursor: pointer; transition: 0.3s;
+            outline: none; /* Remove o quadrado transparente */
+            -webkit-tap-highlight-color: transparent; /* Remove brilho no mobile */
+            user-select: none;
         }
-        .notif-btn.active { border-color: var(--accent); box-shadow: 0 0 10px rgba(0,255,163,0.1); }
+        .notif-btn:focus { outline: none; }
+        
+        .notif-btn.active { border-color: var(--accent); background: rgba(0, 255, 163, 0.05); }
         .notif-btn.pulse { animation: pulse-red 2s infinite; }
-        @keyframes pulse-red { 0% { border-color: #ff4444; } 50% { border-color: transparent; } 100% { border-color: #ff4444; } }
+        
+        @keyframes pulse-red { 
+            0% { border-color: #ff4444; box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.4); } 
+            70% { border-color: #ff4444; box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
+            100% { border-color: #ff4444; box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); } 
+        }
 
         /* CARDS E TABELA */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
         .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 20px; border-left: 4px solid var(--accent); }
-        .card b { color: var(--accent); font-size: 2rem; display: block; margin-top: 8px; }
+        .card b { color: var(--accent); font-size: 2rem; display: block; margin-top: 8px; font-family: monospace; }
         .table-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 1.2rem; border-bottom: 1px solid var(--border); text-align: left; }
@@ -53,7 +63,7 @@
 
     <div id="login-screen">
         <div class="login-box">
-            <i data-lucide="shield-check" style="color: var(--accent); margin-bottom: 10px;"></i>
+            <i data-lucide="shield-check" style="color: var(--accent); width: 48px; height: 48px; margin-bottom: 10px;"></i>
             <h2>Acesso Restrito</h2>
             <input type="email" id="email" placeholder="E-mail">
             <input type="password" id="password" placeholder="Senha">
@@ -65,16 +75,16 @@
     <div id="admin-content">
         <aside>
             <div style="color: var(--accent); font-weight: 800; display: flex; gap: 10px;"><i data-lucide="zap"></i> DASHBOARD</div>
-            <button onclick="handleLogout()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; display:flex; gap:10px;"><i data-lucide="log-out"></i> Sair</button>
+            <button onclick="handleLogout()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; display:flex; gap:10px; align-items:center;"><i data-lucide="log-out"></i> Sair</button>
         </aside>
         
         <main>
             <header style="display: flex; justify-content: space-between; align-items: center;">
                 <div><h1 style="margin:0">Vendas</h1><small id="user-mail" style="color:var(--text-dim)"></small></div>
                 
-                <div class="notif-btn pulse" id="notif-btn" onclick="manualEnable()">
+                <div class="notif-btn pulse" id="notif-btn" onclick="toggleNotifications()">
                     <i id="notif-icon" data-lucide="volume-x" style="color: #ff4444;"></i>
-                    <span id="notif-text" style="font-size: 0.8rem; font-weight: bold;">LIGAR NOTIFICAÇÕES</span>
+                    <span id="notif-text" style="font-size: 0.8rem; font-weight: bold;">LIGAR ÁUDIO</span>
                 </div>
             </header>
 
@@ -98,30 +108,24 @@
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const sound = new Audio('https://www.myinstants.com/media/sounds/caixa-registradora-venda.mp3');
+        
         let active = false;
 
-        // Tenta ativar sozinho
-        async function autoEnable() {
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                // Tenta tocar um som curto. Se o browser deixar, ativa tudo.
-                sound.play().then(() => {
-                    sound.pause(); sound.currentTime = 0;
-                    setNotifUI(true);
-                }).catch(() => {
-                    // Browser bloqueou auto-play. Precisa de um clique.
-                    setNotifUI(false);
-                });
-            }
-        }
-
-        window.manualEnable = () => {
-            Notification.requestPermission().then(perm => {
-                if(perm === 'granted') {
-                    sound.play().then(() => { sound.pause(); sound.currentTime = 0; });
-                    setNotifUI(true);
+        // --- LÓGICA DE INTERRUPTOR (TOGGLE) ---
+        window.toggleNotifications = async () => {
+            if (!active) {
+                // Tenta ligar
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    sound.play().then(() => {
+                        sound.pause(); sound.currentTime = 0;
+                        setNotifUI(true);
+                    }).catch(() => alert("Clique novamente para confirmar o áudio."));
                 }
-            });
+            } else {
+                // Desliga
+                setNotifUI(false);
+            }
         };
 
         function setNotifUI(isOn) {
@@ -131,35 +135,38 @@
             const text = document.getElementById('notif-text');
             
             if (isOn) {
-                btn.classList.remove('pulse'); btn.classList.add('active');
+                btn.classList.remove('pulse'); 
+                btn.classList.add('active');
                 icon.setAttribute('data-lucide', 'volume-2'); icon.style.color = 'var(--accent)';
-                text.innerText = "SISTEMA ATIVO"; text.style.color = 'var(--accent)';
+                text.innerText = "NOTIFICAÇÕES ON"; text.style.color = 'var(--accent)';
             } else {
-                btn.classList.add('pulse'); btn.classList.remove('active');
+                btn.classList.add('pulse'); 
+                btn.classList.remove('active');
                 icon.setAttribute('data-lucide', 'volume-x'); icon.style.color = '#ff4444';
-                text.innerText = "CLIQUE PARA ATIVAR ÁUDIO";
+                text.innerText = "LIGAR ÁUDIO"; text.style.color = 'var(--text-dim)';
             }
             lucide.createIcons();
         }
 
         async function load() {
-            const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-            if (!data) return;
+            const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+            if (error || !data) return;
             const paid = data.filter(o => o.status === 'approved');
             document.getElementById('stat-rev').innerText = (paid.length * 12.9).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
             document.getElementById('stat-count').innerText = paid.length;
             document.getElementById('stat-pend').innerText = data.length - paid.length;
             document.getElementById('tableBody').innerHTML = data.map((o,i) => `
-                <tr><td>${i+1}</td><td>${o.email}</td><td><span class="status-badge ${o.status}">${o.status.toUpperCase()}</span></td><td>${new Date(o.created_at).toLocaleDateString()}</td></tr>
+                <tr><td>${i+1}</td><td style="font-weight:bold">${o.email}</td><td><span class="status-badge ${o.status}">${o.status.toUpperCase()}</span></td><td>${new Date(o.created_at).toLocaleDateString()}</td></tr>
             `).join('');
         }
 
         function listen() {
             supabase.channel('any').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
                 load();
-                if (!active) return;
-                sound.play().catch(()=>{});
-                new Notification(p.eventType === 'INSERT' ? "🆕 Ordem Criada" : "💰 VENDA PAGA!", { body: p.new.email });
+                if (active) {
+                    sound.play().catch(()=>{});
+                    new Notification(p.eventType === 'INSERT' ? "🆕 Nova Ordem" : "💰 VENDA PAGA!", { body: p.new.email });
+                }
             }).subscribe();
         }
 
@@ -168,17 +175,20 @@
                 email: document.getElementById('email').value, password: document.getElementById('password').value
             });
             if (!error) show(data.user.email);
-            else { document.getElementById('login-error').style.display = 'block'; document.getElementById('login-error').innerText = "Erro."; }
+            else { document.getElementById('login-error').style.display = 'block'; document.getElementById('login-error').innerText = "Erro ao entrar."; }
         };
 
         function show(mail) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('admin-content').style.display = 'flex';
-            document.getElementById('user-mail').innerText = mail;
-            load(); listen(); autoEnable();
+            document.getElementById('user-mail').innerText = `Admin: ${mail}`;
+            load(); listen();
+            // Avisa o usuário que ele precisa clicar se quiser som
+            setNotifUI(false); 
         }
 
         window.handleLogout = async () => { await supabase.auth.signOut(); window.location.reload(); };
+        
         window.addEventListener('load', async () => {
             lucide.createIcons();
             const { data: { session } } = await supabase.auth.getSession();
