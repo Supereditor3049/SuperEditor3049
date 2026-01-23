@@ -99,9 +99,9 @@
 async function comprar() {
   const email = prompt("Digite seu email:");
 
-  const res = await fetch("COLE_AQUI_O_ENDPOINT_URL", {
+  const res = await fetch("https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor", {
     method: "POST",
-    headers: { "Content-Type": "https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor" },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       email: email,
       product_id: "guia-audios"
@@ -117,7 +117,8 @@ async function comprar() {
     alert("Erro ao criar pagamento: " + (data.error || "Desconhecido"));
   }
 }
-  </script>
+</script>
+
   
   
 </body>
