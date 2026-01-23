@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin | Live Payments</title>
+    <title>Admin Dashboard | Live Payments</title>
     
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -15,121 +15,85 @@
             --border: #1a1a1a; --danger: #ff4d4d; --warning: #ffbb00;
             --text: #ffffff; --text-dim: #888888;
         }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; }
         
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
-        
-        /* LOGIN SCREEN */
-        #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .login-box { background: var(--card); border: 1px solid var(--border); padding: 2.5rem; border-radius: 24px; text-align: center; width: 340px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .login-box input { width: 100%; background: #000; border: 1px solid var(--border); color: white; padding: 14px; border-radius: 12px; margin: 8px 0; outline: none; box-sizing: border-box; transition: 0.3s; }
-        .login-box input:focus { border-color: var(--accent); }
-        .login-box button { width: 100%; background: var(--accent); color: #000; font-weight: bold; border: none; padding: 14px; border-radius: 12px; cursor: pointer; margin-top: 10px; font-size: 1rem; }
-
-        /* HEADER */
+        /* HEADER & BTN */
         header { padding: 1.2rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
-        
-        /* BOTÃO ÁUDIO PROFISSIONAL */
-        .notif-btn {
-            background: var(--card); border: 1px solid var(--border); padding: 10px 18px; border-radius: 12px; 
-            display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; 
-            outline: none !important; -webkit-tap-highlight-color: transparent; user-select: none;
-        }
+        .notif-btn { background: var(--card); border: 1px solid var(--border); padding: 10px 18px; border-radius: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; color: white; }
         .notif-btn.active { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px rgba(0, 255, 163, 0.1); }
         .notif-btn.pulse { border-color: var(--danger); animation: pulse-anim 1.8s infinite; color: var(--danger); }
-        @keyframes pulse-anim { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        @keyframes pulse-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        /* DASHBOARD CONTENT */
-        main { padding: 2rem; max-width: 1100px; margin: 0 auto; box-sizing: border-box; }
+        /* DASHBOARD */
+        main { padding: 2rem; max-width: 1100px; margin: 0 auto; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
-        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 20px; border-left: 4px solid var(--accent); transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .card span { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-        .card b { font-size: 2rem; display: block; margin-top: 8px; color: var(--accent); font-family: 'Courier New', monospace; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 20px; border-left: 4px solid var(--accent); }
+        .card b { font-size: 1.8rem; display: block; margin-top: 8px; color: var(--accent); }
 
         /* TABELA */
-        .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; margin-bottom: 1.5rem; }
-        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 500px; }
-        th { padding: 1.2rem; background: rgba(255,255,255,0.02); color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; }
+        .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { padding: 1.2rem; background: rgba(255,255,255,0.02); color: var(--text-dim); text-align: left; font-size: 0.8rem; }
         td { padding: 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-        .badge { padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.5px; }
+        .badge { padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; }
         .badge.approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
         .badge.pending { background: rgba(255, 187, 0, 0.1); color: var(--warning); }
 
         /* PAGINAÇÃO */
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 1rem; }
-        .page-btn { background: var(--card); border: 1px solid var(--border); color: white; padding: 10px 20px; border-radius: 10px; cursor: pointer; transition: 0.2s; font-weight: bold; }
-        .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 2rem; }
+        .page-btn { background: var(--card); border: 1px solid var(--border); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
         .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        #page-info { font-size: 0.9rem; font-weight: bold; color: var(--accent); }
-
-        .hidden { display: none !important; }
+        #page-info { font-weight: bold; color: var(--accent); font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <i data-lucide="shield-check" style="color: var(--accent); width: 48px; height: 48px; margin-bottom: 1rem;"></i>
-            <h2 style="margin: 0 0 20px 0;">Admin Access</h2>
-            <input type="email" id="email" placeholder="E-mail de administrador">
-            <input type="password" id="password" placeholder="Senha">
-            <button onclick="handleLogin()">ENTRAR NO PAINEL</button>
-            <p id="login-err" style="color: var(--danger); font-size: 0.8rem; margin-top: 15px; display: none;">Acesso Negado.</p>
+    <header>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <i data-lucide="layout-dashboard" style="color: var(--accent)"></i>
+            <h1 style="margin:0; font-size: 1.1rem;">LIVE ADMIN</h1>
         </div>
-    </div>
+        <div class="notif-btn pulse" id="btn-audio" onclick="toggleAudio()">
+            <i id="audio-icon" data-lucide="volume-x"></i>
+            <span id="audio-txt">LIGAR ÁUDIO</span>
+        </div>
+    </header>
 
-    <div id="admin-content" style="display:none">
-        <header>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="background: var(--accent); color: #000; padding: 6px; border-radius: 8px;"><i data-lucide="zap"></i></div>
-                <h1 style="margin:0; font-size: 1.2rem; letter-spacing: 1px;">SISTEMA LIVE</h1>
-            </div>
-            
-            <div class="notif-btn pulse" id="btn-audio" onclick="toggleAudio()">
-                <i id="audio-icon" data-lucide="volume-x"></i>
-                <span id="audio-txt" style="font-size: 0.75rem; font-weight: 800;">LIGAR ÁUDIO</span>
-            </div>
-        </header>
+    <main>
+        <div class="grid">
+            <div class="card"><span>Faturamento Total</span><b id="stat-rev">R$ 0,00</b></div>
+            <div class="card"><span>Vendas Aprovadas</span><b id="stat-ok">0</b></div>
+            <div class="card"><span>Aguardando Pix</span><b id="stat-wait">0</b></div>
+        </div>
 
-        <main>
-            <div class="grid">
-                <div class="card"><span>Faturamento Total</span><b id="stat-rev">R$ 0,00</b></div>
-                <div class="card"><span>Vendas Aprovadas</span><b id="stat-ok">0</b></div>
-                <div class="card"><span>Aguardando Pix</span><b id="stat-wait">0</b></div>
-            </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>E-mail do Cliente</th>
+                        <th>Status</th>
+                        <th>Data</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
 
-            <div class="table-container">
-                <table id="ordersTable">
-                    <thead>
-                        <tr>
-                            <th>Cliente / E-mail</th>
-                            <th>Status</th>
-                            <th>Data</th>
-                            <th>Valor</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
-            </div>
-
-            <div class="pagination">
-                <button class="page-btn" id="prevBtn" onclick="changePage(-1)">Anterior</button>
-                <span id="page-info">Página 1 de 1</span>
-                <button class="page-btn" id="nextBtn" onclick="changePage(1)">Próxima</button>
-            </div>
-
-            <button onclick="handleLogout()" style="margin-top: 3rem; background: none; border: 1px solid var(--border); color: var(--text-dim); padding: 10px 20px; border-radius: 12px; cursor: pointer; font-size: 0.8rem;">Desconectar da conta</button>
-        </main>
-    </div>
+        <div class="pagination">
+            <button class="page-btn" id="prevBtn" onclick="changePage(-1)">Anterior</button>
+            <span id="page-info">Página 1 de 1</span>
+            <button class="page-btn" id="nextBtn" onclick="changePage(1)">Próxima</button>
+        </div>
+    </main>
 
     <script type="module">
         const SUPABASE_URL = "https://mtuccfhpspgmpoehxmmr.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        // SOM PROFISSIONAL NEUTRO
+
         const sound = new Audio('audio.wav');
-        sound.volume = 0.5; // Ajusta para 50% 
+        sound.volume = 0.5;
         sound.preload = 'auto';
 
         let isLive = false;
@@ -137,38 +101,25 @@
         let currentPage = 1;
         const itemsPerPage = 10;
 
-        // --- LÓGICA DE ÁUDIO ---
         window.toggleAudio = async () => {
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                isLive = !isLive;
-                if(isLive) {
-                    sound.play().then(() => { sound.pause(); sound.currentTime = 0; });
-                }
-                updateAudioUI();
-            } else {
-                alert("Ative as notificações no cadeado do navegador!");
-            }
+            isLive = !isLive;
+            if(isLive) { sound.play().then(() => { sound.pause(); sound.currentTime = 0; }); }
+            updateAudioUI();
         };
 
         function updateAudioUI() {
             const btn = document.getElementById('btn-audio'), icon = document.getElementById('audio-icon'), txt = document.getElementById('audio-txt');
-            if (isLive) {
-                btn.className = 'notif-btn active'; icon.setAttribute('data-lucide', 'volume-2'); txt.innerText = "ÁUDIO ATIVO";
-            } else {
-                btn.className = 'notif-btn pulse'; icon.setAttribute('data-lucide', 'volume-x'); txt.innerText = "LIGAR ÁUDIO";
-            }
+            btn.className = isLive ? 'notif-btn active' : 'notif-btn pulse';
+            icon.setAttribute('data-lucide', isLive ? 'volume-2' : 'volume-x');
+            txt.innerText = isLive ? "ÁUDIO ATIVO" : "LIGAR ÁUDIO";
             lucide.createIcons();
         }
 
-        // --- DADOS E PAGINAÇÃO ---
         async function syncData() {
-            const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-            if (error || !data) return;
-            
+            const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+            if (!data) return;
             allOrders = data;
             renderTable();
-
             const paid = data.filter(o => o.status === 'approved');
             document.getElementById('stat-rev').innerText = (paid.length * 12.9).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
             document.getElementById('stat-ok').innerText = paid.length;
@@ -177,67 +128,35 @@
 
         function renderTable() {
             const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageData = allOrders.slice(start, end);
-
+            const pageData = allOrders.slice(start, start + itemsPerPage);
             document.getElementById('tableBody').innerHTML = pageData.map(o => `
                 <tr>
-                    <td style="font-weight: 600;">${o.email}</td>
+                    <td>${o.email}</td>
                     <td><span class="badge ${o.status}">${o.status === 'approved' ? 'PAGO' : 'PENDENTE'}</span></td>
-                    <td style="color: var(--text-dim); font-size: 0.8rem;">${new Date(o.created_at).toLocaleString('pt-BR')}</td>
-                    <td style="font-weight: 800; color: var(--accent)">R$ 12,90</td>
+                    <td>${new Date(o.created_at).toLocaleDateString('pt-BR')}</td>
+                    <td style="color:var(--accent)">R$ 12,90</td>
                 </tr>
             `).join('');
-
             const totalPages = Math.ceil(allOrders.length / itemsPerPage) || 1;
             document.getElementById('page-info').innerText = `Página ${currentPage} de ${totalPages}`;
             document.getElementById('prevBtn').disabled = currentPage === 1;
             document.getElementById('nextBtn').disabled = currentPage >= totalPages;
         }
 
-        window.changePage = (dir) => {
-            currentPage += dir;
-            renderTable();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
+        window.changePage = (dir) => { currentPage += dir; renderTable(); };
 
-        // --- REALTIME ---
-        function startRealtime() {
-            supabase.channel('custom-filter').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
+        function runRealtime() {
+            supabase.channel('sales').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
                 syncData();
-                if (isLive) {
+                if (isLive && p.new && p.new.status === 'approved' && p.old && p.old.status !== 'approved') {
                     sound.currentTime = 0;
                     sound.play().catch(()=>{});
-                    new Notification(p.eventType === 'INSERT' ? "Novo Pedido" : "Pagamento Confirmado!", { 
-                        body: p.new.email,
-                        icon: 'https://cdn-icons-png.flaticon.com/512/3135/3135706.png'
-                    });
+                    if (Notification.permission === "granted") new Notification("💰 VENDA APROVADA!", { body: p.new.email });
                 }
             }).subscribe();
         }
 
-        // --- AUTH ---
-        window.handleLogin = async () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
-            if (!error) showApp();
-            else { document.getElementById('login-err').style.display = 'block'; }
-        };
-
-        function showApp() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('admin-content').style.display = 'block';
-            syncData(); startRealtime(); lucide.createIcons();
-        }
-
-        window.handleLogout = async () => { await supabase.auth.signOut(); window.location.reload(); };
-
-        window.addEventListener('load', async () => {
-            lucide.createIcons();
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) showApp();
-        });
+        window.onload = () => { syncData(); runRealtime(); lucide.createIcons(); Notification.requestPermission(); };
     </script>
 </body>
 </html>
