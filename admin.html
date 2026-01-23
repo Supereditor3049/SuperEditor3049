@@ -15,7 +15,7 @@
 
         body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
 
-        /* --- TELA DE LOGIN --- */
+        /* --- LOGIN SCREEN --- */
         #login-screen {
             position: fixed; inset: 0; background: var(--bg);
             display: flex; align-items: center; justify-content: center; z-index: 9999;
@@ -34,29 +34,40 @@
             border: none; padding: 12px; border-radius: 8px; cursor: pointer; margin-top: 10px;
         }
 
-        /* --- LAYOUT DASHBOARD --- */
+        /* --- DASHBOARD LAYOUT --- */
         #admin-content { display: none; flex-direction: row; min-height: 100vh; }
         aside { width: 260px; border-right: 1px solid var(--border); padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
         main { flex: 1; padding: 2rem; overflow-y: auto; }
 
+        header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+
+        /* --- STATS --- */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; }
-        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 16px; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--border); transition: 0.3s; }
+        .card:hover { border-left-color: var(--accent); background: #161616; }
+        .card span { color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
         .card b { color: var(--accent); font-size: 1.8rem; display: block; margin-top: 5px; }
 
+        /* --- TABLE --- */
         .table-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        th { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; }
+        td { padding: 1rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        tr:last-child td { border-bottom: none; }
         
+        .index-col { color: var(--text-dim); font-family: monospace; font-weight: bold; width: 40px; }
         .status { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; }
         .approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
         .pending { background: rgba(255, 187, 0, 0.1); color: #ffbb00; }
 
         .hidden { display: none !important; }
 
+        /* RESPONSIVIDADE */
         @media (max-width: 768px) {
             #admin-content { flex-direction: column; }
             aside { width: 100%; height: auto; flex-direction: row; border-right: none; border-bottom: 1px solid var(--border); padding: 1rem; justify-content: space-between; }
             aside span { display: none; }
+            main { padding: 1rem; }
         }
     </style>
 </head>
@@ -64,11 +75,12 @@
 
     <div id="login-screen">
         <div class="login-box">
-            <i data-lucide="shield-check" size="48" style="color: var(--accent); margin-bottom: 1rem;"></i>
-            <h2>Admin Login</h2>
-            <input type="email" id="email" placeholder="E-mail">
-            <input type="password" id="password" placeholder="Senha">
-            <button onclick="handleLogin()">Entrar</button>
+            <i data-lucide="lock" size="48" style="color: var(--accent); margin-bottom: 1rem;"></i>
+            <h2 style="margin: 0;">Acesso Restrito</h2>
+            <p style="color: var(--text-dim); font-size: 0.8rem; margin-bottom: 1.5rem;">Identifique-se para continuar</p>
+            <input type="email" id="email" placeholder="Seu e-mail admin">
+            <input type="password" id="password" placeholder="Sua senha">
+            <button onclick="handleLogin()">Acessar Painel</button>
             <p id="login-error" style="color: #ff4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
         </div>
     </div>
@@ -76,22 +88,28 @@
     <div id="admin-content">
         <aside>
             <div style="color: var(--accent); font-weight: 800; display: flex; gap: 10px; align-items: center;">
-                <i data-lucide="zap"></i><span>SUPER ADMIN</span>
+                <i data-lucide="zap"></i><span>ADMIN OS</span>
             </div>
-            <nav style="display: flex; flex-direction: column; gap: 10px;">
-                <a href="#" style="color: var(--accent); text-decoration: none; display: flex; gap: 10px;"><i data-lucide="bar-chart-3"></i><span>Dashboard</span></a>
-                <a href="#" onclick="handleLogout()" style="color: var(--text-dim); text-decoration: none; display: flex; gap: 10px; margin-top: 20px;"><i data-lucide="log-out"></i><span>Sair</span></a>
+            <nav style="display: flex; flex-direction: column; gap: 8px;">
+                <a href="#" style="color: var(--accent); background: rgba(0,255,163,0.05); text-decoration: none; display: flex; gap: 10px; padding: 10px; border-radius: 8px;"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+                <a href="#" onclick="handleLogout()" style="color: var(--text-dim); text-decoration: none; display: flex; gap: 10px; padding: 10px; margin-top: 10px;"><i data-lucide="log-out"></i><span>Sair</span></a>
             </nav>
         </aside>
         
         <main>
             <header>
-                <h1 id="welcome-msg">Carregando...</h1>
-                <p style="color: var(--text-dim);">Estatísticas em tempo real</p>
+                <div>
+                    <h1 style="margin: 0;">Visão Geral</h1>
+                    <p id="user-display" style="color: var(--text-dim); margin: 5px 0 0; font-size: 0.85rem;"></p>
+                </div>
+                <div style="background: var(--card); border: 1px solid var(--border); padding: 8px 15px; border-radius: 10px; display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent);"></div>
+                    <span style="font-size: 0.75rem; font-weight: bold;">LIVE</span>
+                </div>
             </header>
 
             <div class="stats-grid">
-                <div class="card"><span>Lucro Total</span><b id="stat-revenue">R$ 0,00</b></div>
+                <div class="card"><span>Lucro Bruto</span><b id="stat-revenue">R$ 0,00</b></div>
                 <div class="card"><span>Vendas Pagas</span><b id="stat-approved">0</b></div>
                 <div class="card"><span>Aguardando Pix</span><b id="stat-pending">0</b></div>
             </div>
@@ -100,75 +118,91 @@
                 <table>
                     <thead>
                         <tr>
+                            <th class="index-col">#</th>
                             <th>CLIENTE</th>
                             <th>STATUS</th>
                             <th>DATA</th>
                             <th>VALOR</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody"></tbody>
+                    <tbody id="tableBody">
+                        </tbody>
                 </table>
             </div>
         </main>
     </div>
 
     <script type="module">
+        // CONFIGURAÇÕES SUPABASE
         const SUPABASE_URL = "https://mtuccfhpspgmpoehxmmr.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
         
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Ao carregar a página
+        // INICIALIZAÇÃO
         window.addEventListener('load', async () => {
             lucide.createIcons();
             const { data: { session } } = await supabase.auth.getSession();
             if (session) showAdmin(session.user.email);
         });
 
-        // Função de Login
+        // LOGIN
         window.handleLogin = async () => {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const btn = document.querySelector('.login-box button');
+            
+            btn.innerText = "Verificando...";
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
             if (error) {
+                btn.innerText = "Acessar Painel";
                 const errBox = document.getElementById('login-error');
-                errBox.innerText = "Acesso negado: " + error.message;
+                errBox.innerText = "Credenciais incorretas.";
                 errBox.style.display = 'block';
             } else {
                 showAdmin(data.user.email);
             }
         };
 
-        // Função de Logout
+        // LOGOUT
         window.handleLogout = async () => {
             await supabase.auth.signOut();
             window.location.reload();
         };
 
-        // Carregar dados reais do Banco
+        // BUSCAR DADOS REAIS
         async function loadRealData() {
-            const { data: orders, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+            const { data: orders, error } = await supabase
+                .from('orders')
+                .select('*')
+                .order('created_at', { ascending: false });
             
-            if (error) return console.error(error);
+            if (error) return console.error("Erro ao carregar:", error);
 
-            const approvedOrders = orders.filter(o => o.status === 'approved');
-            const pendingOrders = orders.filter(o => o.status === 'pending');
-            const totalRevenue = approvedOrders.length * 12.90;
+            const approvedCount = orders.filter(o => o.status === 'approved').length;
+            const pendingCount = orders.filter(o => o.status === 'pending').length;
+            const revenue = approvedCount * 12.90;
 
-            // Atualizar Cards
-            document.getElementById('stat-revenue').innerText = totalRevenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            document.getElementById('stat-approved').innerText = approvedOrders.length;
-            document.getElementById('stat-pending').innerText = pendingOrders.length;
+            // Atualiza Cards
+            document.getElementById('stat-revenue').innerText = revenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('stat-approved').innerText = approvedCount;
+            document.getElementById('stat-pending').innerText = pendingCount;
 
-            // Atualizar Tabela
+            // Atualiza Tabela com o número da coluna (#)
             const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = orders.map(o => `
+            if (orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 40px; color: var(--text-dim);">Nenhuma venda registrada ainda.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = orders.map((o, index) => `
                 <tr>
-                    <td>${o.email}</td>
-                    <td><span class="status ${o.status}">${o.status === 'approved' ? 'Pago' : 'Pendente'}</span></td>
-                    <td>${new Date(o.created_at).toLocaleDateString('pt-BR')}</td>
-                    <td>R$ 12,90</td>
+                    <td class="index-col">${index + 1}</td>
+                    <td style="font-weight: 500;">${o.email}</td>
+                    <td><span class="status ${o.status}">${o.status === 'approved' ? 'PAGO' : 'AGUARDANDO'}</span></td>
+                    <td style="color: var(--text-dim);">${new Date(o.created_at).toLocaleDateString('pt-BR')}</td>
+                    <td style="font-weight: bold; color: var(--accent);">R$ 12,90</td>
                 </tr>
             `).join('');
         }
@@ -176,8 +210,10 @@
         function showAdmin(email) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('admin-content').style.display = 'flex';
-            document.getElementById('welcome-msg').innerText = "Olá, Admin";
+            document.getElementById('user-display').innerText = `Administrador: ${email}`;
             loadRealData();
+            // Refresh automático a cada 60 segundos
+            setInterval(loadRealData, 60000);
         }
     </script>
 </body>
