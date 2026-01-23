@@ -2,203 +2,196 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Pro | Live Management</title>
-    
+    <title>Admin Dashboard Pro</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <style>
         :root { 
             --bg: #050505; --card: #0d0d0d; --accent: #00ffa3; 
-            --border: #1a1a1a; --danger: #ff4d4d; --warning: #ffbb00;
-            --text: #ffffff; --text-dim: #888888;
+            --border: #1a1a1a; --text: #ffffff; --text-dim: #888888;
         }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 50px; }
         
-        header { padding: 1rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
+        * { box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; margin: 0; line-height: 1.5; }
+
+        /* HEADER RESPONSIVO */
+        header { 
+            padding: 1rem; border-bottom: 1px solid var(--border); 
+            display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;
+            background: rgba(0,0,0,0.9); sticky; top: 0; z-index: 100;
+        }
+
+        .search-box { 
+            background: var(--card); border: 1px solid var(--border); padding: 10px; 
+            border-radius: 8px; color: white; min-width: 200px; flex-grow: 1;
+        }
+
+        /* GRID DE CARDS RESPONSIVO */
+        main { padding: 1rem; max-width: 1400px; margin: 0 auto; }
+        .grid { 
+            display: grid; gap: 1rem; 
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+            margin-bottom: 2rem; 
+        }
+        @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+        .card { background: var(--card); border: 1px solid var(--border); padding: 1rem; border-radius: 12px; }
+        .card b { font-size: 1.2rem; display: block; color: var(--accent); }
+
+        /* TABELA RESPONSIVA */
+        .table-wrapper { 
+            background: var(--card); border: 1px solid var(--border); 
+            border-radius: 12px; overflow-x: auto; /* Scroll horizontal no celular */
+        }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        th { background: #111; padding: 12px; font-size: 0.75rem; color: var(--text-dim); text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+
+        /* PAGINAÇÃO */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 1.5rem; flex-wrap: wrap; }
+        .page-btn { background: var(--card); border: 1px solid var(--border); color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
         
-        .controls { display: flex; gap: 15px; align-items: center; }
-        .search-box { background: var(--card); border: 1px solid var(--border); padding: 8px 15px; border-radius: 10px; color: white; width: 250px; outline: none; }
-        .search-box:focus { border-color: var(--accent); }
-
-        .cost-input { background: #1a1a1a; border: 1px solid var(--border); color: var(--accent); padding: 5px; border-radius: 5px; width: 80px; text-align: center; }
-
-        .notif-btn { background: var(--card); border: 1px solid var(--border); padding: 10px 18px; border-radius: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; color: white; font-weight: bold; }
-        .notif-btn.active { border-color: var(--accent); color: var(--accent); }
-        .notif-btn.pulse { border-color: var(--danger); animation: pulse-anim 2s infinite; }
-        @keyframes pulse-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
-        main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .card { background: var(--card); border: 1px solid var(--border); padding: 1.2rem; border-radius: 15px; }
-        .card span { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; }
-        .card b { font-size: 1.5rem; display: block; margin-top: 5px; color: var(--accent); }
-
-        .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 15px; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { padding: 15px; background: #111; color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; }
-        td { padding: 12px 15px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-        
-        .badge { padding: 4px 8px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; }
-        .badge.approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
-        .badge.pending { background: rgba(255, 187, 0, 0.1); color: var(--warning); }
-
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 2rem; }
-        .page-btn { background: var(--card); border: 1px solid var(--border); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
-        .page-btn:disabled { opacity: 0.2; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        .approved { background: rgba(0,255,163,0.1); color: var(--accent); }
+        .pending { background: rgba(255,187,0,0.1); color: #ffbb00; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <h1 style="font-size: 1rem; letter-spacing: 1px;">DASHBOARD PRO</h1>
-            <input type="text" id="searchInput" class="search-box" placeholder="Buscar e-mail..." oninput="handleSearch()">
+<header>
+    <div style="display:flex; align-items:center; gap:10px;">
+        <h2 style="font-size:1rem; margin:0; color:var(--accent)">DASHBOARD</h2>
+        <input type="text" id="searchInput" class="search-box" placeholder="Buscar e-mail..." oninput="handleSearch()">
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+        <div class="card" style="padding:5px 10px; border:none; background:transparent">
+            <span style="font-size:0.7rem; color:var(--text-dim)">CUSTO:</span>
+            <input type="number" id="basePrice" value="5.00" style="background:none; border:1px solid var(--border); color:white; width:60px; border-radius:4px;" onchange="updateCosts()">
         </div>
-        
-        <div class="controls">
-            <div style="text-align: right; margin-right: 15px;">
-                <span style="font-size: 0.7rem; color: var(--text-dim);">CUSTO UNITÁRIO:</span><br>
-                <input type="number" id="basePrice" class="cost-input" value="5.00" step="0.50" onchange="updateCosts()">
-            </div>
-            <div class="notif-btn pulse" id="btn-audio" onclick="toggleAudio()">
-                <i id="audio-icon" data-lucide="volume-x"></i>
-                <span id="audio-txt">LIGAR ÁUDIO</span>
-            </div>
-        </div>
-    </header>
+        <button id="btn-audio" class="page-btn" onclick="toggleAudio()" style="border-color: #ff4d4d; color:#ff4d4d">LIGAR SOM</button>
+    </div>
+</header>
 
-    <main>
-        <div class="grid">
-            <div class="card"><span>Faturamento Bruto</span><b id="stat-rev">R$ 0,00</b></div>
-            <div class="card"><span>Custo Total</span><b id="stat-cost" style="color: #ff4d4d;">R$ 0,00</b></div>
-            <div class="card"><span>Lucro Líquido</span><b id="stat-profit" style="color: #00ffa3;">R$ 0,00</b></div>
-            <div class="card"><span>Vendas Pagas</span><b id="stat-ok">0</b></div>
-        </div>
+<main>
+    <div class="grid">
+        <div class="card"><span>Bruto</span><b id="stat-rev">R$ 0,00</b></div>
+        <div class="card"><span>Custo</span><b id="stat-cost" style="color:#ff4d4d">R$ 0,00</b></div>
+        <div class="card"><span>Lucro</span><b id="stat-profit">R$ 0,00</b></div>
+        <div class="card"><span>Vendas</span><b id="stat-ok">0</b></div>
+    </div>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>E-mail do Cliente</th>
-                        <th>Status</th>
-                        <th>Data</th>
-                        <th>Valor Venda</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-        </div>
-
-        <div class="pagination">
-            <button class="page-btn" id="prevBtn" onclick="changePage(-1)">Anterior</button>
-            <span id="page-info" style="font-size: 0.8rem; color: var(--text-dim);"></span>
-            <button class="page-btn" id="nextBtn" onclick="changePage(1)">Próxima</button>
-        </div>
-    </main>
-
-    <script type="module">
-        const SUPABASE_URL = "https://mtuccfhpspgmpoehxmmr.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        const sound = new Audio('audio.wav');
-        sound.volume = 0.5;
-        sound.preload = 'auto';
-
-        let isLive = false;
-        let allOrders = [];
-        let filteredOrders = [];
-        let currentPage = 1;
-        const itemsPerPage = 50;
-        const VENDA_VALOR = 12.90;
-
-        // Carrega custo salvo
-        if(localStorage.getItem('custoUnitario')) {
-            document.getElementById('basePrice').value = localStorage.getItem('custoUnitario');
-        }
-
-        async function syncData() {
-            const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-            if (!data) return;
-            allOrders = data;
-            handleSearch(); // Atualiza filtros e estatísticas
-        }
-
-        window.handleSearch = () => {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            filteredOrders = allOrders.filter(o => o.email.toLowerCase().includes(term));
-            currentPage = 1; 
-            updateStats();
-            renderTable();
-        };
-
-        window.updateCosts = () => {
-            localStorage.setItem('custoUnitario', document.getElementById('basePrice').value);
-            updateStats();
-        };
-
-        function updateStats() {
-            const custoUni = parseFloat(document.getElementById('basePrice').value) || 0;
-            const paid = allOrders.filter(o => o.status === 'approved');
-            
-            const bruto = paid.length * VENDA_VALOR;
-            const custoTotal = paid.length * custoUni;
-            const lucro = bruto - custoTotal;
-
-            document.getElementById('stat-rev').innerText = bruto.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-            document.getElementById('stat-cost').innerText = custoTotal.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-            document.getElementById('stat-profit').innerText = lucro.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-            document.getElementById('stat-ok').innerText = paid.length;
-        }
-
-        function renderTable() {
-            const start = (currentPage - 1) * itemsPerPage;
-            const pageData = filteredOrders.slice(start, start + itemsPerPage);
-            
-            document.getElementById('tableBody').innerHTML = pageData.map((o, index) => `
+    <div class="table-wrapper">
+        <table>
+            <thead>
                 <tr>
-                    <td style="color: var(--text-dim)">${allOrders.length - (start + index)}</td>
-                    <td>${o.email}</td>
-                    <td><span class="badge ${o.status}">${o.status === 'approved' ? 'PAGO' : 'PENDENTE'}</span></td>
-                    <td>${new Date(o.created_at).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'})}</td>
-                    <td style="color:var(--accent)">R$ ${VENDA_VALOR.toFixed(2)}</td>
+                    <th>ID #</th>
+                    <th>CLIENTE</th>
+                    <th>STATUS</th>
+                    <th>DATA/HORA</th>
+                    <th>VALOR</th>
                 </tr>
-            `).join('');
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
 
-            const totalPages = Math.ceil(filteredOrders.length / itemsPerPage) || 1;
-            document.getElementById('page-info').innerText = `Página ${currentPage} de ${totalPages} (${filteredOrders.length} registros)`;
-            document.getElementById('prevBtn').disabled = currentPage === 1;
-            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
-        }
+    <div class="pagination">
+        <button class="page-btn" id="prevBtn" onclick="changePage(-1)">Anterior</button>
+        <span id="page-info"></span>
+        <button class="page-btn" id="nextBtn" onclick="changePage(1)">Próxima</button>
+    </div>
+</main>
 
-        window.changePage = (dir) => { currentPage += dir; renderTable(); window.scrollTo(0,0); };
+<script type="module">
+    // Mantenha suas chaves do Supabase aqui
+    const SUPABASE_URL = "https://mtuccfhpspgmpoehxmmr.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        window.toggleAudio = () => {
-            isLive = !isLive;
-            if(isLive) { sound.play().then(() => { sound.pause(); sound.currentTime = 0; }).catch(()=>{}); }
-            const btn = document.getElementById('btn-audio'), icon = document.getElementById('audio-icon'), txt = document.getElementById('audio-txt');
-            btn.className = isLive ? 'notif-btn active' : 'notif-btn pulse';
-            icon.setAttribute('data-lucide', isLive ? 'volume-2' : 'volume-x');
-            txt.innerText = isLive ? "ÁUDIO ATIVO" : "LIGAR ÁUDIO";
-            lucide.createIcons();
-        };
+    const sound = new Audio('audio.wav');
+    sound.volume = 0.5;
+    let isLive = false;
+    let allOrders = [];
+    let filteredOrders = [];
+    let currentPage = 1;
+    const itemsPerPage = 50; // Agora fixo em 50
 
-        function runRealtime() {
-            supabase.channel('sales').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
-                syncData();
-                if (isLive && p.new && p.new.status === 'approved' && (!p.old || p.old.status !== 'approved')) {
-                    sound.currentTime = 0;
-                    sound.play().catch(()=>{});
-                    new Notification("💰 VENDA APROVADA!", { body: p.new.email });
-                }
-            }).subscribe();
-        }
+    async function syncData() {
+        const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: true });
+        if (!data) return;
+        allOrders = data;
+        handleSearch();
+    }
 
-        window.onload = () => { syncData(); runRealtime(); lucide.createIcons(); Notification.requestPermission(); };
-    </script>
+    window.handleSearch = () => {
+        const term = document.getElementById('searchInput').value.toLowerCase();
+        filteredOrders = allOrders.filter(o => o.email.toLowerCase().includes(term));
+        // Inverte para mostrar as mais recentes primeiro na visualização, mas mantém o ID fixo
+        const displayData = [...filteredOrders].reverse();
+        updateStats();
+        renderTable(displayData);
+    };
+
+    function renderTable(data) {
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageData = data.slice(start, end);
+        
+        document.getElementById('tableBody').innerHTML = pageData.map((o) => {
+            const globalIndex = allOrders.findIndex(item => item.id === o.id) + 1;
+            return `
+            <tr>
+                <td style="color:var(--text-dim)">#${globalIndex}</td>
+                <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis;">${o.email}</td>
+                <td><span class="badge ${o.status}">${o.status === 'approved' ? 'PAGO' : 'PENDENTE'}</span></td>
+                <td>${new Date(o.created_at).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'})}</td>
+                <td style="color:var(--accent)">R$ 12,90</td>
+            </tr>
+        `}).join('');
+
+        const totalPages = Math.ceil(data.length / itemsPerPage) || 1;
+        document.getElementById('page-info').innerText = `Página ${currentPage} de ${totalPages}`;
+        document.getElementById('prevBtn').disabled = currentPage === 1;
+        document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+    }
+
+    window.updateCosts = () => {
+        localStorage.setItem('custoUnitario', document.getElementById('basePrice').value);
+        updateStats();
+    };
+
+    function updateStats() {
+        const custoUni = parseFloat(document.getElementById('basePrice').value) || 0;
+        const paid = allOrders.filter(o => o.status === 'approved');
+        const bruto = paid.length * 12.90;
+        const lucro = bruto - (paid.length * custoUni);
+        document.getElementById('stat-rev').innerText = bruto.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        document.getElementById('stat-cost').innerText = (paid.length * custoUni).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        document.getElementById('stat-profit').innerText = lucro.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        document.getElementById('stat-ok').innerText = paid.length;
+    }
+
+    window.changePage = (dir) => { currentPage += dir; handleSearch(); };
+
+    window.toggleAudio = () => {
+        isLive = !isLive;
+        document.getElementById('btn-audio').style.color = isLive ? 'var(--accent)' : '#ff4d4d';
+        document.getElementById('btn-audio').style.borderColor = isLive ? 'var(--accent)' : '#ff4d4d';
+        document.getElementById('btn-audio').innerText = isLive ? 'SOM ATIVO' : 'LIGAR SOM';
+    };
+
+    function runRealtime() {
+        supabase.channel('sales').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
+            syncData();
+            if (isLive && p.new && p.new.status === 'approved' && (!p.old || p.old.status !== 'approved')) {
+                sound.currentTime = 0;
+                sound.play().catch(()=>{});
+            }
+        }).subscribe();
+    }
+
+    window.onload = () => { syncData(); runRealtime(); };
+</script>
 </body>
 </html>
