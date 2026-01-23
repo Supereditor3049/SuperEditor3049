@@ -96,11 +96,29 @@
   </div>
 
   <script>
-    function comprar() {
-      // Aqui você chama sua API
-      // que cria o pedido + link do Mercado Pago
-      window.location.href = "/checkout";
-    }
+async function comprar() {
+  const email = prompt("Digite seu email:");
+
+  const res = await fetch("COLE_AQUI_O_ENDPOINT_URL", {
+    method: "POST",
+    headers: { "Content-Type": "https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor" },
+    body: JSON.stringify({
+      email: email,
+      product_id: "guia-audios"
+    })
+  });
+
+  const data = await res.json();
+  console.log(data); // apenas para debug
+
+  if (data.checkout_url) {
+    window.location.href = data.checkout_url;
+  } else {
+    alert("Erro ao criar pagamento: " + (data.error || "Desconhecido"));
+  }
+}
   </script>
+  
+  
 </body>
 </html>
