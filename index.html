@@ -6,87 +6,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #000;
-      color: #fff;
-      margin: 0;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 40px 20px;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      background: linear-gradient(90deg, #ff0080, #00ffcc);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      color: #aaa;
-    }
-
-    .box {
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 12px;
-      padding: 25px;
-      margin: 30px 0;
-    }
-
-    ul li {
-      margin-bottom: 10px;
-    }
-
-    .price {
-      font-size: 2rem;
-      color: #00ffcc;
-      margin: 20px 0;
-    }
-
-    button {
-      background: #00ffcc;
-      color: #000;
-      font-size: 1.1rem;
-      padding: 15px 30px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .guarantee {
-      font-size: 0.9rem;
-      color: #777;
-      margin-top: 15px;
-    }
+    body { font-family: system-ui, sans-serif; background: #000; color: #fff; margin: 0; }
+    .container { max-width: 900px; margin: auto; padding: 40px 20px; }
+    h1 { font-size: 2.5rem; background: linear-gradient(90deg, #ff0080, #00ffcc); -webkit-background-clip: text; color: transparent; }
+    .hero p { font-size: 1.2rem; color: #aaa; }
+    .box { background: #111; border: 1px solid #333; border-radius: 12px; padding: 25px; margin: 30px 0; }
+    ul li { margin-bottom: 10px; }
+    .price { font-size: 2rem; color: #00ffcc; margin: 20px 0; }
+    button { background: #00ffcc; color: #000; font-size: 1.1rem; padding: 15px 30px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; max-width: 300px; transition: 0.3s; }
+    button:hover { opacity: 0.8; transform: scale(1.02); }
+    .guarantee { font-size: 0.9rem; color: #777; margin-top: 15px; }
   </style>
 </head>
 
 <body>
   <div class="container hero">
     <h1>🎬 Guia Completo de Áudios e Efeitos para YouTube</h1>
-    <p>
-      Todos os sites, ferramentas e atalhos que criadores usam para deixar vídeos
-      mais engraçados, dinâmicos e profissionais.
-    </p>
+    <p>Todos os sites, ferramentas e atalhos que criadores usam para deixar vídeos mais dinâmicos e profissionais.</p>
 
     <div class="box">
       <h2>📦 O que você recebe</h2>
       <ul>
         <li>🔊 Áudios de memes prontos</li>
-        <li>😂 Reações, risadas e efeitos sonoros</li>
+        <li>😂 Reações e risadas</li>
         <li>🎵 Músicas sem copyright</li>
-        <li>⚡ Lista organizada e atualizada</li>
         <li>🚀 Acesso imediato após pagamento</li>
       </ul>
     </div>
@@ -95,61 +38,59 @@
       <h2>💰 Investimento único</h2>
       <div class="price">R$ 12,90</div>
       <p>Acesso vitalício • Sem mensalidade</p>
-
       <button onclick="comprar()">Quero acesso agora</button>
-
       <p class="guarantee">🔒 Pagamento seguro via Mercado Pago</p>
     </div>
   </div>
 
   <script>
-async function comprar() {
-  const email = prompt("Digite seu email:");
-  if (!email) {
-    alert("Digite um email válido.");
-    return;
-  }
-
-  const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
-
-  try {
-    const res = await fetch(
-      "https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor",
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": SUPABASE_ANON_KEY
-        },
-        body: JSON.stringify({
-          email: email,
-          product_id: "Editor"
-        })
+    async function comprar() {
+      const email = prompt("Digite seu email para receber o acesso:");
+      
+      if (!email || !email.includes("@")) {
+        alert("Por favor, digite um email válido.");
+        return;
       }
-    );
 
-    if (!res.ok) {
-      throw new Error("Erro HTTP: " + res.status);
+      // Sua Chave Pública Anon inserida abaixo:
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
+
+      try {
+        const res = await fetch(
+          "https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "apikey": SUPABASE_ANON_KEY,
+              "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify({
+              email: email,
+              product_id: "Editor"
+            })
+          }
+        );
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || "Erro na requisição");
+        }
+
+        const data = await res.json();
+
+        if (data.checkout_url) {
+          // Redireciona para o Mercado Pago
+          window.location.href = data.checkout_url;
+        } else {
+          alert("Erro: Checkout URL não encontrada.");
+        }
+
+      } catch (err) {
+        console.error("Erro detalhado:", err);
+        alert("Erro ao processar: " + err.message);
+      }
     }
-
-    const data = await res.json();
-    console.log("Resposta:", data);
-
-    if (data.checkout_url) {
-      window.location.href = data.checkout_url;
-    } else {
-      alert("Erro ao criar pagamento.");
-    }
-
-  } catch (err) {
-    console.error(err);
-    alert("Erro ao chamar a função: " + err.message);
-  }
-}
-</script>
-
-
+  </script>
 </body>
 </html>
