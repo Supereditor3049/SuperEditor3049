@@ -2,115 +2,107 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Live</title>
+    <title>Admin Dashboard | Live Payments</title>
+    
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
         :root { 
             --bg: #050505; --card: #0d0d0d; --accent: #00ffa3; 
-            --border: #1a1a1a; --text: #ffffff; --text-dim: #888888;
+            --border: #1a1a1a; --danger: #ff4d4d; --warning: #ffbb00;
+            --text: #ffffff; --text-dim: #888888;
         }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; }
         
-        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        header { padding: 1.2rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
+        .notif-btn { background: var(--card); border: 1px solid var(--border); padding: 10px 18px; border-radius: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; color: white; }
+        .notif-btn.active { border-color: var(--accent); color: var(--accent); }
+        .notif-btn.pulse { border-color: var(--danger); animation: pulse-anim 1.8s infinite; color: var(--danger); }
+        @keyframes pulse-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        /* HEADER SEM NAV - APENAS LOGO E BOTÃO */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .logo { display: flex; align-items: center; gap: 10px; font-weight: bold; letter-spacing: 1px; }
-
-        /* BARRA DE BUSCA ACIMA DOS CARDS */
-        .search-container { margin-bottom: 20px; width: 100%; max-width: 400px; position: relative; }
-        .search-box { 
-            width: 100%; background: var(--card); border: 1px solid var(--border); 
-            padding: 12px 15px 12px 40px; border-radius: 12px; color: white; outline: none;
-        }
+        main { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+        
+        /* CAMPO DE PESQUISA PEQUENO ACIMA DOS CARDS */
+        .search-area { margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .search-box { background: var(--card); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: white; font-size: 0.8rem; width: 220px; outline: none; }
         .search-box:focus { border-color: var(--accent); }
-        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
 
-        /* GRID DE CARDS */
-        .grid { 
-            display: grid; gap: 15px; 
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            margin-bottom: 30px; 
-        }
-        .card { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 16px; position: relative; overflow: hidden; }
-        .card::after { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: var(--accent); opacity: 0.5; }
-        .card span { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 600; }
-        .card b { font-size: 1.6rem; display: block; margin-top: 8px; color: var(--accent); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 20px; border-left: 4px solid var(--accent); }
+        .card b { font-size: 1.5rem; display: block; margin-top: 8px; color: var(--accent); }
         
-        .cost-input { background: rgba(255,255,255,0.05); border: none; color: #ff4d4d; width: 70px; border-radius: 4px; padding: 2px 5px; font-weight: bold; }
+        /* INPUT DE CUSTO DENTRO DO CARD */
+        .cost-input { background: transparent; border: 1px solid var(--border); color: var(--danger); width: 60px; border-radius: 4px; font-size: 0.8rem; margin-left: 5px; text-align: center; }
 
-        /* TABELA MODERNA */
         .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        th { padding: 18px; background: #0a0a0a; color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; text-align: left; }
-        td { padding: 16px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { padding: 1.2rem; background: rgba(255,255,255,0.02); color: var(--text-dim); text-align: left; font-size: 0.75rem; text-transform: uppercase; }
+        td { padding: 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
         
-        .badge { padding: 5px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+        .badge { padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; }
         .badge.approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
-        .badge.pending { background: rgba(255, 187, 0, 0.1); color: #ffbb00; }
+        .badge.pending { background: rgba(255, 187, 0, 0.1); color: var(--warning); }
 
-        /* PAGINAÇÃO */
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 30px; }
-        .btn { background: var(--card); border: 1px solid var(--border); color: white; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-        .btn:disabled { opacity: 0.2; cursor: not-allowed; }
-
-        @media (max-width: 600px) {
-            body { padding: 15px; }
-            .top-bar { flex-direction: column; gap: 15px; align-items: flex-start; }
-        }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 2rem; padding-bottom: 2rem; }
+        .page-btn { background: var(--card); border: 1px solid var(--border); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        #page-info { font-weight: bold; color: var(--accent); font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <div class="logo">
-            <i data-lucide="zap" fill="var(--accent)" color="var(--accent)"></i>
-            <span>LIVEPAY ADMIN</span>
+    <header>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <i data-lucide="layout-dashboard" style="color: var(--accent)"></i>
+            <h1 style="margin:0; font-size: 1.1rem;">LIVE ADMIN</h1>
         </div>
-        <button class="btn" id="btn-audio" onclick="toggleAudio()" style="border-color: #ff4d4d; color: #ff4d4d;">
-            LIGAR SOM
-        </button>
-    </div>
-
-    <div class="search-container">
-        <i data-lucide="search" class="search-icon" size="18"></i>
-        <input type="text" id="searchInput" class="search-box" placeholder="Buscar cliente por e-mail..." oninput="handleSearch()">
-    </div>
-
-    <div class="grid">
-        <div class="card"><span>Faturamento Bruto</span><b id="stat-rev">R$ 0,00</b></div>
-        <div class="card">
-            <span>Custo do Produto</span>
-            <input type="number" id="basePrice" class="cost-input" value="5.00" onchange="updateCosts()">
-            <b id="stat-cost" style="color: #ff4d4d;">R$ 0,00</b>
+        <div class="notif-btn pulse" id="btn-audio" onclick="toggleAudio()">
+            <i id="audio-icon" data-lucide="volume-x"></i>
+            <span id="audio-txt">LIGAR ÁUDIO</span>
         </div>
-        <div class="card"><span>Lucro Líquido</span><b id="stat-profit">R$ 0,00</b></div>
-        <div class="card"><span>Vendas Pagas</span><b id="stat-ok">0</b></div>
-    </div>
+    </header>
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th># ID</th>
-                    <th>E-mail do Cliente</th>
-                    <th>Status</th>
-                    <th>Data e Hora</th>
-                    <th>Valor</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
-    </div>
+    <main>
+        <div class="search-area">
+            <i data-lucide="search" size="16" style="color: var(--text-dim)"></i>
+            <input type="text" id="searchInput" class="search-box" placeholder="Buscar e-mail..." oninput="handleSearch()">
+        </div>
 
-    <div class="pagination">
-        <button class="btn" id="prevBtn" onclick="changePage(-1)">Anterior</button>
-        <span id="page-info" style="font-size: 0.8rem; color: var(--text-dim);"></span>
-        <button class="btn" id="nextBtn" onclick="changePage(1)">Próxima</button>
-    </div>
+        <div class="grid">
+            <div class="card"><span>Faturamento</span><b id="stat-rev">R$ 0,00</b></div>
+            <div class="card">
+                <span>Custo Unitário</span>
+                <input type="number" id="basePrice" class="cost-input" value="5.00" onchange="updateStats()">
+                <b id="stat-cost" style="color: var(--danger);">R$ 0,00</b>
+            </div>
+            <div class="card"><span>Lucro Líquido</span><b id="stat-profit">R$ 0,00</b></div>
+            <div class="card"><span>Vendas Pagas</span><b id="stat-ok">0</b></div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>E-mail do Cliente</th>
+                        <th>Status</th>
+                        <th>Data</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <button class="page-btn" id="prevBtn" onclick="changePage(-1)">Anterior</button>
+            <span id="page-info"></span>
+            <button class="page-btn" id="nextBtn" onclick="changePage(1)">Próxima</button>
+        </div>
+    </main>
 
     <script type="module">
         const SUPABASE_URL = "https://mtuccfhpspgmpoehxmmr.supabase.co";
@@ -125,8 +117,17 @@
         let currentPage = 1;
         const itemsPerPage = 50;
 
+        window.toggleAudio = async () => {
+            isLive = !isLive;
+            if(isLive) { sound.play().then(() => { sound.pause(); sound.currentTime = 0; }); }
+            const btn = document.getElementById('btn-audio'), icon = document.getElementById('audio-icon'), txt = document.getElementById('audio-txt');
+            btn.className = isLive ? 'notif-btn active' : 'notif-btn pulse';
+            icon.setAttribute('data-lucide', isLive ? 'volume-2' : 'volume-x');
+            txt.innerText = isLive ? "ÁUDIO ATIVO" : "LIGAR ÁUDIO";
+            lucide.createIcons();
+        };
+
         async function syncData() {
-            // Buscamos em ordem ASC (mais antiga primeiro) para o ID ser fixo
             const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: true });
             if (!data) return;
             allOrders = data;
@@ -140,22 +141,32 @@
             renderTable();
         };
 
+        function updateStats() {
+            const custoUni = parseFloat(document.getElementById('basePrice').value) || 0;
+            const paid = allOrders.filter(o => o.status === 'approved');
+            const bruto = paid.length * 12.9;
+            const custoTotal = paid.length * custoUni;
+            
+            document.getElementById('stat-rev').innerText = bruto.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            document.getElementById('stat-cost').innerText = custoTotal.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            document.getElementById('stat-profit').innerText = (bruto - custoTotal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            document.getElementById('stat-ok').innerText = paid.length;
+        }
+
         function renderTable() {
-            // Para a visualização, queremos a mais recente no topo
             const displayData = [...filteredOrders].reverse();
             const start = (currentPage - 1) * itemsPerPage;
             const pageData = displayData.slice(start, start + itemsPerPage);
-            
+
             document.getElementById('tableBody').innerHTML = pageData.map((o) => {
-                // O ID é a posição original dele no array de todas as ordens + 1
-                const originalId = allOrders.findIndex(item => item.id === o.id) + 1;
+                const globalIndex = allOrders.findIndex(item => item.id === o.id) + 1;
                 return `
                 <tr>
-                    <td style="color: var(--text-dim); font-weight: bold;">#${originalId}</td>
+                    <td style="color:var(--text-dim)">#${globalIndex}</td>
                     <td>${o.email}</td>
-                    <td><span class="badge ${o.status}">${o.status === 'approved' ? 'Pago' : 'Pendente'}</span></td>
+                    <td><span class="badge ${o.status}">${o.status === 'approved' ? 'PAGO' : 'PENDENTE'}</span></td>
                     <td>${new Date(o.created_at).toLocaleString('pt-BR')}</td>
-                    <td style="color: var(--accent); font-weight: bold;">R$ 12,90</td>
+                    <td style="color:var(--accent)">R$ 12,90</td>
                 </tr>
             `}).join('');
 
@@ -165,33 +176,7 @@
             document.getElementById('nextBtn').disabled = currentPage >= totalPages;
         }
 
-        window.updateCosts = () => {
-            localStorage.setItem('custoUnitario', document.getElementById('basePrice').value);
-            updateStats();
-        };
-
-        function updateStats() {
-            const custoUni = parseFloat(document.getElementById('basePrice').value) || 0;
-            const paid = allOrders.filter(o => o.status === 'approved');
-            const bruto = paid.length * 12.90;
-            const lucro = bruto - (paid.length * custoUni);
-
-            document.getElementById('stat-rev').innerText = bruto.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-            document.getElementById('stat-cost').innerText = (paid.length * custoUni).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-            document.getElementById('stat-profit').innerText = lucro.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-            document.getElementById('stat-ok').innerText = paid.length;
-        }
-
-        window.changePage = (dir) => { currentPage += dir; renderTable(); window.scrollTo(0,0); };
-
-        window.toggleAudio = () => {
-            isLive = !isLive;
-            const btn = document.getElementById('btn-audio');
-            btn.style.color = isLive ? 'var(--accent)' : '#ff4d4d';
-            btn.style.borderColor = isLive ? 'var(--accent)' : '#ff4d4d';
-            btn.innerText = isLive ? 'SOM ATIVO' : 'LIGAR SOM';
-            if(isLive) { sound.play().then(()=> {sound.pause(); sound.currentTime=0;}).catch(()=>{}); }
-        };
+        window.changePage = (dir) => { currentPage += dir; renderTable(); };
 
         function runRealtime() {
             supabase.channel('sales').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
@@ -203,10 +188,7 @@
             }).subscribe();
         }
 
-        window.onload = () => { 
-            if(localStorage.getItem('custoUnitario')) document.getElementById('basePrice').value = localStorage.getItem('custoUnitario');
-            syncData(); runRealtime(); lucide.createIcons(); 
-        };
+        window.onload = () => { syncData(); runRealtime(); lucide.createIcons(); Notification.requestPermission(); };
     </script>
 </body>
 </html>
