@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin OS | Secure</title>
+    <title>Admin OS | Gold Edition</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg: #050505; --card: #111111; --accent: #00ffa3;
             --text-main: #ffffff; --text-dim: #888888; --border: #222222;
+            --warning: #ffbb00; --danger: #ff4444;
         }
 
-        body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; }
+        body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; box-sizing: border-box; }
 
         /* LOGIN */
         #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; }
@@ -21,41 +22,44 @@
         .login-box input { width: 100%; background: #000; border: 1px solid var(--border); color: white; padding: 14px; border-radius: 12px; margin: 10px 0; outline: none; box-sizing: border-box; }
         .login-box button { width: 100%; background: var(--accent); color: #000; font-weight: bold; border: none; padding: 14px; border-radius: 12px; cursor: pointer; }
 
-        /* DASHBOARD */
-        #admin-content { display: none; flex-direction: row; min-height: 100vh; }
-        aside { width: 260px; border-right: 1px solid var(--border); padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
-        main { flex: 1; padding: 2rem; overflow-y: auto; }
+        /* DASHBOARD LAYOUT */
+        #admin-content { display: none; min-height: 100vh; flex-direction: column; }
+        header { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg); }
+        main { padding: 2rem; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; }
 
-        /* BOTÃO REFINADO (SEM QUADRADO) */
+        /* BOTÃO INTERRUPTOR */
         .notif-btn {
-            background: var(--card); border: 1px solid var(--border);
-            padding: 10px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px;
-            cursor: pointer; transition: 0.3s;
-            outline: none; /* Remove o quadrado transparente */
-            -webkit-tap-highlight-color: transparent; /* Remove brilho no mobile */
-            user-select: none;
+            background: var(--card); border: 1px solid var(--border); padding: 10px 20px; border-radius: 12px; 
+            display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s;
+            outline: none !important; user-select: none; -webkit-tap-highlight-color: transparent;
         }
-        .notif-btn:focus { outline: none; }
-        
         .notif-btn.active { border-color: var(--accent); background: rgba(0, 255, 163, 0.05); }
+        .notif-btn.off { border-color: var(--danger); }
         .notif-btn.pulse { animation: pulse-red 2s infinite; }
         
         @keyframes pulse-red { 
-            0% { border-color: #ff4444; box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.4); } 
-            70% { border-color: #ff4444; box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
-            100% { border-color: #ff4444; box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); } 
+            0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.4); } 
+            70% { box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); } 
         }
 
-        /* CARDS E TABELA */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
-        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 20px; border-left: 4px solid var(--accent); }
-        .card b { color: var(--accent); font-size: 2rem; display: block; margin-top: 8px; font-family: monospace; }
-        .table-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 1.2rem; border-bottom: 1px solid var(--border); text-align: left; }
-        .status-badge { padding: 5px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; }
-        .approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
-        .pending { background: rgba(255, 187, 0, 0.1); color: #ffbb00; }
+        /* CARDS */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 20px; }
+        .card span { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+        .card b { color: var(--accent); font-size: 2rem; display: block; margin-top: 10px; font-family: monospace; }
+
+        /* TABELA */
+        .table-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { padding: 1.2rem; text-align: left; color: var(--text-dim); font-size: 0.75rem; border-bottom: 1px solid var(--border); }
+        td { padding: 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        
+        /* BADGES DE STATUS */
+        .status-badge { padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; display: inline-block; }
+        .status-badge.approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
+        .status-badge.pending { background: rgba(255, 187, 0, 0.1); color: var(--warning); }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -63,43 +67,50 @@
 
     <div id="login-screen">
         <div class="login-box">
-            <i data-lucide="shield-check" style="color: var(--accent); width: 48px; height: 48px; margin-bottom: 10px;"></i>
-            <h2>Acesso Restrito</h2>
+            <i data-lucide="shield-check" style="color: var(--accent); width: 48px; height: 48px; margin-bottom: 1rem;"></i>
+            <h2 style="margin:0">Admin Painel</h2>
             <input type="email" id="email" placeholder="E-mail">
             <input type="password" id="password" placeholder="Senha">
-            <button onclick="handleLogin()">Entrar</button>
-            <p id="login-error" style="color: #ff4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
+            <button onclick="handleLogin()">ENTRAR</button>
+            <p id="login-error" style="color: var(--danger); font-size: 0.8rem; margin-top: 15px; display: none;"></p>
         </div>
     </div>
 
     <div id="admin-content">
-        <aside>
-            <div style="color: var(--accent); font-weight: 800; display: flex; gap: 10px;"><i data-lucide="zap"></i> DASHBOARD</div>
-            <button onclick="handleLogout()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; display:flex; gap:10px; align-items:center;"><i data-lucide="log-out"></i> Sair</button>
-        </aside>
-        
-        <main>
-            <header style="display: flex; justify-content: space-between; align-items: center;">
-                <div><h1 style="margin:0">Vendas</h1><small id="user-mail" style="color:var(--text-dim)"></small></div>
-                
-                <div class="notif-btn pulse" id="notif-btn" onclick="toggleNotifications()">
-                    <i id="notif-icon" data-lucide="volume-x" style="color: #ff4444;"></i>
-                    <span id="notif-text" style="font-size: 0.8rem; font-weight: bold;">LIGAR ÁUDIO</span>
-                </div>
-            </header>
+        <header>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="background: var(--accent); color: #000; padding: 5px; border-radius: 6px;"><i data-lucide="trending-up"></i></div>
+                <h2 style="margin:0; font-size: 1.2rem;">Relatório Live</h2>
+            </div>
+            
+            <div class="notif-btn pulse" id="notif-btn" onclick="toggleAudio()">
+                <i id="notif-icon" data-lucide="volume-x" style="color: var(--danger);"></i>
+                <span id="notif-text" style="font-size: 0.75rem; font-weight: 800; color: var(--danger);">LIGAR ÁUDIO</span>
+            </div>
+        </header>
 
+        <main>
             <div class="stats-grid">
-                <div class="card"><span>Total Pago</span><b id="stat-rev">R$ 0,00</b></div>
-                <div class="card"><span>Vendas</span><b id="stat-count">0</b></div>
-                <div class="card"><span>Pendentes</span><b id="stat-pend">0</b></div>
+                <div class="card"><span>Faturamento (Pago)</span><b id="stat-rev">R$ 0,00</b></div>
+                <div class="card"><span>Vendas Pagas</span><b id="stat-count">0</b></div>
+                <div class="card"><span>Aguardando Pix</span><b id="stat-pend">0</b></div>
             </div>
 
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th>#</th><th>CLIENTE</th><th>STATUS</th><th>DATA</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>CLIENTE</th>
+                            <th>STATUS</th>
+                            <th>DATA</th>
+                            <th>VALOR</th>
+                        </tr>
+                    </thead>
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
+            <button onclick="handleLogout()" style="margin-top: 2rem; background: none; border: 1px solid var(--border); color: var(--text-dim); padding: 10px 20px; border-radius: 10px; cursor: pointer;">Sair da Conta</button>
         </main>
     </div>
 
@@ -107,92 +118,98 @@
         const SUPABASE_URL = "https://mtuccfhpspgmpoehxmmr.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const sound = new Audio('https://www.myinstants.com/media/sounds/caixa-registradora-venda.mp3');
+        const alertSound = new Audio('https://www.myinstants.com/media/sounds/caixa-registradora-venda.mp3');
         
-        let active = false;
+        let audioActive = false;
 
-        // --- LÓGICA DE INTERRUPTOR (TOGGLE) ---
-        window.toggleNotifications = async () => {
-            if (!active) {
-                // Tenta ligar
-                const permission = await Notification.requestPermission();
-                if (permission === 'granted') {
-                    sound.play().then(() => {
-                        sound.pause(); sound.currentTime = 0;
-                        setNotifUI(true);
-                    }).catch(() => alert("Clique novamente para confirmar o áudio."));
-                }
-            } else {
-                // Desliga
-                setNotifUI(false);
-            }
-        };
-
-        function setNotifUI(isOn) {
-            active = isOn;
+        // --- LÓGICA DO INTERRUPTOR (ON/OFF) ---
+        window.toggleAudio = async () => {
             const btn = document.getElementById('notif-btn');
             const icon = document.getElementById('notif-icon');
             const text = document.getElementById('notif-text');
-            
-            if (isOn) {
-                btn.classList.remove('pulse'); 
-                btn.classList.add('active');
-                icon.setAttribute('data-lucide', 'volume-2'); icon.style.color = 'var(--accent)';
-                text.innerText = "NOTIFICAÇÕES ON"; text.style.color = 'var(--accent)';
+
+            if (!audioActive) {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    audioActive = true;
+                    // Desbloqueia áudio no navegador
+                    alertSound.play().then(() => { alertSound.pause(); alertSound.currentTime = 0; });
+                    
+                    btn.classList.remove('pulse', 'off'); btn.classList.add('active');
+                    icon.setAttribute('data-lucide', 'volume-2'); icon.style.color = 'var(--accent)';
+                    text.innerText = "ÁUDIO ATIVO"; text.style.color = 'var(--accent)';
+                }
             } else {
-                btn.classList.add('pulse'); 
-                btn.classList.remove('active');
-                icon.setAttribute('data-lucide', 'volume-x'); icon.style.color = '#ff4444';
-                text.innerText = "LIGAR ÁUDIO"; text.style.color = 'var(--text-dim)';
+                audioActive = false;
+                btn.classList.remove('active'); btn.classList.add('pulse', 'off');
+                icon.setAttribute('data-lucide', 'volume-x'); icon.style.color = 'var(--danger)';
+                text.innerText = "LIGAR ÁUDIO"; text.style.color = 'var(--danger)';
             }
             lucide.createIcons();
-        }
+        };
 
-        async function load() {
+        // --- CARREGAR DADOS ---
+        async function syncData() {
             const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-            if (error || !data) return;
-            const paid = data.filter(o => o.status === 'approved');
-            document.getElementById('stat-rev').innerText = (paid.length * 12.9).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-            document.getElementById('stat-count').innerText = paid.length;
-            document.getElementById('stat-pend').innerText = data.length - paid.length;
-            document.getElementById('tableBody').innerHTML = data.map((o,i) => `
-                <tr><td>${i+1}</td><td style="font-weight:bold">${o.email}</td><td><span class="status-badge ${o.status}">${o.status.toUpperCase()}</span></td><td>${new Date(o.created_at).toLocaleDateString()}</td></tr>
+            if (error) return;
+
+            const paidOrders = data.filter(o => o.status === 'approved');
+            document.getElementById('stat-rev').innerText = (paidOrders.length * 12.9).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            document.getElementById('stat-count').innerText = paidOrders.length;
+            document.getElementById('stat-pend').innerText = data.length - paidOrders.length;
+
+            document.getElementById('tableBody').innerHTML = data.map((o, i) => `
+                <tr>
+                    <td style="color: var(--text-dim)">${i+1}</td>
+                    <td style="font-weight: 600;">${o.email}</td>
+                    <td><span class="status-badge ${o.status}">${o.status === 'approved' ? 'PAGO' : 'PENDENTE'}</span></td>
+                    <td style="color: var(--text-dim)">${new Date(o.created_at).toLocaleDateString()}</td>
+                    <td style="font-weight: bold; color: var(--accent)">R$ 12,90</td>
+                </tr>
             `).join('');
         }
 
-        function listen() {
-            supabase.channel('any').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
-                load();
-                if (active) {
-                    sound.play().catch(()=>{});
-                    new Notification(p.eventType === 'INSERT' ? "🆕 Nova Ordem" : "💰 VENDA PAGA!", { body: p.new.email });
+        // --- REALTIME TOTAL ---
+        function initRealtime() {
+            supabase.channel('db_changes')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
+                console.log("Mudança no banco:", payload);
+                syncData(); // Atualiza tudo (tabela e números)
+
+                if (audioActive) {
+                    if (payload.eventType === 'INSERT') {
+                        alertSound.play().catch(()=>{});
+                        new Notification("🆕 Nova Ordem Pendente", { body: payload.new.email });
+                    } 
+                    else if (payload.eventType === 'UPDATE' && payload.new.status === 'approved') {
+                        alertSound.play().catch(()=>{});
+                        new Notification("💰 VENDA APROVADA!", { body: payload.new.email });
+                    }
                 }
             }).subscribe();
         }
 
+        // --- AUTH ---
         window.handleLogin = async () => {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: document.getElementById('email').value, password: document.getElementById('password').value
-            });
-            if (!error) show(data.user.email);
-            else { document.getElementById('login-error').style.display = 'block'; document.getElementById('login-error').innerText = "Erro ao entrar."; }
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (!error) { showApp(); }
+            else { document.getElementById('login-error').style.display = 'block'; document.getElementById('login-error').innerText = "Credenciais incorretas."; }
         };
 
-        function show(mail) {
+        function showApp() {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('admin-content').style.display = 'flex';
-            document.getElementById('user-mail').innerText = `Admin: ${mail}`;
-            load(); listen();
-            // Avisa o usuário que ele precisa clicar se quiser som
-            setNotifUI(false); 
+            syncData(); initRealtime();
         }
 
         window.handleLogout = async () => { await supabase.auth.signOut(); window.location.reload(); };
-        
+
         window.addEventListener('load', async () => {
             lucide.createIcons();
             const { data: { session } } = await supabase.auth.getSession();
-            if (session) show(session.user.email);
+            if (session) showApp();
         });
     </script>
 </body>
