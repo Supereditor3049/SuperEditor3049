@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin OS | Secure Access</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg: #050505; --card: #111111; --accent: #00ffa3;
+            --text-main: #ffffff; --text-dim: #888888; --border: #222222;
+        }
+
+        body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
+
+        /* --- TELA DE LOGIN --- */
+        #login-screen {
+            position: fixed; inset: 0; background: var(--bg);
+            display: flex; align-items: center; justify-content: center; z-index: 9999;
+        }
+        .login-box {
+            background: var(--card); border: 1px solid var(--border);
+            padding: 2.5rem; border-radius: 20px; width: 90%; max-width: 400px;
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .login-box input {
+            width: 100%; background: #000; border: 1px solid var(--border);
+            color: white; padding: 12px; border-radius: 8px; margin: 10px 0; outline: none;
+        }
+        .login-box button {
+            width: 100%; background: var(--accent); color: #000; font-weight: bold;
+            border: none; padding: 12px; border-radius: 8px; cursor: pointer; margin-top: 10px;
+        }
+
+        /* --- LAYOUT DASHBOARD --- */
+        #admin-content { display: none; flex-direction: row; min-height: 100vh; }
+        aside { width: 260px; border-right: 1px solid var(--border); padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+        main { flex: 1; padding: 2rem; overflow-y: auto; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 16px; }
+        .card b { color: var(--accent); font-size: 1.8rem; display: block; margin-top: 5px; }
+
+        .table-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        
+        .status { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; }
+        .approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
+        .pending { background: rgba(255, 187, 0, 0.1); color: #ffbb00; }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 768px) {
+            #admin-content { flex-direction: column; }
+            aside { width: 100%; height: auto; flex-direction: row; border-right: none; border-bottom: 1px solid var(--border); padding: 1rem; justify-content: space-between; }
+            aside span { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <i data-lucide="shield-check" size="48" style="color: var(--accent); margin-bottom: 1rem;"></i>
+            <h2>Admin Login</h2>
+            <input type="email" id="email" placeholder="E-mail">
+            <input type="password" id="password" placeholder="Senha">
+            <button onclick="handleLogin()">Entrar</button>
+            <p id="login-error" style="color: #ff4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
+        </div>
+    </div>
+
+    <div id="admin-content">
+        <aside>
+            <div style="color: var(--accent); font-weight: 800; display: flex; gap: 10px; align-items: center;">
+                <i data-lucide="zap"></i><span>SUPER ADMIN</span>
+            </div>
+            <nav style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="#" style="color: var(--accent); text-decoration: none; display: flex; gap: 10px;"><i data-lucide="bar-chart-3"></i><span>Dashboard</span></a>
+                <a href="#" onclick="handleLogout()" style="color: var(--text-dim); text-decoration: none; display: flex; gap: 10px; margin-top: 20px;"><i data-lucide="log-out"></i><span>Sair</span></a>
+            </nav>
+        </aside>
+        
+        <main>
+            <header>
+                <h1 id="welcome-msg">Carregando...</h1>
+                <p style="color: var(--text-dim);">Estatísticas em tempo real</p>
+            </header>
+
+            <div class="stats-grid">
+                <div class="card"><span>Lucro Total</span><b id="stat-revenue">R$ 0,00</b></div>
+                <div class="card"><span>Vendas Pagas</span><b id="stat-approved">0</b></div>
+                <div class="card"><span>Aguardando Pix</span><b id="stat-pending">0</b></div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CLIENTE</th>
+                            <th>STATUS</th>
+                            <th>DATA</th>
+                            <th>VALOR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        const SUPABASE_URL = "https://mtuccfhpspgmpoehxmmr.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Ao carregar a página
+        window.addEventListener('load', async () => {
+            lucide.createIcons();
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) showAdmin(session.user.email);
+        });
+
+        // Função de Login
+        window.handleLogin = async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                const errBox = document.getElementById('login-error');
+                errBox.innerText = "Acesso negado: " + error.message;
+                errBox.style.display = 'block';
+            } else {
+                showAdmin(data.user.email);
+            }
+        };
+
+        // Função de Logout
+        window.handleLogout = async () => {
+            await supabase.auth.signOut();
+            window.location.reload();
+        };
+
+        // Carregar dados reais do Banco
+        async function loadRealData() {
+            const { data: orders, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+            
+            if (error) return console.error(error);
+
+            const approvedOrders = orders.filter(o => o.status === 'approved');
+            const pendingOrders = orders.filter(o => o.status === 'pending');
+            const totalRevenue = approvedOrders.length * 12.90;
+
+            // Atualizar Cards
+            document.getElementById('stat-revenue').innerText = totalRevenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('stat-approved').innerText = approvedOrders.length;
+            document.getElementById('stat-pending').innerText = pendingOrders.length;
+
+            // Atualizar Tabela
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = orders.map(o => `
+                <tr>
+                    <td>${o.email}</td>
+                    <td><span class="status ${o.status}">${o.status === 'approved' ? 'Pago' : 'Pendente'}</span></td>
+                    <td>${new Date(o.created_at).toLocaleDateString('pt-BR')}</td>
+                    <td>R$ 12,90</td>
+                </tr>
+            `).join('');
+        }
+
+        function showAdmin(email) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('admin-content').style.display = 'flex';
+            document.getElementById('welcome-msg').innerText = "Olá, Admin";
+            loadRealData();
+        }
+    </script>
+</body>
+</html>
