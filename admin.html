@@ -14,7 +14,6 @@
             --bg: #050505; --card: #0d0d0d; --accent: #00ffa3; 
             --border: #1a1a1a; --danger: #ff4d4d; --warning: #ffbb00;
             --text: #ffffff; --text-dim: #888888;
-            --info: #00a2ff;
         }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: none; }
         
@@ -46,7 +45,6 @@
         .badge.approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
         .badge.pending { background: rgba(255, 187, 0, 0.1); color: var(--warning); }
         .badge.rejected { background: rgba(255, 77, 77, 0.1); color: var(--danger); }
-        .badge.refunded { background: rgba(0, 162, 255, 0.1); color: var(--info); }
 
         .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 2rem; padding-bottom: 2rem; }
         .page-btn { background: var(--card); border: 1px solid var(--border); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
@@ -91,12 +89,12 @@
 
         <main>
             <div class="search-wrap">
-                <input type="text" id="searchInput" class="search-box" placeholder="Filtrar histórico..." oninput="resetPageAndSearch()">
+                <input type="text" id="searchInput" class="search-box" placeholder="Buscar no histórico..." oninput="resetPageAndSearch()">
             </div>
             <div class="grid">
                 <div class="card"><span>Vendas Aprovadas</span><b id="stat-ok">0</b></div>
-                <div class="card"><span>Total Bruto</span><b id="stat-rev">R$ 0,00</b></div>
-                <div class="card"><span>Log de Atividade</span><b id="stat-total">0</b></div>
+                <div class="card"><span>Faturamento Total</span><b id="stat-rev">R$ 0,00</b></div>
+                <div class="card"><span>Aguardando Pagamento</span><b id="stat-wait">0</b></div>
             </div>
             <div class="table-container">
                 <table>
@@ -104,9 +102,9 @@
                         <tr>
                             <th style="width: 50px;">#</th>
                             <th>E-mail do Cliente</th>
-                            <th>Evento / Status</th>
+                            <th>Status</th>
                             <th>Data</th>
-                            <th>Hora (Brasília)</th>
+                            <th>Hora (BR)</th>
                             <th>Valor</th>
                         </tr>
                     </thead>
@@ -185,9 +183,11 @@
             filteredOrders = allOrders.filter(o => o.email.toLowerCase().includes(term));
             
             const paid = allOrders.filter(o => o.status === 'approved');
+            const pending = allOrders.filter(o => o.status === 'pending');
+            
             document.getElementById('stat-rev').innerText = (paid.length * 12.9).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
             document.getElementById('stat-ok').innerText = paid.length;
-            document.getElementById('stat-total').innerText = allOrders.length;
+            document.getElementById('stat-wait').innerText = pending.length;
             
             renderTable();
         };
@@ -202,10 +202,9 @@
                 const dataFormatada = dateObj.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
                 const horaFormatada = dateObj.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' });
 
-                let statusLabel = o.status;
-                if(o.status === 'approved') statusLabel = 'PAGO / APROVADO';
-                if(o.status === 'pending') statusLabel = 'GEROU PIX / PENDENTE';
-                if(o.status === 'rejected') statusLabel = 'RECUSADO / CANCELADO';
+                let statusLabel = 'AGUARDANDO';
+                if(o.status === 'approved') statusLabel = 'PAGO';
+                if(o.status === 'rejected') statusLabel = 'CANCELADO';
 
                 return `<tr>
                     <td style="color:var(--text-dim)">${displayNumber}</td>
@@ -229,15 +228,6 @@
             window.scrollTo(0,0);
         };
 
-        window.toggleAudio = async () => {
-            isLive = !isLive;
-            const btn = document.getElementById('btn-audio'), icon = document.getElementById('audio-icon'), txt = document.getElementById('audio-txt');
-            btn.className = isLive ? 'notif-btn active' : 'notif-btn pulse';
-            icon.setAttribute('data-lucide', isLive ? 'volume-2' : 'volume-x');
-            txt.innerText = isLive ? "ÁUDIO ATIVO" : "LIGAR ÁUDIO";
-            lucide.createIcons();
-        };
-
         function runRealtime() {
             supabase.channel('sales').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
                 syncData();
@@ -246,6 +236,15 @@
                 }
             }).subscribe();
         }
+
+        window.toggleAudio = async () => {
+            isLive = !isLive;
+            const btn = document.getElementById('btn-audio'), icon = document.getElementById('audio-icon'), txt = document.getElementById('audio-txt');
+            btn.className = isLive ? 'notif-btn active' : 'notif-btn pulse';
+            icon.setAttribute('data-lucide', isLive ? 'volume-2' : 'volume-x');
+            txt.innerText = isLive ? "ÁUDIO ATIVO" : "LIGAR ÁUDIO";
+            lucide.createIcons();
+        };
 
         window.onload = checkAuth;
     </script>
