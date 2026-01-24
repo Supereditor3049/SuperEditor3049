@@ -193,33 +193,45 @@
         };
 
         function renderTable() {
-            const start = (currentPage - 1) * itemsPerPage;
-            const pageData = filteredOrders.slice(start, start + itemsPerPage);
+    const start = (currentPage - 1) * itemsPerPage;
+    const pageData = filteredOrders.slice(start, start + itemsPerPage);
 
-            document.getElementById('tableBody').innerHTML = pageData.map((o, index) => {
-                const displayNumber = start + index + 1;
-                const dateObj = new Date(o.created_at);
-                const dataFormatada = dateObj.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-                const horaFormatada = dateObj.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' });
+    document.getElementById('tableBody').innerHTML = pageData.map((o, index) => {
+        const displayNumber = start + index + 1;
+        
+        // Converte a data do banco para o objeto Date do JS
+        const dateObj = new Date(o.created_at);
+        
+        // Força a exibição exata de Brasília, independente de onde você estiver acessando
+        const dataFormatada = dateObj.toLocaleDateString('pt-BR', { 
+            timeZone: 'America/Sao_Paulo' 
+        });
+        
+        const horaFormatada = dateObj.toLocaleTimeString('pt-BR', { 
+            timeZone: 'America/Sao_Paulo', 
+            hour: '2-digit', 
+            minute: '2-digit',
+            second: '2-digit' 
+        });
 
-                let statusLabel = 'AGUARDANDO';
-                if(o.status === 'approved') statusLabel = 'PAGO';
-                if(o.status === 'rejected') statusLabel = 'CANCELADO';
+        let statusLabel = 'AGUARDANDO';
+        if(o.status === 'approved') statusLabel = 'PAGO';
+        if(o.status === 'rejected') statusLabel = 'CANCELADO';
 
-                return `<tr>
-                    <td style="color:var(--text-dim)">${displayNumber}</td>
-                    <td>${o.email}</td>
-                    <td><span class="badge ${o.status}">${statusLabel}</span></td>
-                    <td>${dataFormatada}</td>
-                    <td style="color:var(--text-dim)">${horaFormatada}</td>
-                    <td style="color:var(--accent)">R$ 12,90</td>
-                </tr>`
-            }).join('');
+        return `<tr>
+            <td style="color:var(--text-dim)">${displayNumber}</td>
+            <td>${o.email}</td>
+            <td><span class="badge ${o.status}">${statusLabel}</span></td>
+            <td>${dataFormatada}</td>
+            <td style="color:var(--text-dim)">${horaFormatada}</td>
+            <td style="color:var(--accent)">R$ 12,90</td>
+        </tr>`;
+    }).join('');
 
-            const totalPages = Math.ceil(filteredOrders.length / itemsPerPage) || 1;
-            document.getElementById('page-info').innerText = `Página ${currentPage} de ${totalPages}`;
-            document.getElementById('prevBtn').disabled = currentPage === 1;
-            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage) || 1;
+    document.getElementById('page-info').innerText = `Página ${currentPage} de ${totalPages}`;
+    document.getElementById('prevBtn').disabled = currentPage === 1;
+    document.getElementById('nextBtn').disabled = currentPage >= totalPages;
         }
 
         window.changePage = (dir) => { 
