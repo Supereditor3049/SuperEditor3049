@@ -15,18 +15,27 @@
             --border: #1a1a1a; --danger: #ff4d4d; --warning: #ffbb00;
             --text: #ffffff; --text-dim: #888888;
         }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: none; /* Esconde até logar */ }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: none; }
         
         header { padding: 1.2rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
         .controls { display: flex; gap: 10px; align-items: center; }
         
         .notif-btn { background: var(--card); border: 1px solid var(--border); padding: 10px 18px; border-radius: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; color: white; font-size: 0.8rem; }
         .notif-btn.active { border-color: var(--accent); color: var(--accent); }
-        .notif-btn.pulse { border-color: var(--danger); animation: pulse-anim 1.8s infinite; color: var(--danger); }
+        
+        /* A animação de opacidade que você gosta */
+        .notif-btn.pulse { 
+            border-color: var(--danger); 
+            color: var(--danger);
+            animation: pulse-anim 1.8s infinite; 
+        }
+        @keyframes pulse-anim { 
+            0%, 100% { opacity: 1; } 
+            50% { opacity: 0.5; } 
+        }
+
         .logout-btn { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 10px; border-radius: 12px; cursor: pointer; }
         .logout-btn:hover { color: var(--danger); border-color: var(--danger); }
-
-        @keyframes pulse-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
         main { padding: 2rem; max-width: 1100px; margin: 0 auto; }
         .search-wrap { margin-bottom: 1rem; display: flex; justify-content: flex-start; }
@@ -44,7 +53,12 @@
         .badge.approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
         .badge.pending { background: rgba(255, 187, 0, 0.1); color: var(--warning); }
 
-        /* Estilo do Login */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 2rem; padding-bottom: 2rem; }
+        .page-btn { background: var(--card); border: 1px solid var(--border); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        #page-info { font-weight: bold; color: var(--accent); font-size: 0.9rem; }
+
         #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg); }
         .login-box { background: var(--card); padding: 2rem; border-radius: 20px; border: 1px solid var(--border); width: 300px; text-align: center; }
         .login-box input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--border); background: #000; color: white; box-sizing: border-box; }
@@ -68,7 +82,6 @@
         <header>
             <div style="display: flex; align-items: center; gap: 12px;">
                 <i data-lucide="layout-dashboard" style="color: var(--accent)"></i>
-                <h1 style="margin:0; font-size: 1.1rem;">LIVE ADMIN</h1>
             </div>
             <div class="controls">
                 <div class="notif-btn pulse" id="btn-audio" onclick="toggleAudio()">
@@ -83,7 +96,7 @@
 
         <main>
             <div class="search-wrap">
-                <input type="text" id="searchInput" class="search-box" placeholder="Buscar e-mail..." oninput="handleSearch()">
+                <input type="text" id="searchInput" class="search-box" placeholder="Buscar e-mail..." oninput="resetPageAndSearch()">
             </div>
             <div class="grid">
                 <div class="card"><span>Faturamento Total</span><b id="stat-rev">R$ 0,00</b></div>
@@ -98,6 +111,12 @@
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
+
+            <div class="pagination">
+                <button class="page-btn" id="prevBtn" onclick="changePage(-1)">Anterior</button>
+                <span id="page-info">Página 1 de 1</span>
+                <button class="page-btn" id="nextBtn" onclick="changePage(1)">Próxima</button>
+            </div>
         </main>
     </div>
 
@@ -109,13 +128,12 @@
         const sound = new Audio('audio.wav');
         let isLive = false;
         let allOrders = [];
+        let filteredOrders = [];
+        let currentPage = 1;
         const itemsPerPage = 50;
 
-        // --- LÓGICA DE SEGURANÇA ---
         async function checkAuth() {
             const { data: { session } } = await supabase.auth.getSession();
-            
-            // Só deixa entrar se for o seu e-mail específico
             if (session && session.user.email === 'supereditor3049@gmail.com') {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-content').style.display = 'block';
@@ -133,11 +151,8 @@
             const email = document.getElementById('logEmail').value;
             const password = document.getElementById('logPass').value;
             const { error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) {
-                document.getElementById('loginError').innerText = "Acesso negado.";
-            } else {
-                location.reload();
-            }
+            if (error) document.getElementById('loginError').innerText = "Acesso negado.";
+            else location.reload();
         };
 
         window.fazerLogout = async () => {
@@ -145,40 +160,61 @@
             location.reload();
         };
 
-        // --- LÓGICA DO DASHBOARD ---
         async function initDashboard() {
-            syncData();
+            await syncData();
             runRealtime();
             lucide.createIcons();
         }
 
         async function syncData() {
-            const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: true });
+            const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
             if (!data) return;
             allOrders = data;
             handleSearch();
         }
 
+        window.resetPageAndSearch = () => {
+            currentPage = 1;
+            handleSearch();
+        };
+
         window.handleSearch = () => {
             const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allOrders.filter(o => o.email.toLowerCase().includes(term));
+            filteredOrders = allOrders.filter(o => o.email.toLowerCase().includes(term));
             
             const paid = allOrders.filter(o => o.status === 'approved');
             document.getElementById('stat-rev').innerText = (paid.length * 12.9).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
             document.getElementById('stat-ok').innerText = paid.length;
             document.getElementById('stat-wait').innerText = allOrders.length - paid.length;
             
-            const displayData = [...filtered].reverse();
-            document.getElementById('tableBody').innerHTML = displayData.slice(0, itemsPerPage).map((o) => {
-                const globalIndex = allOrders.findIndex(item => item.id === o.id) + 1;
+            renderTable();
+        };
+
+        function renderTable() {
+            const start = (currentPage - 1) * itemsPerPage;
+            const pageData = filteredOrders.slice(start, start + itemsPerPage);
+
+            document.getElementById('tableBody').innerHTML = pageData.map((o, index) => {
+                const displayNumber = start + index + 1;
                 return `<tr>
-                    <td style="color:var(--text-dim)">${globalIndex}</td>
+                    <td style="color:var(--text-dim)">${displayNumber}</td>
                     <td>${o.email}</td>
                     <td><span class="badge ${o.status}">${o.status === 'approved' ? 'PAGO' : 'PENDENTE'}</span></td>
                     <td>${new Date(o.created_at).toLocaleDateString('pt-BR')}</td>
                     <td style="color:var(--accent)">R$ 12,90</td>
                 </tr>`
             }).join('');
+
+            const totalPages = Math.ceil(filteredOrders.length / itemsPerPage) || 1;
+            document.getElementById('page-info').innerText = `Página ${currentPage} de ${totalPages}`;
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+        }
+
+        window.changePage = (dir) => { 
+            currentPage += dir; 
+            renderTable(); 
+            window.scrollTo(0,0);
         };
 
         window.toggleAudio = async () => {
