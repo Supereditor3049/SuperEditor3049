@@ -23,7 +23,6 @@
         .notif-btn { background: var(--card); border: 1px solid var(--border); padding: 10px 18px; border-radius: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; color: white; font-size: 0.8rem; }
         .notif-btn.active { border-color: var(--accent); color: var(--accent); }
         
-        /* A animação de opacidade que você gosta */
         .notif-btn.pulse { 
             border-color: var(--danger); 
             color: var(--danger);
@@ -106,7 +105,14 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th style="width: 50px;">#</th><th>E-mail do Cliente</th><th>Status</th><th>Data</th><th>Valor</th></tr>
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>E-mail do Cliente</th>
+                            <th>Status</th>
+                            <th>Data</th>
+                            <th>Hora</th>
+                            <th>Valor</th>
+                        </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
                 </table>
@@ -196,11 +202,16 @@
 
             document.getElementById('tableBody').innerHTML = pageData.map((o, index) => {
                 const displayNumber = start + index + 1;
+                const dateObj = new Date(o.created_at);
+                const dataFormatada = dateObj.toLocaleDateString('pt-BR');
+                const horaFormatada = dateObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
                 return `<tr>
                     <td style="color:var(--text-dim)">${displayNumber}</td>
                     <td>${o.email}</td>
                     <td><span class="badge ${o.status}">${o.status === 'approved' ? 'PAGO' : 'PENDENTE'}</span></td>
-                    <td>${new Date(o.created_at).toLocaleDateString('pt-BR')}</td>
+                    <td>${dataFormatada}</td>
+                    <td style="color:var(--text-dim)">${horaFormatada}</td>
                     <td style="color:var(--accent)">R$ 12,90</td>
                 </tr>`
             }).join('');
