@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Guia de Áudios e Efeitos para YouTube</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" type="image/png">
-    
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
@@ -28,6 +28,18 @@
         }
 
         .container { max-width: 800px; margin: auto; padding: 60px 20px; }
+
+        /* Login Icon */
+        .login-trigger {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text-dim);
+            transition: 0.3s;
+        }
+        .login-trigger:hover { color: var(--primary); }
 
         /* Hero Section */
         header { text-align: center; margin-bottom: 50px; }
@@ -110,7 +122,7 @@
         .modal-content input {
             width: 100%;
             padding: 15px;
-            margin: 20px 0;
+            margin: 10px 0;
             border-radius: 12px;
             border: 1px solid #333;
             background: #000;
@@ -144,6 +156,9 @@
 </head>
 
 <body>
+    <div class="login-trigger" onclick="openModal(true)">
+        <i data-lucide="user-circle" style="width: 32px; height: 32px;"></i>
+    </div>
 
     <div class="container">
         <header class="hero">
@@ -158,14 +173,14 @@
                 <li><i data-lucide="check-circle-2" class="check-icon"></i> 🔊 +500 Áudios de memes prontos para uso</li>
                 <li><i data-lucide="check-circle-2" class="check-icon"></i> 😂 Packs de Reações e Risadas em alta fidelidade</li>
                 <li><i data-lucide="check-circle-2" class="check-icon"></i> 🎵 Biblioteca de Músicas Sem Copyright (Safe)</li>
-                <li><i data-lucide="check-circle-2" class="check-icon"></i> 🚀 Acesso vitalício e imediato via E-mail</li>
+                <li><i data-lucide="check-circle-2" class="check-icon"></i> 🚀 Acesso vitalício e imediato</li>
             </ul>
         </div>
 
         <div class="box pricing">
             <div class="price"><span>R$</span>12,90</div>
             <p style="color: var(--text-dim); margin-bottom: 30px;">Pagamento único • Sem assinaturas chatas</p>
-            <button class="btn-main" onclick="openModal()">QUERO ACESSO AGORA</button>
+            <button class="btn-main" onclick="openModal(false)">QUERO ACESSO AGORA</button>
             <div style="margin-top: 25px; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-dim); font-size: 0.85rem;">
                 <i data-lucide="shield-check" style="width: 16px; color: var(--primary);"></i>
                 Pagamento 100% seguro via Mercado Pago
@@ -176,11 +191,18 @@
     <div id="modal">
         <div class="modal-content">
             <i data-lucide="x" class="close-modal" onclick="closeModal()"></i>
-            <i data-lucide="mail" style="color: var(--primary); width: 40px; height: 40px; margin-bottom: 10px;"></i>
-            <h3>Onde deseja receber?</h3>
-            <p style="font-size: 0.9rem; color: var(--text-dim);">Digite o e-mail que você usa para acessar o conteúdo após o pagamento.</p>
+            <i id="modalIcon" data-lucide="mail" style="color: var(--primary); width: 40px; height: 40px; margin-bottom: 10px;"></i>
+            <h3 id="modalTitle">Onde deseja receber?</h3>
+            <p id="modalDesc" style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;">Digite o e-mail e crie uma senha para acessar.</p>
+            
             <input type="email" id="customerEmail" placeholder="seu-melhor@email.com" required>
-            <button class="btn-main" id="payBtn" onclick="processarCompra()">IR PARA O PAGAMENTO</button>
+            <input type="password" id="customerPassword" placeholder="Crie sua senha (mín. 6 caracteres)" required>
+            
+            <button class="btn-main" id="payBtn" onclick="handleAuth()">IR PARA O PAGAMENTO</button>
+            
+            <p id="toggleText" style="margin-top: 15px; font-size: 0.8rem; color: var(--text-dim);">
+                Já comprou? <a href="javascript:void(0)" onclick="openModal(true)" style="color: var(--primary); text-decoration: none;">Acesse sua conta</a>
+            </p>
         </div>
     </div>
 
@@ -192,36 +214,72 @@
         <div class="footer-links">
             <a href="#">Privacidade</a>
             <a href="#">Termos de Uso</a>
-            <a href="mailto:suporte@seusite.com">Suporte</a>
+            <a href="mailto:supereditor3049@gmail.com">Suporte</a>
         </div>
         <p>© 2026 Guia YouTube Pro. Todos os direitos reservados.</p>
     </footer>
 
     <script>
-        // Inicializa ícones do Lucide
         lucide.createIcons();
 
+        // Configuração Supabase (Substitua se necessário)
+        const _supabase = supabase.createClient(
+            'https://mtuccfhpspgmpoehxmmr.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8'
+        );
+
         const modal = document.getElementById('modal');
-        const emailInput = document.getElementById('customerEmail');
+        let isLoginMode = false;
 
-        function openModal() {
+        function openModal(login = false) {
+            isLoginMode = login;
             modal.style.display = 'flex';
-            emailInput.focus();
+            
+            // Atualiza visual do modal
+            document.getElementById('modalTitle').innerText = isLoginMode ? "Acesse sua conta" : "Onde deseja receber?";
+            document.getElementById('modalDesc').innerText = isLoginMode ? "Entre com seu e-mail e senha cadastrados." : "Digite o e-mail e crie uma senha para acessar.";
+            document.getElementById('payBtn').innerText = isLoginMode ? "ENTRAR NO EDITOR" : "IR PARA O PAGAMENTO";
+            document.getElementById('modalIcon').setAttribute('data-lucide', isLoginMode ? 'lock' : 'mail');
+            document.getElementById('toggleText').style.display = isLoginMode ? 'none' : 'block';
+            
+            lucide.createIcons();
+            document.getElementById('customerEmail').focus();
         }
 
-        function closeModal() {
-            modal.style.display = 'none';
-        }
-
-        // Fecha modal ao clicar fora dele
+        function closeModal() { modal.style.display = 'none'; }
         window.onclick = (event) => { if (event.target == modal) closeModal(); }
 
+        async function handleAuth() {
+            if (isLoginMode) {
+                await realizarLogin();
+            } else {
+                await processarCompra();
+            }
+        }
+
+        async function realizarLogin() {
+            const email = document.getElementById('customerEmail').value;
+            const password = document.getElementById('customerPassword').value;
+            const btn = document.getElementById('payBtn');
+
+            btn.innerText = "ENTRANDO...";
+            const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                alert("Erro ao entrar: Verifique se o pagamento foi aprovado ou se os dados estão corretos.");
+                btn.innerText = "ENTRAR NO EDITOR";
+            } else {
+                window.location.href = "Editor.html";
+            }
+        }
+
         async function processarCompra() {
-            const email = emailInput.value;
+            const email = document.getElementById('customerEmail').value;
+            const password = document.getElementById('customerPassword').value;
             const payBtn = document.getElementById('payBtn');
             
-            if (!email || !email.includes("@")) {
-                alert("Por favor, digite um email válido.");
+            if (!email || !email.includes("@") || password.length < 6) {
+                alert("Por favor, digite um email válido e uma senha de no mínimo 6 caracteres.");
                 return;
             }
 
@@ -240,7 +298,7 @@
                             "apikey": SUPABASE_ANON_KEY,
                             "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
                         },
-                        body: JSON.stringify({ email: email, product_id: "Editor" })
+                        body: JSON.stringify({ email, password, product_id: "Editor" })
                     }
                 );
 
@@ -248,7 +306,7 @@
                 if (data.checkout_url) {
                     window.location.href = data.checkout_url;
                 } else {
-                    throw new Error("Checkout URL não encontrada.");
+                    throw new Error("Erro ao gerar link de pagamento.");
                 }
 
             } catch (err) {
