@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guia de Áudios e Efeitos para YouTube</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" type="image/png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary: #00ffcc;
+            --secondary: #ff0080;
+            --bg: #050505;
+            --card: #0d0d0d;
+            --text: #ffffff;
+            --text-dim: #aaa;
+            --border: #222;
+        }
+
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            line-height: 1.6;
+        }
+
+        .container { max-width: 800px; margin: auto; padding: 60px 20px; }
+
+        /* Login Icon */
+        .login-trigger {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text-dim);
+            transition: 0.3s;
+        }
+        .login-trigger:hover { color: var(--primary); }
+
+        /* Hero Section */
+        header { text-align: center; margin-bottom: 50px; }
+        h1 { 
+            font-size: 3rem; 
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--secondary), var(--primary)); 
+            -webkit-background-clip: text; 
+            color: transparent; 
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+        .hero p { font-size: 1.25rem; color: var(--text-dim); max-width: 600px; margin: auto; }
+
+        /* Cards */
+        .box { 
+            background: var(--card); 
+            border: 1px solid var(--border); 
+            border-radius: 24px; 
+            padding: 30px; 
+            margin: 30px 0; 
+            transition: 0.3s;
+        }
+        .box:hover { border-color: #444; }
+        
+        h2 { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; margin-top: 0; }
+        
+        ul { list-style: none; padding: 0; }
+        ul li { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin-bottom: 15px; 
+            color: #ddd;
+        }
+        .check-icon { color: var(--primary); width: 20px; }
+
+        /* Preço e Botão */
+        .pricing { text-align: center; padding: 40px; }
+        .price { font-size: 3.5rem; font-weight: 900; color: var(--primary); margin: 10px 0; }
+        .price span { font-size: 1rem; color: var(--text-dim); font-weight: normal; }
+
+        .btn-main { 
+            background: var(--primary); 
+            color: #000; 
+            font-size: 1.2rem; 
+            padding: 20px 40px; 
+            border: none; 
+            border-radius: 14px; 
+            cursor: pointer; 
+            font-weight: 800; 
+            width: 100%; 
+            max-width: 350px; 
+            transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 255, 204, 0.2);
+        }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0, 255, 204, 0.4); }
+
+        /* Modal */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #111;
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 28px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border: 1px solid #333;
+            background: #000;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .modal-content input:focus { border-color: var(--primary); }
+        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--text-dim); }
+
+        /* Estilo do Aviso de Suporte */
+        .support-notice {
+            background: rgba(0, 255, 204, 0.05);
+            border: 1px dashed #00ffcc55;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #eee;
+            display: none; /* Inicia oculto */
+        }
+
+        /* Footer */
+        footer { 
+            margin-top: 100px; 
+            padding: 60px 20px; 
+            border-top: 1px solid var(--border); 
+            text-align: center; 
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+        .footer-badges { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; opacity: 0.6; }
+        .footer-links { margin-bottom: 20px; }
+        .footer-links a { color: var(--text-dim); text-decoration: none; margin: 0 15px; }
+        .footer-links a:hover { color: var(--primary); }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            .price { font-size: 2.8rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-trigger" onclick="openModal(true)">
+        <i data-lucide="user-circle" style="width: 32px; height: 32px;"></i>
+    </div>
+
+    <div class="container">
+        <header class="hero">
+            <i data-lucide="youtube" style="color: var(--secondary); width: 48px; height: 48px; margin-bottom: 20px;"></i>
+            <h1>Guia de Áudios e Efeitos para YouTube</h1>
+            <p>O arsenal secreto de ferramentas e atalhos usado pelos maiores editores para dominar o algoritmo.</p>
+        </header>
+
+        <div class="box">
+            <h2><i data-lucide="package"></i> O que você recebe hoje</h2>
+            <ul>
+                <li><i data-lucide="check-circle-2" class="check-icon"></i> 🔊 +500 Áudios de memes prontos para uso</li>
+                <li><i data-lucide="check-circle-2" class="check-icon"></i> 😂 Packs de Reações e Risadas em alta fidelidade</li>
+                <li><i data-lucide="check-circle-2" class="check-icon"></i> 🎵 Biblioteca de Músicas Sem Copyright (Safe)</li>
+                <li><i data-lucide="check-circle-2" class="check-icon"></i> 🚀 Acesso vitalício e imediato</li>
+            </ul>
+        </div>
+
+        <div class="box pricing">
+            <div class="price"><span>R$</span>12,90</div>
+            <p style="color: var(--text-dim); margin-bottom: 30px;">Pagamento único • Sem assinaturas chatas</p>
+            <button class="btn-main" onclick="openModal(false)">QUERO ACESSO AGORA</button>
+            <div style="margin-top: 25px; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-dim); font-size: 0.85rem;">
+                <i data-lucide="shield-check" style="width: 16px; color: var(--primary);"></i>
+                Pagamento 100% seguro via Mercado Pago
+            </div>
+        </div>
+    </div>
+
+    <div id="modal">
+        <div class="modal-content">
+            <i data-lucide="x" class="close-modal" onclick="closeModal()"></i>
+            <i id="modalIcon" data-lucide="mail" style="color: var(--primary); width: 40px; height: 40px; margin-bottom: 10px;"></i>
+            <h3 id="modalTitle">Onde deseja receber?</h3>
+            <p id="modalDesc" style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;">Digite o e-mail e crie uma senha para acessar.</p>
+            
+            <input type="email" id="customerEmail" placeholder="seu-melhor@email.com" required>
+            <input type="password" id="customerPassword" placeholder="Crie sua senha (mín. 6 caracteres)" required>
+            
+            <button class="btn-main" id="payBtn" onclick="handleAuth()">IR PARA O PAGAMENTO</button>
+            
+            <div id="supportNotice" class="support-notice">
+                <i data-lucide="info" style="width: 14px; color: var(--primary); margin-bottom: 5px;"></i><br>
+                A recuperação de senha é processada <b>manualmente</b> pela nossa equipe. 
+                A troca só será efetuada se o contato for feito através do <b>mesmo e-mail utilizado na compra</b>.
+                <br><br>
+                <a href="javascript:void(0)" onclick="enviarEmailSuporte()" style="color: var(--primary); font-weight: bold; text-decoration: none;">SOLICITAR AGORA</a>
+            </div>
+
+            <p id="toggleText" style="margin-top: 15px; font-size: 0.8rem; color: var(--text-dim);">
+                Já comprou? <a href="javascript:void(0)" onclick="openModal(true)" style="color: var(--primary); text-decoration: none;">Acesse sua conta</a>
+            </p>
+            
+            <p id="showSupportLink" style="margin-top: 15px; font-size: 0.8rem; display: none;">
+                <a href="javascript:void(0)" onclick="document.getElementById('supportNotice').style.display='block'; this.parentElement.style.display='none'" style="color: var(--text-dim); text-decoration: none;">Esqueceu a senha? <span style="color: var(--primary)">Clique aqui</span></a>
+            </p>
+        </div>
+    </div>
+
+    <footer> 
+        <div class="footer-badges">
+            <div style="display: flex; align-items: center; gap: 5px;"><i data-lucide="lock" style="width: 14px;"></i> SSL Seguro</div>
+            <div style="display: flex; align-items: center; gap: 5px;"><i data-lucide="zap" style="width: 14px;"></i> Entrega Instantânea</div>
+        </div>
+        <div class="footer-links">
+            <a href="privacidade.html">Privacidade</a>
+            <a href="termos.html">Termos de Uso</a>
+            <a href="mailto:supereditor3049@gmail.com">Suporte</a>
+        </div>
+        <p>© 2026 SuperEditor. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Configuração Supabase
+        const _supabase = supabase.createClient(
+            'https://mtuccfhpspgmpoehxmmr.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8'
+        );
+
+        const modal = document.getElementById('modal');
+        let isLoginMode = false;
+
+        function openModal(login = false) {
+            isLoginMode = login;
+            modal.style.display = 'flex';
+            
+            // Reset de avisos ao abrir
+            document.getElementById('supportNotice').style.display = 'none';
+
+            // Atualiza visual do modal
+            document.getElementById('modalTitle').innerText = isLoginMode ? "Acesse sua conta" : "Onde deseja receber?";
+            document.getElementById('modalDesc').innerText = isLoginMode ? "Entre com seu e-mail e senha cadastrados." : "Digite o e-mail e crie uma senha para acessar.";
+            document.getElementById('payBtn').innerText = isLoginMode ? "ENTRAR NO EDITOR" : "IR PARA O PAGAMENTO";
+            document.getElementById('modalIcon').setAttribute('data-lucide', isLoginMode ? 'lock' : 'mail');
+            
+            // Controle de links
+            document.getElementById('toggleText').style.display = isLoginMode ? 'none' : 'block';
+            document.getElementById('showSupportLink').style.display = isLoginMode ? 'block' : 'none';
+            
+            lucide.createIcons();
+            document.getElementById('customerEmail').focus();
+        }
+
+        function closeModal() { modal.style.display = 'none'; }
+        window.onclick = (event) => { if (event.target == modal) closeModal(); }
+
+        // Lógica de envio de e-mail profissional
+        function enviarEmailSuporte() {
+            const emailDigitado = document.getElementById('customerEmail').value;
+            const assunto = encodeURIComponent("Solicitação de Recuperação de Senha - Super Editor");
+            const corpo = encodeURIComponent(
+                `Olá, suporte!\n\nEsqueci minha senha de acesso ao Guia de Áudios.\n\nE-mail da conta: ${emailDigitado || '[Não informado]'}\n\nEstou ciente de que a recuperação só é validada se este contato for feito através do mesmo e-mail informado acima.`
+            );
+            
+            window.location.href = `mailto:supereditor3049@gmail.com?subject=${assunto}&body=${corpo}`;
+        }
+
+        async function handleAuth() {
+            if (isLoginMode) {
+                await realizarLogin();
+            } else {
+                await processarCompra();
+            }
+        }
+
+        async function realizarLogin() {
+            const email = document.getElementById('customerEmail').value;
+            const password = document.getElementById('customerPassword').value;
+            const btn = document.getElementById('payBtn');
+
+            if (!email || !password) {
+                alert("Por favor, preencha todos os campos.");
+                return;
+            }
+
+            btn.innerText = "ENTRANDO...";
+            const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                alert("Erro ao entrar: Verifique seus dados. Caso tenha acabado de pagar, aguarde 60 segundos pela ativação automática.");
+                btn.innerText = "ENTRAR NO EDITOR";
+            } else {
+                window.location.href = "Editor.html";
+            }
+        }
+
+        async function processarCompra() {
+            const email = document.getElementById('customerEmail').value;
+            const password = document.getElementById('customerPassword').value;
+            const payBtn = document.getElementById('payBtn');
+            
+            if (!email || !email.includes("@") || password.length < 6) {
+                alert("Use um e-mail válido e uma senha com no mínimo 6 dígitos.");
+                return;
+            }
+
+            payBtn.innerText = "PROCESSANDO...";
+            payBtn.disabled = true;
+
+            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
+
+            try {
+                const res = await fetch(
+                    "https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "apikey": SUPABASE_ANON_KEY,
+                            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+                        },
+                        body: JSON.stringify({ email, password, product_id: "Editor" })
+                    }
+                );
+
+                const data = await res.json();
+                if (data.checkout_url) {
+                    window.location.href = data.checkout_url;
+                } else {
+                    throw new Error("Erro na geração do checkout.");
+                }
+
+            } catch (err) {
+                alert("Erro: " + err.message);
+                payBtn.innerText = "IR PARA O PAGAMENTO";
+                payBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
