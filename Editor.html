@@ -32,6 +32,20 @@
             }
         }
         checkAccess();
+        // Assim que o cliente cair aqui vindo do Mercado Pago
+async function verificarAcesso() {
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
+    // Se não estiver logado, mostra um alerta amigável
+    alert("Pagamento Identificado! Use o e-mail e senha que você criou no checkout para acessar seus arquivos.");
+    window.location.href = "login.html"; // Mande para sua página de login
+  } else {
+    console.log("Bem-vindo, editor!");
+    // Aqui você libera o download/conteúdo
+  }
+}
+window.onload = verificarAcesso;
     </script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
