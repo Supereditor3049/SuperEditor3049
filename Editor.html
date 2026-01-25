@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel do Super Editor</title>
+    <title>Painel Exclusivo | Super Editor</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -16,16 +16,18 @@
             const { data: { session }, error } = await _supabase.auth.getSession();
             
             if (!session || error) {
+                // Se não houver sessão, bloqueia a página imediatamente
                 document.body.innerHTML = `
                 <div style="background:#000; color:#fff; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-family:sans-serif; padding:20px;">
-                    <h1 style="color:#ff0080; font-size: 2.5rem; margin-bottom: 20px;">Acesso Restrito</h1>
-                    <p style="color:#aaa; font-size: 1.1rem; max-width: 500px;">Não identificamos uma sessão ativa. Por favor, faça login com e-mail e senha.</p>
+                    <h1 style="color:#ff0080; font-size: 2.5rem; margin-bottom: 20px;">Acesso Negado</h1>
+                    <p style="color:#aaa; font-size: 1.1rem; max-width: 500px;">Esta área é exclusiva para alunos. O link não pode ser compartilhado.</p>
                     <div style="background:#111; padding:20px; border-radius:15px; border:1px solid #333; margin:30px 0;">
                         <p>Dúvidas? Suporte: <b style="color:#00ffcc">supereditor3049@gmail.com</b></p>
                     </div>
-                    <a href="index.html" style="color:#00ffcc; text-decoration:none; font-weight:bold;">← Voltar para o Início</a>
+                    <a href="index.html" style="color:#00ffcc; text-decoration:none; font-weight:bold; border: 1px solid #00ffcc; padding: 10px 20px; border-radius: 5px;">Fazer Login</a>
                 </div>`;
             } else {
+                // Se autenticado, libera o conteúdo
                 document.getElementById('content').style.display = 'block';
             }
         }
@@ -35,65 +37,77 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #000; color: #fff; line-height: 1.6; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #050505; color: #fff; line-height: 1.6; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
         header {
             text-align: center;
-            padding: 60px 20px 40px;
-            background: linear-gradient(135deg, rgba(20, 20, 30, 0.9) 0%, rgba(0, 0, 0, 1) 100%);
-            border-bottom: 1px solid #333;
-            position: relative;
-        }
-
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, #ff0080, #00ffcc, #ffcc00);
-            z-index: 1;
+            padding: 80px 20px 60px;
+            background: radial-gradient(circle at top, #1a1a2e 0%, #050505 100%);
+            border-bottom: 1px solid #222;
         }
 
         .title {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 15px;
-            background: linear-gradient(to right, #ff0080, #00ffcc, #ffcc00);
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #ff0080, #00ffcc, #ffcc00);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            letter-spacing: -1px;
         }
 
-        .subtitle { font-size: 1.2rem; color: #aaa; max-width: 800px; margin: 0 auto 30px; }
+        .subtitle { font-size: 1.3rem; color: #888; max-width: 800px; margin: 0 auto; }
 
-        section { margin: 60px 0; padding: 40px 0; border-bottom: 1px solid #222; }
-        .section-title { font-size: 2.2rem; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
-        .section-title i { color: #00ffcc; }
+        section { margin: 80px 0; }
+        .section-title { font-size: 1.8rem; margin-bottom: 35px; display: flex; align-items: center; gap: 15px; color: #fff; border-left: 4px solid #00ffcc; padding-left: 15px; }
 
-        .link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .link-card {
-            background: rgba(30, 30, 40, 0.7);
-            border-radius: 12px;
+            background: #111;
+            border-radius: 15px;
             padding: 25px;
-            border: 1px solid #333;
-            transition: 0.3s;
+            border: 1px solid #222;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .link-card:hover { transform: translateY(-8px); border-color: #00ffcc; }
+        .link-card:hover { transform: translateY(-5px); border-color: #00ffcc; box-shadow: 0 10px 30px rgba(0, 255, 204, 0.1); }
+        .link-card h3 { font-size: 1.2rem; margin-bottom: 10px; color: #eee; }
+        .link-card p { color: #666; font-size: 0.95rem; margin-bottom: 20px; }
 
         .link-url {
-            display: inline-block;
-            background: rgba(0, 255, 204, 0.1);
-            color: #00ffcc;
-            padding: 10px 18px;
+            display: block;
+            text-align: center;
+            background: #00ffcc;
+            color: #000;
+            padding: 12px;
             border-radius: 8px;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
+            transition: 0.2s;
         }
+        .link-url:hover { background: #00ccaa; }
 
-        .workflow { background: rgba(20, 25, 40, 0.6); border-radius: 15px; padding: 40px; border: 1px solid #333; }
-        footer { text-align: center; padding: 40px 20px; color: #666; border-top: 1px solid #222; }
-        
-        .logout-btn { background: none; border: none; color: #ff0080; cursor: pointer; text-decoration: underline; margin-top: 10px; font-size: 1rem; }
+        .workflow-box { 
+            background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
+            border-radius: 20px; 
+            padding: 40px; 
+            border: 1px solid #333;
+        }
+        .step { margin-bottom: 20px; display: flex; gap: 15px; align-items: flex-start; }
+        .step-num { background: #ff0080; color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold; }
+
+        footer { text-align: center; padding: 60px 20px; color: #444; border-top: 1px solid #111; margin-top: 100px; }
+        .logout-btn { background: none; border: 1px solid #444; color: #444; cursor: pointer; padding: 8px 15px; border-radius: 5px; transition: 0.3s; }
+        .logout-btn:hover { border-color: #ff0080; color: #ff0080; }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2.2rem; }
+            .link-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -101,43 +115,136 @@
     <main id="content" style="display:none;">
         <header>
             <div class="container">
-                <h1 class="title">🎬 Guia Completo de Áudios, Efeitos e Músicas</h1>
-                <p class="subtitle">Bem-vindo(a) ao seu arsenal exclusivo de edição.</p>
+                <h1 class="title">🎬 Arsenal do Super Editor</h1>
+                <p class="subtitle">O guia definitivo de recursos para YouTube, Reels e TikTok.</p>
             </div>
         </header>
 
         <div class="container">
+            
             <section>
-                <h2 class="section-title"><i class="fas fa-microphone-alt"></i> 🔊 ÁUDIOS DE MEMES</h2>
+                <h2 class="section-title"><i class="fas fa-microphone-alt"></i> Áudios de Memes e Falas</h2>
                 <div class="link-grid">
                     <div class="link-card">
                         <h3>Sound Instants</h3>
-                        <p>Memes prontos para download.</p><br>
+                        <p>Coleção de áudios de memes instantâneos para download rápido.</p>
                         <a href="https://soundinstants.com/pt/" target="_blank" class="link-url">Acessar Site</a>
                     </div>
                     <div class="link-card">
                         <h3>MyInstants</h3>
-                        <p>O maior soundboard da internet.</p><br>
+                        <p>O maior soundboard do mundo com milhares de efeitos e memes.</p>
                         <a href="https://www.myinstants.com" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Voicy</h3>
+                        <p>Biblioteca de áudios e vozes virais para criadores de conteúdo.</p>
+                        <a href="https://www.voicy.network/" target="_blank" class="link-url">Acessar Site</a>
                     </div>
                 </div>
             </section>
 
             <section>
-                <h2 class="section-title"><i class="fas fa-sitemap"></i> 🧠 FLUXO DE USO</h2>
-                <div class="workflow">
-                    <p>Dica: Salve esta página nos seus favoritos para não precisar fazer login toda vez que for editar.</p>
+                <h2 class="section-title"><i class="fas fa-video"></i> Vídeos, Clipes e Tendências</h2>
+                <div class="link-grid">
+                    <div class="link-card">
+                        <h3>PlayPhrase.me</h3>
+                        <p>Encontre clipes de filmes através de uma frase ou palavra específica.</p>
+                        <a href="https://www.playphrase.me/#/search?language=en" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Know Your Meme</h3>
+                        <p>A enciclopédia definitiva para entender a origem e o contexto de qualquer meme.</p>
+                        <a href="https://knowyourmeme.com/" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Reddit (Memes)</h3>
+                        <p>Comunidades globais onde nascem as maiores tendências da internet.</p>
+                        <a href="https://www.reddit.com/r/memes/" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
                 </div>
             </section>
+
+            <section>
+                <h2 class="section-title"><i class="fas fa-face-laugh-squint"></i> Reações Curtas e GIFs</h2>
+                <div class="link-grid">
+                    <div class="link-card">
+                        <h3>Tenor GIFs</h3>
+                        <p>A maior biblioteca de reações em GIF para inserir em cortes rápidos.</p>
+                        <a href="https://tenor.com/" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Giphy</h3>
+                        <p>Plataforma de GIFs e stickers animados para edição dinâmica.</p>
+                        <a href="https://giphy.com/" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-title"><i class="fas fa-music"></i> Músicas Sem Copyright (Background)</h2>
+                <div class="link-grid">
+                    <div class="link-card">
+                        <h3>Arctic Fox Music</h3>
+                        <p>Canal especializado em trilhas modernas para vídeos dinâmicos.</p>
+                        <a href="https://youtube.com/@arctic_fox_music" target="_blank" class="link-url">Acessar Canal</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Pixabay Music</h3>
+                        <p>Milhares de trilhas gratuitas divididas por gênero e humor.</p>
+                        <a href="https://pixabay.com/music/" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>YouTube Audio Library</h3>
+                        <p>A fonte oficial e mais segura para evitar problemas de direitos autorais.</p>
+                        <a href="https://www.youtube.com/audiolibrary" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>MusicHero.ai</h3>
+                        <p>Gerador de trilhas exclusivas usando inteligência artificial.</p>
+                        <a href="https://musichero.ai/" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-title"><i class="fas fa-volume-up"></i> Efeitos Sonoros (SFX) Populares</h2>
+                <div class="link-grid">
+                    <div class="link-card">
+                        <h3>Ação e Impacto</h3>
+                        <p>Explosões, hits de transição e sons de moedas/coleta.</p>
+                        <a href="https://www.myinstants.com/pt/search/?name=impact" target="_blank" class="link-url">Baixar Sons</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Transições (Whoosh)</h3>
+                        <p>Sons de movimento essenciais para mudanças de cena rápidas.</p>
+                        <a href="https://www.myinstants.com/pt/search/?name=whoosh" target="_blank" class="link-url">Baixar Sons</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Humor e Reações</h3>
+                        <p>Risadas de plateia, sons de erro (censor) e surpresa.</p>
+                        <a href="https://www.myinstants.com/pt/search/?name=laugh" target="_blank" class="link-url">Baixar Sons</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="workflow-box">
+                    <h2 style="margin-bottom: 30px;"><i class="fas fa-brain" style="color:#00ffcc"></i> Fluxo Recomendado de Edição</h2>
+                    <div class="step"><div class="step-num">1</div><p>Pesquise o conceito no <b>Know Your Meme</b>.</p></div>
+                    <div class="step"><div class="step-num">2</div><p>Encontre falas específicas no <b>PlayPhrase.me</b>.</p></div>
+                    <div class="step"><div class="step-num">3</div><p>Extraia áudios isolados no <b>Sound Instants</b>.</p></div>
+                    <div class="step"><div class="step-num">4</div><p>Aplique trilha sonora da <b>Arctic Fox</b> ou <b>Pixabay</b>.</p></div>
+                    <div class="step"><div class="step-num">5</div><p>Finalize com SFX de impacto para manter o engajamento.</p></div>
+                </div>
+            </section>
+
         </div>
 
         <footer>
-            <p>© 2024 Guia de Edição - Conteúdo Exclusivo</p>
-            <p>
-                <button class="logout-btn" onclick="_supabase.auth.signOut().then(() => window.location.href='index.html')">
-                    Sair da Conta (Logout)
-                </button>
-            </p>
+            <p>© 2026 Painel Super Editor - Acesso Vitalício Confirmado</p>
+            <button class="logout-btn" onclick="_supabase.auth.signOut().then(() => window.location.href='index.html')">
+                <i class="fas fa-sign-out-alt"></i> Sair do Painel
+            </button>
         </footer>
     </main>
 
