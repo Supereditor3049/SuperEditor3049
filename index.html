@@ -240,127 +240,125 @@
             <a href="termos.html">Termos de Uso</a>
             <a href="mailto:supereditor3049@gmail.com">Suporte</a>
         </div>
-        <p>© 2026 SuperEditor. Todos os direitos reservados.</p>
+        <p>© 2026 SuperEditor. Tod<script>
+    lucide.createIcons();
+
+    // 1. Configuração do Cliente Supabase
+    const _supabase = supabase.createClient(
+        'https://mtuccfhpspgmpoehxmmr.supabase.co', 
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8'
+    );
+
+    const modal = document.getElementById('modal');
+    let isLoginMode = false;
+
+    // 2. Funções de Controle do Modal
+    function openModal(login = false) {
+        isLoginMode = login;
+        modal.style.display = 'flex';
+        document.getElementById('supportNotice').style.display = 'none';
+        document.getElementById('modalTitle').innerText = isLoginMode ? "Acesse sua conta" : "Onde deseja receber?";
+        document.getElementById('modalDesc').innerText = isLoginMode ? "Entre com seu e-mail e senha cadastrados." : "Digite o e-mail e crie uma senha para acessar.";
+        document.getElementById('payBtn').innerText = isLoginMode ? "ENTRAR NO EDITOR" : "IR PARA O PAGAMENTO";
+        document.getElementById('modalIcon').setAttribute('data-lucide', isLoginMode ? 'lock' : 'mail');
+        document.getElementById('toggleText').style.display = isLoginMode ? 'none' : 'block';
+        document.getElementById('showSupportLink').style.display = isLoginMode ? 'block' : 'none';
+        lucide.createIcons();
+        document.getElementById('customerEmail').focus();
+    }
+
+    function closeModal() { modal.style.display = 'none'; }
+    window.onclick = (event) => { if (event.target == modal) closeModal(); }
+
+    function enviarEmailSuporte() {
+        const emailDigitado = document.getElementById('customerEmail').value;
+        const assunto = encodeURIComponent("Solicitação de Recuperação de Senha - Super Editor");
+        const corpo = encodeURIComponent(`Olá, suporte!\n\nEsqueci minha senha.\nE-mail da conta: ${emailDigitado}`);
+        window.location.href = `mailto:supereditor3049@gmail.com?subject=${assunto}&body=${corpo}`;
+    }
+
+    // 3. Função Principal que decide entre Login ou Compra
+    async function handleAuth() {
+        if (isLoginMode) {
+            await realizarLogin();
+        } else {
+            await processarCompra();
+        }
+    }
+
+    // 4. Lógica de Login (Para quem já é aluno)
+    async function realizarLogin() {
+        const email = document.getElementById('customerEmail').value;
+        const password = document.getElementById('customerPassword').value;
+        const btn = document.getElementById('payBtn');
+
+        if (!email || !password) {
+            alert("Preencha todos os campos.");
+            return;
+        }
+
+        btn.innerText = "ENTRANDO...";
+        btn.disabled = true;
+
+        const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+        
+        if (error) {
+            alert("Acesso negado. Se você acabou de pagar, aguarde 60 segundos para a ativação do seu e-mail.");
+            btn.innerText = "ENTRAR NO EDITOR";
+            btn.disabled = false;
+        } else {
+            window.location.href = "Editor.html";
+        }
+    }
+
+    // 5. Lógica de Compra (Envia para o Mercado Pago e registra no Banco)
+    async function processarCompra() {
+        const email = document.getElementById('customerEmail').value;
+        const password = document.getElementById('customerPassword').value;
+        const payBtn = document.getElementById('payBtn');
+        
+        if (!email || !email.includes("@") || password.length < 6) {
+            alert("Use um e-mail válido e uma senha com no mínimo 6 dígitos.");
+            return;
+        }
+
+        payBtn.innerText = "GERANDO ACESSO...";
+        payBtn.disabled = true;
+
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
+
+        try {
+            const res = await fetch(
+                "https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "apikey": SUPABASE_ANON_KEY,
+                        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({ email, password })
+                }
+            );
+
+            const data = await res.json();
+            
+            if (data.checkout_url) {
+                // Redireciona o usuário para o Checkout do Mercado Pago
+                window.location.href = data.checkout_url;
+            } else {
+                throw new Error(data.error || "Erro ao gerar checkout");
+            }
+
+        } catch (err) {
+            alert("Erro no servidor: " + err.message);
+            payBtn.innerText = "IR PARA O PAGAMENTO";
+            payBtn.disabled = false;
+        }
+    }
+        </script>os os direitos reservados.</p>
     </footer>
 
-    <script>
-        lucide.createIcons();
-
-        // Configuração Supabase
-        const _supabase = supabase.createClient(
-            'https://mtuccfhpspgmpoehxmmr.supabase.co', 
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8'
-        );
-
-        const modal = document.getElementById('modal');
-        let isLoginMode = false;
-
-        function openModal(login = false) {
-            isLoginMode = login;
-            modal.style.display = 'flex';
-            
-            // Reset de avisos ao abrir
-            document.getElementById('supportNotice').style.display = 'none';
-
-            // Atualiza visual do modal
-            document.getElementById('modalTitle').innerText = isLoginMode ? "Acesse sua conta" : "Onde deseja receber?";
-            document.getElementById('modalDesc').innerText = isLoginMode ? "Entre com seu e-mail e senha cadastrados." : "Digite o e-mail e crie uma senha para acessar.";
-            document.getElementById('payBtn').innerText = isLoginMode ? "ENTRAR NO EDITOR" : "IR PARA O PAGAMENTO";
-            document.getElementById('modalIcon').setAttribute('data-lucide', isLoginMode ? 'lock' : 'mail');
-            
-            // Controle de links
-            document.getElementById('toggleText').style.display = isLoginMode ? 'none' : 'block';
-            document.getElementById('showSupportLink').style.display = isLoginMode ? 'block' : 'none';
-            
-            lucide.createIcons();
-            document.getElementById('customerEmail').focus();
-        }
-
-        function closeModal() { modal.style.display = 'none'; }
-        window.onclick = (event) => { if (event.target == modal) closeModal(); }
-
-        // Lógica de envio de e-mail profissional
-        function enviarEmailSuporte() {
-            const emailDigitado = document.getElementById('customerEmail').value;
-            const assunto = encodeURIComponent("Solicitação de Recuperação de Senha - Super Editor");
-            const corpo = encodeURIComponent(
-                `Olá, suporte!\n\nEsqueci minha senha de acesso ao Guia de Áudios.\n\nE-mail da conta: ${emailDigitado || '[Não informado]'}\n\nEstou ciente de que a recuperação só é validada se este contato for feito através do mesmo e-mail informado acima.`
-            );
-            
-            window.location.href = `mailto:supereditor3049@gmail.com?subject=${assunto}&body=${corpo}`;
-        }
-
-        async function handleAuth() {
-            if (isLoginMode) {
-                await realizarLogin();
-            } else {
-                await processarCompra();
-            }
-        }
-
-        async function realizarLogin() {
-            const email = document.getElementById('customerEmail').value;
-            const password = document.getElementById('customerPassword').value;
-            const btn = document.getElementById('payBtn');
-
-            if (!email || !password) {
-                alert("Por favor, preencha todos os campos.");
-                return;
-            }
-
-            btn.innerText = "ENTRANDO...";
-            const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-            
-            if (error) {
-                alert("Erro ao entrar: Verifique seus dados. Caso tenha acabado de pagar, aguarde 60 segundos pela ativação automática.");
-                btn.innerText = "ENTRAR NO EDITOR";
-            } else {
-                window.location.href = "Editor.html";
-            }
-        }
-
-        async function processarCompra() {
-            const email = document.getElementById('customerEmail').value;
-            const password = document.getElementById('customerPassword').value;
-            const payBtn = document.getElementById('payBtn');
-            
-            if (!email || !email.includes("@") || password.length < 6) {
-                alert("Use um e-mail válido e uma senha com no mínimo 6 dígitos.");
-                return;
-            }
-
-            payBtn.innerText = "PROCESSANDO...";
-            payBtn.disabled = true;
-
-            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
-
-            try {
-                const res = await fetch(
-                    "https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "apikey": SUPABASE_ANON_KEY,
-                            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-                        },
-                        body: JSON.stringify({ email, password, product_id: "Editor" })
-                    }
-                );
-
-                const data = await res.json();
-                if (data.checkout_url) {
-                    window.location.href = data.checkout_url;
-                } else {
-                    throw new Error("Erro na geração do checkout.");
-                }
-
-            } catch (err) {
-                alert("Erro: " + err.message);
-                payBtn.innerText = "IR PARA O PAGAMENTO";
-                payBtn.disabled = false;
-            }
-        }
-    </script>
+    
 </body>
 </html>
