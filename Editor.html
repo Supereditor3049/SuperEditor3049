@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guia de Áudios e Efeitos para YouTube</title>
+    <title>Painel do Super Editor</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Configuração do Cliente com a sua Anon Key fornecida
         const _supabase = supabase.createClient(
             'https://mtuccfhpspgmpoehxmmr.supabase.co', 
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8'
@@ -16,17 +15,20 @@
         async function checkAccess() {
             const { data: { session }, error } = await _supabase.auth.getSession();
             
-            // Se não houver sessão ativa ou houver erro, bloqueia e redireciona
             if (!session || error) {
-                alert("Acesso restrito. Por favor, use o link enviado no seu e-mail após a compra.");
-                window.location.href = "index.html";
+                document.body.innerHTML = `
+                <div style="background:#000; color:#fff; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-family:sans-serif; padding:20px;">
+                    <h1 style="color:#ff0080; font-size: 2.5rem; margin-bottom: 20px;">Acesso Restrito</h1>
+                    <p style="color:#aaa; font-size: 1.1rem; max-width: 500px;">Não identificamos uma sessão ativa. Por favor, faça login com e-mail e senha.</p>
+                    <div style="background:#111; padding:20px; border-radius:15px; border:1px solid #333; margin:30px 0;">
+                        <p>Dúvidas? Suporte: <b style="color:#00ffcc">supereditor3049@gmail.com</b></p>
+                    </div>
+                    <a href="index.html" style="color:#00ffcc; text-decoration:none; font-weight:bold;">← Voltar para o Início</a>
+                </div>`;
             } else {
-                // Se estiver logado, exibe o conteúdo da página
                 document.getElementById('content').style.display = 'block';
             }
         }
-
-        // Executa a verificação imediatamente
         checkAccess();
     </script>
 
@@ -42,7 +44,6 @@
             background: linear-gradient(135deg, rgba(20, 20, 30, 0.9) 0%, rgba(0, 0, 0, 1) 100%);
             border-bottom: 1px solid #333;
             position: relative;
-            overflow: hidden;
         }
 
         header::before {
@@ -91,6 +92,8 @@
 
         .workflow { background: rgba(20, 25, 40, 0.6); border-radius: 15px; padding: 40px; border: 1px solid #333; }
         footer { text-align: center; padding: 40px 20px; color: #666; border-top: 1px solid #222; }
+        
+        .logout-btn { background: none; border: none; color: #ff0080; cursor: pointer; text-decoration: underline; margin-top: 10px; font-size: 1rem; }
     </style>
 </head>
 <body>
@@ -99,7 +102,7 @@
         <header>
             <div class="container">
                 <h1 class="title">🎬 Guia Completo de Áudios, Efeitos e Músicas</h1>
-                <p class="subtitle">Conteúdo exclusivo para criadores de alto nível.</p>
+                <p class="subtitle">Bem-vindo(a) ao seu arsenal exclusivo de edição.</p>
             </div>
         </header>
 
@@ -123,7 +126,7 @@
             <section>
                 <h2 class="section-title"><i class="fas fa-sitemap"></i> 🧠 FLUXO DE USO</h2>
                 <div class="workflow">
-                    <p>Use os links acima para turbinar suas edições!</p>
+                    <p>Dica: Salve esta página nos seus favoritos para não precisar fazer login toda vez que for editar.</p>
                 </div>
             </section>
         </div>
@@ -131,8 +134,7 @@
         <footer>
             <p>© 2024 Guia de Edição - Conteúdo Exclusivo</p>
             <p>
-                <button onclick="_supabase.auth.signOut().then(() => window.location.href='index.html')" 
-                        style="background: none; border: none; color: #ff0080; cursor: pointer; text-decoration: underline; margin-top: 10px;">
+                <button class="logout-btn" onclick="_supabase.auth.signOut().then(() => window.location.href='index.html')">
                     Sair da Conta (Logout)
                 </button>
             </p>
