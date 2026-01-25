@@ -6,49 +6,8 @@
     <title>Painel Exclusivo | Super Editor</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const _supabase = supabase.createClient(
-            'https://mtuccfhpspgmpoehxmmr.supabase.co', 
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8'
-        );
-
-        async function checkAccess() {
-            const { data: { session }, error } = await _supabase.auth.getSession();
-            
-            if (!session || error) {
-                // Se não houver sessão, bloqueia a página imediatamente
-                document.body.innerHTML = `
-                <div style="background:#000; color:#fff; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-family:sans-serif; padding:20px;">
-                    <h1 style="color:#ff0080; font-size: 2.5rem; margin-bottom: 20px;">Acesso Negado</h1>
-                    <p style="color:#aaa; font-size: 1.1rem; max-width: 500px;">Esta área é exclusiva para alunos. O link não pode ser compartilhado.</p>
-                    <div style="background:#111; padding:20px; border-radius:15px; border:1px solid #333; margin:30px 0;">
-                        <p>Dúvidas? Suporte: <b style="color:#00ffcc">supereditor3049@gmail.com</b></p>
-                    </div>
-                    <a href="index.html" style="color:#00ffcc; text-decoration:none; font-weight:bold; border: 1px solid #00ffcc; padding: 10px 20px; border-radius: 5px;">Fazer Login</a>
-                </div>`;
-            } else {
-                // Se autenticado, libera o conteúdo
-                document.getElementById('content').style.display = 'block';
-            }
-        }
-        checkAccess();
-        // Assim que o cliente cair aqui vindo do Mercado Pago
-async function verificarAcesso() {
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session) {
-    // Se não estiver logado, mostra um alerta amigável
-    alert("Pagamento Identificado! Use o e-mail e senha que você criou no checkout para acessar seus arquivos.");
-    window.location.href = "login.html"; // Mande para sua página de login
-  } else {
-    console.log("Bem-vindo, editor!");
-    // Aqui você libera o download/conteúdo
-  }
-}
-window.onload = verificarAcesso;
-    </script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #050505; color: #fff; line-height: 1.6; }
@@ -221,27 +180,6 @@ window.onload = verificarAcesso;
             </section>
 
             <section>
-                <h2 class="section-title"><i class="fas fa-volume-up"></i> Efeitos Sonoros (SFX) Populares</h2>
-                <div class="link-grid">
-                    <div class="link-card">
-                        <h3>Ação e Impacto</h3>
-                        <p>Explosões, hits de transição e sons de moedas/coleta.</p>
-                        <a href="https://www.myinstants.com/pt/search/?name=impact" target="_blank" class="link-url">Baixar Sons</a>
-                    </div>
-                    <div class="link-card">
-                        <h3>Transições (Whoosh)</h3>
-                        <p>Sons de movimento essenciais para mudanças de cena rápidas.</p>
-                        <a href="https://www.myinstants.com/pt/search/?name=whoosh" target="_blank" class="link-url">Baixar Sons</a>
-                    </div>
-                    <div class="link-card">
-                        <h3>Humor e Reações</h3>
-                        <p>Risadas de plateia, sons de erro (censor) e surpresa.</p>
-                        <a href="https://www.myinstants.com/pt/search/?name=laugh" target="_blank" class="link-url">Baixar Sons</a>
-                    </div>
-                </div>
-            </section>
-
-            <section>
                 <div class="workflow-box">
                     <h2 style="margin-bottom: 30px;"><i class="fas fa-brain" style="color:#00ffcc"></i> Fluxo Recomendado de Edição</h2>
                     <div class="step"><div class="step-num">1</div><p>Pesquise o conceito no <b>Know Your Meme</b>.</p></div>
@@ -256,11 +194,48 @@ window.onload = verificarAcesso;
 
         <footer>
             <p>© 2026 Painel Super Editor - Acesso Vitalício Confirmado</p>
-            <button class="logout-btn" onclick="_supabase.auth.signOut().then(() => window.location.href='index.html')">
+            <button class="logout-btn" onclick="fazerLogout()">
                 <i class="fas fa-sign-out-alt"></i> Sair do Painel
             </button>
         </footer>
     </main>
 
+    <script>
+        // Configuração Supabase
+        const _supabase = supabase.createClient(
+            'https://mtuccfhpspgmpoehxmmr.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8'
+        );
+
+        // Verifica o acesso assim que a página carrega
+        async function checkAccess() {
+            const { data: { session }, error } = await _supabase.auth.getSession();
+            
+            if (!session || error) {
+                // Se não houver sessão ativa, bloqueia a visualização e mostra erro
+                document.body.innerHTML = `
+                <div style="background:#000; color:#fff; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-family:sans-serif; padding:20px;">
+                    <h1 style="color:#ff0080; font-size: 2.5rem; margin-bottom: 20px;">Acesso Negado</h1>
+                    <p style="color:#aaa; font-size: 1.1rem; max-width: 500px;">Esta área é exclusiva para alunos. Realize o login para continuar.</p>
+                    <div style="background:#111; padding:20px; border-radius:15px; border:1px solid #333; margin:30px 0;">
+                        <p>Dúvidas? Suporte: <b style="color:#00ffcc">supereditor3049@gmail.com</b></p>
+                    </div>
+                    <a href="index.html" style="color:#00ffcc; text-decoration:none; font-weight:bold; border: 1px solid #00ffcc; padding: 10px 20px; border-radius: 5px;">Ir para Login</a>
+                </div>`;
+            } else {
+                // Se estiver logado, libera o conteúdo principal
+                document.getElementById('content').style.display = 'block';
+                console.log("Acesso autorizado para:", session.user.email);
+            }
+        }
+
+        async function fazerLogout() {
+            await _supabase.auth.signOut();
+            window.location.href = 'index.html';
+        }
+
+        // Executa a verificação ao iniciar
+        checkAccess();
+    </script>
 </body>
 </html>
