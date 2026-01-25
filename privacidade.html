@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacidade - Super Editor</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root { --primary: #00ffcc; --bg: #050505; --card: #0d0d0d; --text: #ffffff; --text-dim: #aaa; --border: #222; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; margin: 0; }
+        .container { max-width: 800px; margin: auto; padding: 60px 20px; }
+        .header { text-align: center; margin-bottom: 40px; }
+        h1 { color: var(--primary); font-size: 2rem; margin-bottom: 10px; }
+        .box { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 40px; margin-bottom: 30px; }
+        h2 { color: var(--primary); font-size: 1.2rem; display: flex; align-items: center; gap: 10px; margin-top: 30px; }
+        p { color: var(--text-dim); font-size: 0.95rem; }
+        .btn-back { display: inline-flex; align-items: center; gap: 10px; color: var(--primary); text-decoration: none; font-weight: bold; margin-bottom: 30px; transition: 0.3s; }
+        .btn-back:hover { opacity: 0.7; }
+        .badge { display: inline-block; padding: 5px 12px; border-radius: 50px; background: rgba(0, 255, 204, 0.1); color: var(--primary); font-size: 0.75rem; font-weight: bold; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="btn-back"><i data-lucide="arrow-left"></i> Voltar ao início</a>
+        
+        <div class="header">
+            <div class="badge">SEGURANÇA DE DADOS</div>
+            <h1>Política de Privacidade</h1>
+            <p>Sua privacidade e segurança são nossa prioridade máxima.</p>
+        </div>
+
+        <div class="box">
+            <h2><i data-lucide="shield-check"></i> Proteção LGPD</h2>
+            <p>Em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018), informamos que seus dados pessoais (E-mail e Hash de Senha) são coletados exclusivamente para a finalidade de criação de conta e acesso ao conteúdo adquirido. Não compartilhamos, vendemos ou alugamos seus dados para terceiros.</p>
+
+            <h2><i data-lucide="credit-card"></i> Pagamento Blindado</h2>
+            <p>O processamento do seu pagamento é realizado integralmente pelo <strong>Mercado Pago</strong>, uma das maiores e mais seguras instituições de pagamento da América Latina. Não armazenamos seus dados de cartão ou informações sensíveis de faturamento em nossos servidores; todo o fluxo financeiro ocorre em ambiente criptografado com certificados SSL e protocolos TLS 1.2+.</p>
+
+            <h2><i data-lucide="lock"></i> Criptografia de Acesso</h2>
+            <p>Sua senha é protegida por algoritmos de criptografia de nível militar através do sistema <strong>Supabase Auth</strong>. Isso garante que nem mesmo os administradores do sistema tenham acesso à sua senha original.</p>
+
+            <h2><i data-lucide="cookie"></i> Cookies</h2>
+            <p>Utilizamos cookies estritamente necessários apenas para manter você logado na plataforma durante sua sessão de estudo, garantindo uma experiência contínua e segura.</p>
+        </div>
+        
+        <footer style="text-align: center; color: #555; font-size: 0.8rem;">
+            Última atualização: Janeiro de 2026 • PowerOnly.shop
+        </footer>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
