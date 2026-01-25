@@ -1,364 +1,252 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Guia de Áudios e Efeitos para YouTube</title>
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" type="image/png">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Exclusivo | Super Editor</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const _supabase = supabase.createClient(
+            'https://mtuccfhpspgmpoehxmmr.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8'
+        );
 
+        async function checkAccess() {
+            const { data: { session }, error } = await _supabase.auth.getSession();
+            
+            if (!session || error) {
+                // Bloqueio imediato se não houver login ativo
+                document.body.innerHTML = `
+                <div style="background:#000; color:#fff; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-family:sans-serif; padding:20px;">
+                    <h1 style="color:#ff0080; font-size: 2.5rem; margin-bottom: 20px;">Acesso Restrito</h1>
+                    <p style="color:#aaa; font-size: 1.1rem; max-width: 500px;">Não detetamos uma sessão ativa. Esta área é exclusiva para alunos.</p>
+                    <div style="background:#111; padding:20px; border-radius:15px; border:1px solid #333; margin:30px 0;">
+                        <p>Dúvidas? Suporte: <b style="color:#00ffcc">supereditor3049@gmail.com</b></p>
+                    </div>
+                    <a href="index.html" style="color:#00ffcc; text-decoration:none; font-weight:bold; border: 1px solid #00ffcc; padding: 10px 20px; border-radius: 5px;">Ir para o Login</a>
+                </div>`;
+            } else {
+                // Se estiver logado, mostra o conteúdo
+                document.getElementById('content').style.display = 'block';
+            }
+        }
+        checkAccess();
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #00ffcc;
-            --secondary: #ff0080;
-            --bg: #050505;
-            --card: #0d0d0d;
-            --text: #ffffff;
-            --text-dim: #aaa;
-            --border: #222;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #050505; color: #fff; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-        body { 
-            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            margin: 0; 
-            line-height: 1.6;
-        }
-
-        .container { max-width: 800px; margin: auto; padding: 60px 20px; }
-
-        /* Login Icon */
-        .login-trigger {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-            z-index: 100;
-            color: var(--text-dim);
-            transition: 0.3s;
-        }
-        .login-trigger:hover { color: var(--primary); }
-
-        /* Hero Section */
-        header { text-align: center; margin-bottom: 50px; }
-        h1 { 
-            font-size: 3rem; 
-            font-weight: 800;
-            background: linear-gradient(90deg, var(--secondary), var(--primary)); 
-            -webkit-background-clip: text; 
-            color: transparent; 
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-        }
-        .hero p { font-size: 1.25rem; color: var(--text-dim); max-width: 600px; margin: auto; }
-
-        /* Cards */
-        .box { 
-            background: var(--card); 
-            border: 1px solid var(--border); 
-            border-radius: 24px; 
-            padding: 30px; 
-            margin: 30px 0; 
-            transition: 0.3s;
-        }
-        .box:hover { border-color: #444; }
-        
-        h2 { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; margin-top: 0; }
-        
-        ul { list-style: none; padding: 0; }
-        ul li { 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            margin-bottom: 15px; 
-            color: #ddd;
-        }
-        .check-icon { color: var(--primary); width: 20px; }
-
-        /* Preço e Botão */
-        .pricing { text-align: center; padding: 40px; }
-        .price { font-size: 3.5rem; font-weight: 900; color: var(--primary); margin: 10px 0; }
-        .price span { font-size: 1rem; color: var(--text-dim); font-weight: normal; }
-
-        .btn-main { 
-            background: var(--primary); 
-            color: #000; 
-            font-size: 1.2rem; 
-            padding: 20px 40px; 
-            border: none; 
-            border-radius: 14px; 
-            cursor: pointer; 
-            font-weight: 800; 
-            width: 100%; 
-            max-width: 350px; 
-            transition: 0.3s;
-            box-shadow: 0 10px 30px rgba(0, 255, 204, 0.2);
-        }
-        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0, 255, 204, 0.4); }
-
-        /* Modal */
-        #modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: #111;
-            border: 1px solid var(--border);
-            padding: 40px;
-            border-radius: 28px;
-            width: 90%;
-            max-width: 400px;
+        header {
             text-align: center;
-            position: relative;
-        }
-        .modal-content input {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 12px;
-            border: 1px solid #333;
-            background: #000;
-            color: white;
-            font-size: 1rem;
-            box-sizing: border-box;
-            outline: none;
-        }
-        .modal-content input:focus { border-color: var(--primary); }
-        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--text-dim); }
-
-        /* Estilo do Aviso de Suporte */
-        .support-notice {
-            background: rgba(0, 255, 204, 0.05);
-            border: 1px dashed #00ffcc55;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 15px;
-            font-size: 0.8rem;
-            color: #eee;
-            display: none; /* Inicia oculto */
+            padding: 80px 20px 60px;
+            background: radial-gradient(circle at top, #1a1a2e 0%, #050505 100%);
+            border-bottom: 1px solid #222;
         }
 
-        /* Footer */
-        footer { 
-            margin-top: 100px; 
-            padding: 60px 20px; 
-            border-top: 1px solid var(--border); 
-            text-align: center; 
-            color: var(--text-dim);
-            font-size: 0.9rem;
+        .title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #ff0080, #00ffcc, #ffcc00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
-        .footer-badges { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; opacity: 0.6; }
-        .footer-links { margin-bottom: 20px; }
-        .footer-links a { color: var(--text-dim); text-decoration: none; margin: 0 15px; }
-        .footer-links a:hover { color: var(--primary); }
 
-        @media (max-width: 600px) {
-            h1 { font-size: 2.2rem; }
-            .price { font-size: 2.8rem; }
+        .subtitle { font-size: 1.2rem; color: #888; max-width: 800px; margin: 0 auto; }
+
+        section { margin: 60px 0; }
+        .section-title { font-size: 1.8rem; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; color: #fff; border-left: 4px solid #00ffcc; padding-left: 15px; }
+
+        .link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .link-card {
+            background: #111;
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #222;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .link-card:hover { transform: translateY(-5px); border-color: #00ffcc; }
+        .link-card h3 { font-size: 1.1rem; margin-bottom: 10px; color: #eee; }
+        .link-card p { color: #666; font-size: 0.9rem; margin-bottom: 15px; }
+
+        .link-url {
+            display: block;
+            text-align: center;
+            background: rgba(0, 255, 204, 0.1);
+            color: #00ffcc;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: 0.2s;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+        }
+        .link-url:hover { background: #00ffcc; color: #000; }
+
+        .workflow-box { 
+            background: #0d0d0d;
+            border-radius: 20px; 
+            padding: 40px; 
+            border: 1px solid #222;
+        }
+        .step { margin-bottom: 15px; display: flex; gap: 15px; align-items: center; }
+        .step-num { background: #ff0080; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold; font-size: 0.9rem; }
+
+        footer { text-align: center; padding: 60px 20px; color: #444; border-top: 1px solid #111; }
+        .logout-btn { background: none; border: 1px solid #333; color: #666; cursor: pointer; padding: 8px 15px; border-radius: 5px; transition: 0.3s; margin-top: 20px; }
+        .logout-btn:hover { border-color: #ff0080; color: #ff0080; }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2rem; }
+            .link-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
-
 <body>
-    <div class="login-trigger" onclick="openModal(true)">
-        <i data-lucide="user-circle" style="width: 32px; height: 32px;"></i>
-    </div>
 
-    <div class="container">
-        <header class="hero">
-            <i data-lucide="youtube" style="color: var(--secondary); width: 48px; height: 48px; margin-bottom: 20px;"></i>
-            <h1>Guia de Áudios e Efeitos para YouTube</h1>
-            <p>O arsenal secreto de ferramentas e atalhos usado pelos maiores editores para dominar o algoritmo.</p>
+    <main id="content" style="display:none;">
+        <header>
+            <div class="container">
+                <h1 class="title">🎬 Arsenal do Super Editor</h1>
+                <p class="subtitle">Guia completo de áudios, efeitos e músicas para YouTube e Redes Sociais.</p>
+            </div>
         </header>
 
-        <div class="box">
-            <h2><i data-lucide="package"></i> O que você recebe hoje</h2>
-            <ul>
-                <li><i data-lucide="check-circle-2" class="check-icon"></i> 🔊 +500 Áudios de memes prontos para uso</li>
-                <li><i data-lucide="check-circle-2" class="check-icon"></i> 😂 Packs de Reações e Risadas em alta fidelidade</li>
-                <li><i data-lucide="check-circle-2" class="check-icon"></i> 🎵 Biblioteca de Músicas Sem Copyright (Safe)</li>
-                <li><i data-lucide="check-circle-2" class="check-icon"></i> 🚀 Acesso vitalício e imediato</li>
-            </ul>
+        <div class="container">
+            
+            <section>
+                <h2 class="section-title"><i class="fas fa-microphone-alt"></i> Áudios de Memes / Falas</h2>
+                <div class="link-grid">
+                    <div class="link-card">
+                        <h3>Sound Instants</h3>
+                        <p>Memes instantâneos prontos para download.</p>
+                        <a href="https://soundinstants.com/pt/" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>MyInstants</h3>
+                        <p>O maior soundboard com milhares de efeitos.</p>
+                        <a href="https://www.myinstants.com" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Voicy</h3>
+                        <p>Biblioteca de vozes e áudios para criadores.</p>
+                        <a href="https://www.voicy.network/" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-title"><i class="fas fa-video"></i> Vídeos de Memes e Pesquisa</h2>
+                <div class="link-grid">
+                    <div class="link-card">
+                        <h3>PlayPhrase.me</h3>
+                        <p>Encontre clipes de filmes por palavras ou frases.</p>
+                        <a href="https://www.playphrase.me/#/search?language=en" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Know Your Meme</h3>
+                        <p>A origem e evolução de todos os memes.</p>
+                        <a href="https://knowyourmeme.com/" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Reddit & TikTok</h3>
+                        <p>Fontes principais para conteúdo viral atual.</p>
+                        <a href="https://www.reddit.com/r/memes/" target="_blank" class="link-url">Acessar Reddit</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-title"><i class="fas fa-face-grin-tears"></i> Reações e GIFs</h2>
+                <div class="link-grid">
+                    <div class="link-card">
+                        <h3>Tenor</h3>
+                        <p>GIFs de reações para qualquer situação.</p>
+                        <a href="https://tenor.com/" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Giphy</h3>
+                        <p>Biblioteca gigante de clipes curtos e GIFs.</p>
+                        <a href="https://giphy.com/" target="_blank" class="link-url">Acessar Site</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-title"><i class="fas fa-music"></i> Músicas Sem Copyright</h2>
+                <div class="link-grid">
+                    <div class="link-card">
+                        <h3>Arctic Fox Music</h3>
+                        <p>Playlist premium de trilhas para vídeos dinâmicos.</p>
+                        <a href="https://youtube.com/@arctic_fox_music" target="_blank" class="link-url">Canal Principal</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Arctic Fox - Playlists</h3>
+                        <p>Coleções selecionadas por estilo e vibe.</p>
+                        <a href="https://youtube.com/playlist?list=PLcK3qDubUkzsW7hfGQW0I3bhjREsWsCQn" target="_blank" class="link-url">Abrir Playlists</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Pixabay & YouTube</h3>
+                        <p>Bibliotecas oficiais de música gratuita.</p>
+                        <a href="https://pixabay.com/music/" target="_blank" class="link-url">Pixabay Music</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>NoCopyrightSounds</h3>
+                        <p>Hype, Gaming e Eletrónica sem direitos.</p>
+                        <a href="https://www.youtube.com/ncs" target="_blank" class="link-url">Acessar NCS</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-title"><i class="fas fa-volume-up"></i> Efeitos Sonoros (SFX)</h2>
+                <div class="link-grid">
+                    <div class="link-card">
+                        <h3>Ação e Impacto</h3>
+                        <p>Explosões, "Coin" e sons de impacto forte.</p>
+                        <a href="https://www.myinstants.com/pt/search/?name=impact" target="_blank" class="link-url">Baixar SFX</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Transições (Whoosh)</h3>
+                        <p>Sons de movimento e cortes rápidos.</p>
+                        <a href="https://www.myinstants.com/pt/search/?name=whoosh" target="_blank" class="link-url">Baixar SFX</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Humor e Plateia</h3>
+                        <p>Risadas, aplausos e sons de erro clássicos.</p>
+                        <a href="https://www.myinstants.com/pt/search/?name=laugh" target="_blank" class="link-url">Baixar SFX</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="workflow-box">
+                    <h2 style="margin-bottom: 25px;"><i class="fas fa-lightbulb" style="color:#ffcc00"></i> Fluxo de Uso Recomendado</h2>
+                    <div class="step"><div class="step-num">1</div><p>Consulte a origem no <b>Know Your Meme</b>.</p></div>
+                    <div class="step"><div class="step-num">2</div><p>Encontre falas específicas no <b>PlayPhrase.me</b>.</p></div>
+                    <div class="step"><div class="step-num">3</div><p>Use <b>Sound Instants</b> ou <b>MyInstants</b> para áudios.</p></div>
+                    <div class="step"><div class="step-num">4</div><p>Adicione trilha de fundo da <b>Arctic Fox</b> ou <b>NCS</b>.</p></div>
+                    <div class="step"><div class="step-num">5</div><p>Finalize com efeitos de transição (Whoosh/Hit).</p></div>
+                </div>
+            </section>
+
         </div>
 
-        <div class="box pricing">
-            <div class="price"><span>R$</span>12,90</div>
-            <p style="color: var(--text-dim); margin-bottom: 30px;">Pagamento único • Sem assinaturas chatas</p>
-            <button class="btn-main" onclick="openModal(false)">QUERO ACESSO AGORA</button>
-            <div style="margin-top: 25px; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-dim); font-size: 0.85rem;">
-                <i data-lucide="shield-check" style="width: 16px; color: var(--primary);"></i>
-                Pagamento 100% seguro via Mercado Pago
-            </div>
-        </div>
-    </div>
+        <footer>
+            <p>© 2026 Guia de Edição - Conteúdo Exclusivo Protegido</p>
+            <button class="logout-btn" onclick="_supabase.auth.signOut().then(() => window.location.href='index.html')">
+                <i class="fas fa-sign-out-alt"></i> Terminar Sessão (Logout)
+            </button>
+        </footer>
+    </main>
 
-    <div id="modal">
-        <div class="modal-content">
-            <i data-lucide="x" class="close-modal" onclick="closeModal()"></i>
-            <i id="modalIcon" data-lucide="mail" style="color: var(--primary); width: 40px; height: 40px; margin-bottom: 10px;"></i>
-            <h3 id="modalTitle">Onde deseja receber?</h3>
-            <p id="modalDesc" style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;">Digite o e-mail e crie uma senha para acessar.</p>
-            
-            <input type="email" id="customerEmail" placeholder="seu-melhor@email.com" required>
-            <input type="password" id="customerPassword" placeholder="Crie sua senha (mín. 6 caracteres)" required>
-            
-            <button class="btn-main" id="payBtn" onclick="handleAuth()">IR PARA O PAGAMENTO</button>
-            
-            <div id="supportNotice" class="support-notice">
-                <i data-lucide="info" style="width: 14px; color: var(--primary); margin-bottom: 5px;"></i><br>
-                A recuperação de senha é processada <b>manualmente</b> pela nossa equipe. 
-                A troca só será efetuada se o contato for feito através do <b>mesmo e-mail utilizado na compra</b>.
-                <br><br>
-                <a href="javascript:void(0)" onclick="enviarEmailSuporte()" style="color: var(--primary); font-weight: bold; text-decoration: none;">SOLICITAR AGORA</a>
-            </div>
-
-            <p id="toggleText" style="margin-top: 15px; font-size: 0.8rem; color: var(--text-dim);">
-                Já comprou? <a href="javascript:void(0)" onclick="openModal(true)" style="color: var(--primary); text-decoration: none;">Acesse sua conta</a>
-            </p>
-            
-            <p id="showSupportLink" style="margin-top: 15px; font-size: 0.8rem; display: none;">
-                <a href="javascript:void(0)" onclick="document.getElementById('supportNotice').style.display='block'; this.parentElement.style.display='none'" style="color: var(--text-dim); text-decoration: none;">Esqueceu a senha? <span style="color: var(--primary)">Clique aqui</span></a>
-            </p>
-        </div>
-    </div>
-
-    <footer> 
-        <div class="footer-badges">
-            <div style="display: flex; align-items: center; gap: 5px;"><i data-lucide="lock" style="width: 14px;"></i> SSL Seguro</div>
-            <div style="display: flex; align-items: center; gap: 5px;"><i data-lucide="zap" style="width: 14px;"></i> Entrega Instantânea</div>
-        </div>
-        <div class="footer-links">
-            <a href="privacidade.html">Privacidade</a>
-            <a href="termos.html">Termos de Uso</a>
-            <a href="mailto:supereditor3049@gmail.com">Suporte</a>
-        </div>
-        <p>© 2026 SuperEditor. Tod<script>
-    lucide.createIcons();
-
-    // 1. Configuração do Cliente Supabase
-    const _supabase = supabase.createClient(
-        'https://mtuccfhpspgmpoehxmmr.supabase.co', 
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8'
-    );
-
-    const modal = document.getElementById('modal');
-    let isLoginMode = false;
-
-    // 2. Funções de Controle do Modal
-    function openModal(login = false) {
-        isLoginMode = login;
-        modal.style.display = 'flex';
-        document.getElementById('supportNotice').style.display = 'none';
-        document.getElementById('modalTitle').innerText = isLoginMode ? "Acesse sua conta" : "Onde deseja receber?";
-        document.getElementById('modalDesc').innerText = isLoginMode ? "Entre com seu e-mail e senha cadastrados." : "Digite o e-mail e crie uma senha para acessar.";
-        document.getElementById('payBtn').innerText = isLoginMode ? "ENTRAR NO EDITOR" : "IR PARA O PAGAMENTO";
-        document.getElementById('modalIcon').setAttribute('data-lucide', isLoginMode ? 'lock' : 'mail');
-        document.getElementById('toggleText').style.display = isLoginMode ? 'none' : 'block';
-        document.getElementById('showSupportLink').style.display = isLoginMode ? 'block' : 'none';
-        lucide.createIcons();
-        document.getElementById('customerEmail').focus();
-    }
-
-    function closeModal() { modal.style.display = 'none'; }
-    window.onclick = (event) => { if (event.target == modal) closeModal(); }
-
-    function enviarEmailSuporte() {
-        const emailDigitado = document.getElementById('customerEmail').value;
-        const assunto = encodeURIComponent("Solicitação de Recuperação de Senha - Super Editor");
-        const corpo = encodeURIComponent(`Olá, suporte!\n\nEsqueci minha senha.\nE-mail da conta: ${emailDigitado}`);
-        window.location.href = `mailto:supereditor3049@gmail.com?subject=${assunto}&body=${corpo}`;
-    }
-
-    // 3. Função Principal que decide entre Login ou Compra
-    async function handleAuth() {
-        if (isLoginMode) {
-            await realizarLogin();
-        } else {
-            await processarCompra();
-        }
-    }
-
-    // 4. Lógica de Login (Para quem já é aluno)
-    async function realizarLogin() {
-        const email = document.getElementById('customerEmail').value;
-        const password = document.getElementById('customerPassword').value;
-        const btn = document.getElementById('payBtn');
-
-        if (!email || !password) {
-            alert("Preencha todos os campos.");
-            return;
-        }
-
-        btn.innerText = "ENTRANDO...";
-        btn.disabled = true;
-
-        const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-        
-        if (error) {
-            alert("Acesso negado. Se você acabou de pagar, aguarde 60 segundos para a ativação do seu e-mail.");
-            btn.innerText = "ENTRAR NO EDITOR";
-            btn.disabled = false;
-        } else {
-            window.location.href = "Editor.html";
-        }
-    }
-
-    // 5. Lógica de Compra (Envia para o Mercado Pago e registra no Banco)
-    async function processarCompra() {
-        const email = document.getElementById('customerEmail').value;
-        const password = document.getElementById('customerPassword').value;
-        const payBtn = document.getElementById('payBtn');
-        
-        if (!email || !email.includes("@") || password.length < 6) {
-            alert("Use um e-mail válido e uma senha com no mínimo 6 dígitos.");
-            return;
-        }
-
-        payBtn.innerText = "GERANDO ACESSO...";
-        payBtn.disabled = true;
-
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
-
-        try {
-            const res = await fetch(
-                "https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "apikey": SUPABASE_ANON_KEY,
-                        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-                    },
-                    body: JSON.stringify({ email, password })
-                }
-            );
-
-            const data = await res.json();
-            
-            if (data.checkout_url) {
-                // Redireciona o usuário para o Checkout do Mercado Pago
-                window.location.href = data.checkout_url;
-            } else {
-                throw new Error(data.error || "Erro ao gerar checkout");
-            }
-
-        } catch (err) {
-            alert("Erro no servidor: " + err.message);
-            payBtn.innerText = "IR PARA O PAGAMENTO";
-            payBtn.disabled = false;
-        }
-    }
-        </script>os os direitos reservados.</p>
-    </footer>
-
-    
 </body>
 </html>
