@@ -1,264 +1,107 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" type="image/png">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Live Payments</title>
-    
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+    <title>Painel God Mode | LuxoRifa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { 
-            --bg: #050505; --card: #0d0d0d; --accent: #00ffa3; 
-            --border: #1a1a1a; --danger: #ff4d4d; --warning: #ffbb00;
-            --text: #ffffff; --text-dim: #888888;
-        }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: none; }
-        
-        header { padding: 1.2rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
-        .controls { display: flex; gap: 10px; align-items: center; }
-        
-        .notif-btn { background: var(--card); border: 1px solid var(--border); padding: 10px 18px; border-radius: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; color: white; font-size: 0.8rem; }
-        .notif-btn.active { border-color: var(--accent); color: var(--accent); }
-        .notif-btn.pulse { border-color: var(--danger); color: var(--danger); animation: pulse-anim 1.8s infinite; }
-        @keyframes pulse-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
-        .logout-btn { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 10px; border-radius: 12px; cursor: pointer; }
-        .logout-btn:hover { color: var(--danger); border-color: var(--danger); }
-
-        main { padding: 2rem; max-width: 1100px; margin: 0 auto; }
-        .search-wrap { margin-bottom: 1rem; display: flex; justify-content: flex-start; }
-        .search-box { background: var(--card); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: white; font-size: 0.75rem; width: 180px; outline: none; }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
-        .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 20px; border-left: 4px solid var(--accent); }
-        .card b { font-size: 1.8rem; display: block; margin-top: 8px; color: var(--accent); }
-
-        .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
-        th { padding: 1.2rem; background: rgba(255,255,255,0.02); color: var(--text-dim); text-align: left; font-size: 0.8rem; }
-        td { padding: 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-        
-        .badge { padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
-        .badge.approved { background: rgba(0, 255, 163, 0.1); color: var(--accent); }
-        .badge.pending { background: rgba(255, 187, 0, 0.1); color: var(--warning); }
-        .badge.rejected { background: rgba(255, 77, 77, 0.1); color: var(--danger); }
-
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 2rem; padding-bottom: 2rem; }
-        .page-btn { background: var(--card); border: 1px solid var(--border); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        #page-info { font-weight: bold; color: var(--accent); font-size: 0.9rem; }
-
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg); }
-        .login-box { background: var(--card); padding: 2rem; border-radius: 20px; border: 1px solid var(--border); width: 300px; text-align: center; }
-        .login-box input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--border); background: #000; color: white; box-sizing: border-box; }
-        .login-box button { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        body { background: #000; color: #eee; font-family: sans-serif; }
+        .card { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 20px; padding: 24px; }
+        input { background: #111; border: 1px solid #222; border-radius: 8px; padding: 10px; color: white; width: 100%; }
+        label { font-size: 12px; color: #666; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: block; }
     </style>
 </head>
-<body>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto">
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-2xl font-black italic">GOD <span class="text-yellow-500">MODE</span></h1>
+                <p class="text-gray-500 text-xs text-uppercase tracking-widest">Controle de Percepção da Rifa</p>
+            </div>
+            <button onclick="saveSettings()" class="bg-yellow-500 text-black px-6 py-2 rounded-lg font-bold text-sm hover:bg-yellow-400 transition-all">
+                Salvar Alterações
+            </button>
+        </header>
 
-    <div id="login-screen" style="display:none;">
-        <div class="login-box">
-            <i data-lucide="lock" style="color:var(--accent); margin-bottom: 1rem;"></i>
-            <h2>Área Restrita</h2>
-            <input type="email" id="logEmail" placeholder="E-mail">
-            <input type="password" id="logPass" placeholder="Senha">
-            <button onclick="fazerLogin()">Entrar no Painel</button>
-            <p id="loginError" style="color:var(--danger); font-size: 0.8rem; margin-top: 10px;"></p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="card border-yellow-500/20">
+                <h3 class="text-yellow-500 font-bold mb-6 flex items-center gap-2">
+                    <span>👁️</span> Vitrine (O que o cliente vê)
+                </h3>
+                
+                <div class="mb-6">
+                    <label>Progresso Fake da Barra (%)</label>
+                    <input type="range" id="fakeProgress" min="0" max="99" class="accent-yellow-500">
+                    <div class="flex justify-between mt-2 text-xs font-mono">
+                        <span id="progValue">0%</span>
+                        <span class="text-red-500">Zona de Urgência</span>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label>Preço Exibido por Cota (R$)</label>
+                    <input type="number" id="ticketPrice" step="0.01" value="0.60">
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="text-blue-500 font-bold mb-6 flex items-center gap-2">
+                    <span>📊</span> Realidade (Privado)
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-black/50 rounded-lg border border-white/5">
+                        <p class="text-[10px] text-gray-500">Faturamento Bruto</p>
+                        <p class="text-2xl font-mono text-green-500">R$ 14.590,20</p>
+                    </div>
+                    <div class="p-4 bg-black/50 rounded-lg border border-white/5">
+                        <p class="text-[10px] text-gray-500">Vendas Reais</p>
+                        <p class="text-2xl font-mono">24.317 <span class="text-xs text-gray-600">cotas</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-6">
+            <h3 class="text-gray-400 font-bold mb-4 text-xs uppercase tracking-widest">Últimas Atividades (Alfanumérico)</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="text-gray-600 border-b border-white/5">
+                        <tr>
+                            <th class="pb-3">Data</th>
+                            <th class="pb-3">Cliente</th>
+                            <th class="pb-3">Qtd</th>
+                            <th class="pb-3">Código Gerado</th>
+                            <th class="pb-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-400">
+                        <tr class="border-b border-white/5">
+                            <td class="py-3">26/01/26</td>
+                            <td class="text-white">Marcos S.</td>
+                            <td>100</td>
+                            <td class="font-mono text-yellow-500">A1Z90...A1Z99</td>
+                            <td><span class="text-green-500 text-[10px] bg-green-500/10 px-2 py-0.5 rounded">Pago</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div id="admin-content" style="display:none;">
-        <header>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <i data-lucide="layout-dashboard" style="color: var(--accent)"></i>
-            </div>
-            <div class="controls">
-                <div class="notif-btn pulse" id="btn-audio" onclick="toggleAudio()">
-                    <i id="audio-icon" data-lucide="volume-x"></i>
-                    <span id="audio-txt">LIGAR ÁUDIO</span>
-                </div>
-                <button class="logout-btn" onclick="fazerLogout()" title="Sair">
-                    <i data-lucide="log-out"></i>
-                </button>
-            </div>
-        </header>
+    <script>
+        // Sincroniza o slider com o texto
+        const slider = document.getElementById('fakeProgress');
+        const progValue = document.getElementById('progValue');
+        slider.oninput = function() { progValue.innerHTML = this.value + '%'; }
 
-        <main>
-            <div class="search-wrap">
-                <input type="text" id="searchInput" class="search-box" placeholder="Buscar no histórico..." oninput="resetPageAndSearch()">
-            </div>
-            <div class="grid">
-                <div class="card"><span>Vendas Aprovadas</span><b id="stat-ok">0</b></div>
-                <div class="card"><span>Faturamento Total</span><b id="stat-rev">R$ 0,00</b></div>
-                <div class="card"><span>Aguardando Pagamento</span><b id="stat-wait">0</b></div>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 50px;">#</th>
-                            <th>E-mail do Cliente</th>
-                            <th>Status</th>
-                            <th>Data</th>
-                            <th>Hora (BR)</th>
-                            <th>Valor</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
-            </div>
-
-            <div class="pagination">
-                <button class="page-btn" id="prevBtn" onclick="changePage(-1)">Anterior</button>
-                <span id="page-info">Página 1 de 1</span>
-                <button class="page-btn" id="nextBtn" onclick="changePage(1)">Próxima</button>
-            </div>
-        </main>
-    </div>
-
-    <script type="module">
-        const SUPABASE_URL = "https://mtuccfhpspgmpoehxmmr.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        const sound = new Audio('audio.wav');
-        let isLive = false;
-        let allOrders = [];
-        let filteredOrders = [];
-        let currentPage = 1;
-        const itemsPerPage = 50;
-
-        async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session && session.user.email === 'supereditor3049@gmail.com') {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('admin-content').style.display = 'block';
-                document.body.style.display = 'block';
-                initDashboard();
-            } else {
-                document.getElementById('login-screen').style.display = 'flex';
-                document.getElementById('admin-content').style.display = 'none';
-                document.body.style.display = 'block';
-                lucide.createIcons();
-            }
+        function saveSettings() {
+            const settings = {
+                progress: slider.value,
+                price: document.getElementById('ticketPrice').value
+            };
+            localStorage.setItem('raffleSettings', JSON.stringify(settings));
+            alert('Configurações salvas no navegador! Em um sistema real, aqui dispararíamos uma atualização para o GitHub/Banco.');
         }
-
-        window.fazerLogin = async () => {
-            const email = document.getElementById('logEmail').value;
-            const password = document.getElementById('logPass').value;
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) document.getElementById('loginError').innerText = "Acesso negado.";
-            else location.reload();
-        };
-
-        window.fazerLogout = async () => {
-            await supabase.auth.signOut();
-            location.reload();
-        };
-
-        async function initDashboard() {
-            await syncData();
-            runRealtime();
-            lucide.createIcons();
-        }
-
-        async function syncData() {
-            const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-            if (!data) return;
-            allOrders = data;
-            handleSearch();
-        }
-
-        window.resetPageAndSearch = () => {
-            currentPage = 1;
-            handleSearch();
-        };
-
-        window.handleSearch = () => {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            filteredOrders = allOrders.filter(o => o.email.toLowerCase().includes(term));
-            
-            const paid = allOrders.filter(o => o.status === 'approved');
-            const pending = allOrders.filter(o => o.status === 'pending');
-            
-            document.getElementById('stat-rev').innerText = (paid.length * 12.9).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-            document.getElementById('stat-ok').innerText = paid.length;
-            document.getElementById('stat-wait').innerText = pending.length;
-            
-            renderTable();
-        };
-
-        function renderTable() {
-    const start = (currentPage - 1) * itemsPerPage;
-    const pageData = filteredOrders.slice(start, start + itemsPerPage);
-
-    document.getElementById('tableBody').innerHTML = pageData.map((o, index) => {
-        const displayNumber = start + index + 1;
-        
-        // Converte a data do banco para o objeto Date do JS
-        const dateObj = new Date(o.created_at);
-        
-        // Força a exibição exata de Brasília, independente de onde você estiver acessando
-        const dataFormatada = dateObj.toLocaleDateString('pt-BR', { 
-            timeZone: 'America/Sao_Paulo' 
-        });
-        
-        const horaFormatada = dateObj.toLocaleTimeString('pt-BR', { 
-            timeZone: 'America/Sao_Paulo', 
-            hour: '2-digit', 
-            minute: '2-digit',
-            second: '2-digit' 
-        });
-
-        let statusLabel = 'AGUARDANDO';
-        if(o.status === 'approved') statusLabel = 'PAGO';
-        if(o.status === 'rejected') statusLabel = 'CANCELADO';
-
-        return `<tr>
-            <td style="color:var(--text-dim)">${displayNumber}</td>
-            <td>${o.email}</td>
-            <td><span class="badge ${o.status}">${statusLabel}</span></td>
-            <td>${dataFormatada}</td>
-            <td style="color:var(--text-dim)">${horaFormatada}</td>
-            <td style="color:var(--accent)">R$ 12,90</td>
-        </tr>`;
-    }).join('');
-
-    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage) || 1;
-    document.getElementById('page-info').innerText = `Página ${currentPage} de ${totalPages}`;
-    document.getElementById('prevBtn').disabled = currentPage === 1;
-    document.getElementById('nextBtn').disabled = currentPage >= totalPages;
-        }
-
-        window.changePage = (dir) => { 
-            currentPage += dir; 
-            renderTable(); 
-            window.scrollTo(0,0);
-        };
-
-        function runRealtime() {
-            supabase.channel('sales').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (p) => {
-                syncData();
-                if (isLive && p.new && p.new.status === 'approved') {
-                    sound.play().catch(()=>{});
-                }
-            }).subscribe();
-        }
-
-        window.toggleAudio = async () => {
-            isLive = !isLive;
-            const btn = document.getElementById('btn-audio'), icon = document.getElementById('audio-icon'), txt = document.getElementById('audio-txt');
-            btn.className = isLive ? 'notif-btn active' : 'notif-btn pulse';
-            icon.setAttribute('data-lucide', isLive ? 'volume-2' : 'volume-x');
-            txt.innerText = isLive ? "ÁUDIO ATIVO" : "LIGAR ÁUDIO";
-            lucide.createIcons();
-        };
-
-        window.onload = checkAuth;
     </script>
 </body>
 </html>
