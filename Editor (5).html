@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russo do Zero | Marcos Dantas</title>
+
+    <!-- ── SISTEMA ORIGINAL PRESERVADO ── -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --bg:          #0b0b0b;
+            --card:        #161616;
+            --card2:       #1e1e1e;
+            --card3:       #252525;
+            --gold:        #d4a843;
+            --gold2:       #f0c060;
+            --gold-bg:     rgba(212,168,67,0.1);
+            --gold-border: rgba(212,168,67,0.25);
+            --red:         #cc3333;
+            --red-bg:      rgba(204,51,51,0.12);
+            --red-border:  rgba(204,51,51,0.35);
+            --new:         #e05c2a;
+            --new-bg:      rgba(224,92,42,0.1);
+            --new-border:  rgba(224,92,42,0.3);
+            --text:        #f0ede6;
+            --text2:       #a09890;
+            --text3:       #5c5650;
+            --border:      rgba(255,255,255,0.09);
+            --r:           14px;
+            --nav-h:       58px;
+            --font:        'Inter', system-ui, -apple-system, sans-serif;
+            --mono:        'DM Mono', monospace;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 15px;
+            line-height: 1.65;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+            height: var(--nav-h);
+            background: rgba(11,11,11,0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 1.25rem;
+        }
+        .nav-tabs { display: flex; gap: 0.3rem; }
+        .nav-btn {
+            background: transparent; border: 1px solid transparent;
+            color: var(--text2); font-family: var(--font);
+            font-size: 0.85rem; font-weight: 500;
+            padding: 0.5rem 1rem; border-radius: 8px;
+            cursor: pointer; transition: all 0.18s;
+        }
+        .nav-btn:hover { color: var(--text); background: var(--card2); }
+        .nav-btn.active { background: var(--gold-bg); border-color: var(--gold-border); color: var(--gold); font-weight: 600; }
+        .logout-btn {
+            background: none; border: 1px solid #333; color: #555;
+            cursor: pointer; padding: 0.4rem 0.9rem; border-radius: 6px;
+            font-family: var(--font); font-size: 0.78rem; transition: 0.3s;
+        }
+        .logout-btn:hover { border-color: #cc3333; color: #cc3333; }
+
+        /* ── SECTIONS ── */
+        .section { display: none; padding-top: var(--nav-h); min-height: 100vh; }
+        .section.visible { display: block; }
+        .wrap { max-width: 700px; margin: 0 auto; padding: 0 1rem; }
+
+        /* ── HERO ── */
+        .hero { text-align: center; padding: 3.5rem 1.25rem 2.5rem; }
+        .hero-badge {
+            display: inline-block;
+            background: var(--gold-bg); border: 1px solid var(--gold-border); color: var(--gold);
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 0.35rem 0.9rem; border-radius: 20px; margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-size: clamp(2rem, 7vw, 3.6rem); font-weight: 800;
+            line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1rem;
+            background: linear-gradient(150deg, #ffffff 30%, var(--gold2) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-sub { font-size: 1.05rem; font-weight: 300; color: var(--text2); max-width: 500px; margin: 0 auto 2.5rem; }
+        .hero-btns { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+        .btn-gold {
+            background: var(--gold); color: #0b0b0b;
+            font-family: var(--font); font-weight: 700; font-size: 0.95rem;
+            padding: 0.8rem 1.8rem; border: none; border-radius: 10px; cursor: pointer; transition: all 0.18s;
+        }
+        .btn-gold:hover { background: var(--gold2); transform: translateY(-1px); }
+        .btn-outline {
+            background: transparent; color: var(--text); font-family: var(--font);
+            font-weight: 500; font-size: 0.95rem; padding: 0.8rem 1.8rem;
+            border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.18s;
+        }
+        .btn-outline:hover { border-color: var(--gold-border); color: var(--gold); }
+
+        /* ── LABELS ── */
+        .stitle {
+            font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold);
+            margin: 2.5rem 0 1rem; display: flex; align-items: center; gap: 0.6rem;
+        }
+        .stitle::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        /* ── TOPIC CARDS ── */
+        .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
+        @media (max-width: 500px) { .topic-grid { grid-template-columns: 1fr; } }
+        .topic-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 1.1rem; }
+        .topic-card-t { font-size: 0.8rem; font-weight: 700; color: var(--gold); margin-bottom: 0.55rem; }
+        .topic-card ul { list-style: none; }
+        .topic-card li { font-size: 0.82rem; color: var(--text2); padding: 0.12rem 0 0.12rem 0.9rem; position: relative; }
+        .topic-card li::before { content: '–'; position: absolute; left: 0; color: var(--text3); }
+
+        /* ── TOOLS ── */
+        .tools { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem; }
+        .tool-row {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 10px; padding: 0.85rem 1rem;
+            display: flex; align-items: center; gap: 0.85rem;
+        }
+        .tool-icon { font-size: 1.3rem; flex-shrink: 0; }
+        .tool-name { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+        .tool-link { font-size: 0.76rem; }
+        .tool-link a { color: var(--gold); text-decoration: none; }
+        .tool-link a:hover { text-decoration: underline; }
+
+        /* ── INFO BLOCKS ── */
+        .info-block { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 1.25rem; margin-bottom: 0.75rem; font-size: 0.9rem; color: var(--text2); }
+        .info-block p + p { margin-top: 0.75rem; }
+        .info-block strong { color: var(--text); font-weight: 600; }
+        .warn-block { background: var(--red-bg); border: 1px solid var(--red-border); border-radius: 10px; padding: 1rem 1.1rem; margin-bottom: 0.75rem; font-size: 0.88rem; color: var(--text2); }
+        .warn-block strong { color: #e07070; }
+        .result-block { background: var(--gold-bg); border: 1px solid var(--gold-border); border-radius: 10px; padding: 1rem 1.1rem; margin-bottom: 2.5rem; font-size: 0.88rem; color: var(--text2); }
+        .result-block strong { color: var(--gold); }
+
+        /* ── LESSONS ── */
+        .lessons-top { padding: 2.5rem 0 1.5rem; }
+        .lessons-top h2 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; }
+        .lessons-top p { color: var(--text2); font-size: 0.9rem; margin-top: 0.3rem; }
+
+        .lvl-sep { display: flex; align-items: center; gap: 0.75rem; margin: 2rem 0 1rem; }
+        .lvl-pill {
+            background: var(--card2); border: 1px solid var(--border); border-radius: 6px;
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--text2); padding: 0.3rem 0.7rem; white-space: nowrap;
+        }
+        .lvl-sep::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .lesson { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 1rem; overflow: hidden; }
+        .lesson.a1  { border-left: 3px solid #4a90d9; }
+        .lesson.a2  { border-left: 3px solid #7e57c2; }
+        .lesson.b1  { border-left: 3px solid #26a69a; }
+        .lesson.b2  { border-left: 3px solid #ef7c3a; }
+        .lesson.extra { border-left: 3px solid var(--new); }
+
+        .lesson-top { padding: 1rem 1.1rem 0.85rem; display: flex; align-items: flex-start; gap: 0.8rem; }
+        .lnum {
+            font-family: var(--mono); font-size: 0.72rem; font-weight: 500;
+            padding: 0.22rem 0.55rem; border-radius: 5px; flex-shrink: 0; margin-top: 0.1rem;
+            background: var(--card3); color: var(--text2); border: 1px solid var(--border);
+        }
+        .lnum.star { background: var(--new-bg); color: var(--new); border-color: var(--new-border); }
+        .ltitles { flex: 1; min-width: 0; }
+        .ltitle { font-size: 0.97rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+        .lsub { font-size: 0.77rem; color: var(--text3); margin-top: 0.2rem; }
+        .ldur { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); flex-shrink: 0; margin-top: 0.15rem; white-space: nowrap; }
+
+        .lesson-body { padding: 0 1.1rem 1.1rem; border-top: 1px solid var(--border); }
+        .blabel { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin: 0.9rem 0 0.5rem; }
+        .vlist, .tlist { display: flex; flex-direction: column; gap: 0.4rem; }
+
+        .vbtn {
+            display: flex; align-items: center; gap: 0.7rem;
+            background: var(--card2); border: 1px solid var(--border);
+            border-radius: 9px; padding: 0.65rem 0.85rem;
+            text-decoration: none; color: var(--text); font-size: 0.87rem; transition: all 0.15s;
+        }
+        .vbtn:hover { border-color: var(--red-border); background: var(--red-bg); }
+        .vico { width: 28px; height: 28px; flex-shrink: 0; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #fff; }
+        .vtxt { flex: 1; font-weight: 500; }
+
+        .tbtn {
+            display: flex; align-items: center; gap: 0.7rem;
+            background: var(--card2); border: 1px solid var(--border);
+            border-radius: 9px; padding: 0.65rem 0.85rem;
+            text-decoration: none; color: var(--text); font-size: 0.87rem; transition: all 0.15s; cursor: pointer;
+        }
+        .tbtn:hover { border-color: var(--gold-border); background: var(--gold-bg); }
+        .tico { width: 28px; height: 28px; flex-shrink: 0; background: var(--card3); border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+
+        /* ── TEXTS ── */
+        .texts-top { padding: 2.5rem 0 1.5rem; }
+        .texts-top h2 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; }
+        .texts-top p { color: var(--text2); font-size: 0.9rem; margin-top: 0.3rem; }
+
+        .filter-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+        .fbtn {
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--text2); font-family: var(--font); font-size: 0.8rem; font-weight: 500;
+            padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.15s;
+        }
+        .fbtn:hover, .fbtn.on { background: var(--gold-bg); border-color: var(--gold-border); color: var(--gold); }
+
+        .tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
+        .tcard {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--r); padding: 1.1rem;
+            text-decoration: none; display: block; transition: all 0.18s; position: relative; overflow: hidden;
+        }
+        .tcard::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gold); opacity: 0; transition: opacity 0.2s; }
+        .tcard:hover { border-color: var(--gold-border); transform: translateY(-2px); }
+        .tcard:hover::after { opacity: 1; }
+        .tc-level { font-family: var(--mono); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
+        .tc-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.25rem; }
+        .tc-desc { font-size: 0.8rem; color: var(--text3); }
+        .tc-foot { margin-top: 0.8rem; padding-top: 0.65rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .tc-tag { font-size: 0.74rem; color: var(--text3); }
+        .tc-arr { color: var(--gold); font-size: 0.9rem; }
+        .tempty { grid-column: 1/-1; text-align: center; color: var(--text3); padding: 3rem 1rem; font-size: 0.88rem; }
+
+        /* ── FOOTER ── */
+        footer { text-align: center; padding: 2rem 1rem 1.5rem; color: var(--text3); font-size: 0.78rem; border-top: 1px solid var(--border); margin-top: 3rem; }
+        footer strong { color: var(--text2); }
+
+        /* ── ADMIN MODAL ── */
+        .overlay { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem; }
+        .overlay.open { display: flex; }
+        .modal { background: var(--card); border: 1px solid var(--gold-border); border-radius: 16px; padding: 1.75rem; width: 100%; max-width: 480px; position: relative; }
+        .modal h3 { font-size: 1rem; font-weight: 700; color: var(--gold); margin-bottom: 1.25rem; }
+        .mclose { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text3); font-size: 1.1rem; cursor: pointer; padding: 0.25rem 0.5rem; border-radius: 6px; transition: color 0.15s; }
+        .mclose:hover { color: var(--text); }
+        .mfields { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1rem; }
+        .mfields input, .mfields select, .mrow input, .mrow select { background: var(--card2); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: 0.88rem; padding: 0.6rem 0.85rem; border-radius: 8px; outline: none; width: 100%; }
+        .mfields input:focus, .mrow input:focus, .mfields select:focus { border-color: var(--gold-border); }
+        .mfields input::placeholder { color: var(--text3); }
+        .mrow { display: flex; gap: 0.55rem; }
+        .mrow input, .mrow select { flex: 1; }
+        .madd { background: var(--gold); color: #0b0b0b; font-family: var(--font); font-weight: 700; font-size: 0.9rem; padding: 0.65rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; transition: background 0.15s; width: 100%; }
+        .madd:hover { background: var(--gold2); }
+        .mlogin { display: flex; flex-direction: column; gap: 0.65rem; }
+        .mlogin input { background: var(--card2); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: 0.9rem; padding: 0.65rem 0.85rem; border-radius: 8px; outline: none; }
+        .mlogin input:focus { border-color: var(--gold-border); }
+        .merr { font-size: 0.8rem; color: #e07070; margin-top: 0.15rem; display: none; }
+        .merr.show { display: block; }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2.2rem; }
+            .hero-sub { font-size: 0.97rem; }
+            .lessons-top h2, .texts-top h2 { font-size: 1.45rem; }
+            .tgrid { grid-template-columns: 1fr; }
+            .lesson-top { flex-wrap: wrap; }
+            nav { padding: 0 0.75rem; }
+            .nav-btn { padding: 0.45rem 0.7rem; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     CONTEÚDO PRINCIPAL (liberado pelo Supabase)
+════════════════════════════════════════════ -->
+<main id="content" style="display:none;">
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="go('intro',this)">Início</button>
+            <button class="nav-btn" onclick="go('aulas',this)">Aulas</button>
+            <button class="nav-btn" onclick="go('textos',this)">Textos</button>
+        </div>
+        <button class="logout-btn" onclick="fazerLogout()">
+            <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
+    </nav>
+
+    <!-- ════════ INTRO ════════ -->
+    <section id="intro" class="section visible">
+    <div class="wrap">
+
+        <div class="hero">
+            <div class="hero-badge">Фácil е Прático · Marcos Dantas</div>
+            <h1>Aprenda<br>Russo do Zero</h1>
+            <p class="hero-sub">De uma maneira diferente — fácil, rápida e no seu próprio ritmo, sem ficar preso na gramática por anos.</p>
+            <div class="hero-btns">
+                <button class="btn-gold" onclick="go('aulas',document.querySelectorAll('.nav-btn')[1])">Ver Aulas →</button>
+                <button class="btn-outline" onclick="go('textos',document.querySelectorAll('.nav-btn')[2])">Textos de Leitura</button>
+            </div>
+        </div>
+
+        <div class="stitle">🎯 O que você vai aprender</div>
+        <div class="topic-grid">
+            <div class="topic-card">
+                <div class="topic-card-t">📖 Fundação sólida</div>
+                <ul>
+                    <li>Alfabeto com foco em pronúncia real</li>
+                    <li>Saudações e frases fixas do dia a dia</li>
+                    <li>Entonação russa — 7 padrões essenciais</li>
+                    <li>Redução vocálica: como nativos falam</li>
+                </ul>
+            </div>
+            <div class="topic-card">
+                <div class="topic-card-t">⚙️ Gramática na ordem certa</div>
+                <ul>
+                    <li>Pronomes pessoais e possessivos</li>
+                    <li>5W — base de perguntas e respostas</li>
+                    <li>Conjugação: passado, presente, futuro</li>
+                    <li>Substantivos: gênero, plural e casos</li>
+                </ul>
+            </div>
+            <div class="topic-card">
+                <div class="topic-card-t">🔬 Métodos para fluência</div>
+                <ul>
+                    <li>Vocabulário via músicas russas</li>
+                    <li>Shadowing + fala ativa desde o início</li>
+                    <li>Gravações manuais + Anki (repetição)</li>
+                    <li>IA para criar diálogos personalizados</li>
+                </ul>
+            </div>
+            <div class="topic-card">
+                <div class="topic-card-t">🌊 Imersão real</div>
+                <ul>
+                    <li>Textos A1–B1 para leitura ativa</li>
+                    <li>Filmes e séries — método em 2 etapas</li>
+                    <li>Comprehensible Russian no YouTube</li>
+                    <li>Declinações, particípios e coesão textual</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="stitle">🛠️ Ferramentas necessárias</div>
+        <div class="tools">
+            <div class="tool-row"><div class="tool-icon">📱</div><div><div class="tool-name">AnkiDroid (Android)</div><div class="tool-link"><a href="https://play.google.com/store/apps/details?id=com.ichi2.anki" target="_blank">Baixar na Play Store</a></div></div></div>
+            <div class="tool-row"><div class="tool-icon">🍏</div><div><div class="tool-name">AnkiMobile (iOS)</div><div class="tool-link"><a href="https://apps.apple.com/app/ankimobile-flashcards/id373493387" target="_blank">Baixar na App Store</a></div></div></div>
+            <div class="tool-row"><div class="tool-icon">💻</div><div><div class="tool-name">Anki Desktop</div><div class="tool-link"><a href="https://apps.ankiweb.net" target="_blank">Baixar para PC / Mac</a></div></div></div>
+            <div class="tool-row"><div class="tool-icon">🦉</div><div><div class="tool-name">Duolingo</div><div class="tool-link"><a href="https://duolingo.com" target="_blank">15 min/dia — variedade de vocabulário</a></div></div></div>
+            <div class="tool-row"><div class="tool-icon">🎧</div><div><div class="tool-name">App texto + áudio</div><div class="tool-link" style="color:var(--text3);font-size:0.76rem;">Beelinguapp · Clozemaster · Russian Pod101</div></div></div>
+        </div>
+
+        <div class="stitle">🎵 O método secreto</div>
+        <div class="info-block">
+            <p>Aprenda vocabulário russo através de músicas — as palavras ficam na memória por <strong>anos</strong> sem precisar repetir. Use músicas lentas e claras (романсы, Земфира, Вертинский), acompanhe a letra e grave você mesmo em voz alta.</p>
+            <p>A música ativa memória emocional e prosódica simultaneamente — as mesmas vias que o cérebro usa para armazenar língua nativa. Combine com Anki para resultado máximo.</p>
+        </div>
+
+        <div class="warn-block"><strong>⚠️ Importante:</strong> Não se apresse. Pratique 1–2 horas por dia e passe para o próximo passo <em>somente quando dominar o atual com confiança</em>.</div>
+        <div class="result-block"><strong>Resultado realista:</strong> com consistência (1–2 horas/dia), você terá uma base sólida em <strong>8–12 meses</strong>. Каждый день — cada dia conta.</div>
+
+        <div class="hero-btns" style="padding-bottom:2.5rem;">
+            <button class="btn-gold" onclick="go('aulas',document.querySelectorAll('.nav-btn')[1])">Começar as Aulas →</button>
+            <button class="btn-outline" onclick="go('textos',document.querySelectorAll('.nav-btn')[2])">Textos de Leitura</button>
+        </div>
+
+    </div>
+    <footer><strong>Marcos Dantas</strong> — Russo do Zero · Фácil е Прático</footer>
+    </section>
+
+    <!-- ════════ AULAS ════════ -->
+    <section id="aulas" class="section">
+    <div class="wrap">
+        <div class="lessons-top">
+            <h2>Passo a Passo</h2>
+            <p>Siga a ordem. Cada tema já mostra aulas e tarefas práticas.</p>
+        </div>
+
+        <!-- A1 -->
+        <div class="lvl-sep"><span class="lvl-pill">A1 · Fundação</span></div>
+
+        <div class="lesson a1">
+            <div class="lesson-top"><span class="lnum">01</span><div class="ltitles"><div class="ltitle">Alfabeto Cirílico</div><div class="lsub">Алфавит · sons e pronúncia letra por letra</div></div><span class="ldur">1–2 dias</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Alfabeto russo completo — letra por letra</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Pronúncia: consoantes duras e moles</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Leitura silábica para iniciantes</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Escrever o alfabeto 3× à mão com pronúncia em voz alta</span></a>
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">📋</div><span>Deck Anki: 33 letras com áudio</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson a1">
+            <div class="lesson-top"><span class="lnum">02</span><div class="ltitles"><div class="ltitle">Apresentações e Preposições Básicas</div><div class="lsub">Знакомство · Как дела? Меня зовут...</div></div><span class="ldur">2–3 dias</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Saudações e apresentações em russo</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Preposições básicas: в, на, с, к, из, о</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">🎙</div><span>Gravar uma apresentação de 30 segundos em russo</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson extra">
+            <div class="lesson-top"><span class="lnum star">★</span><div class="ltitles"><div class="ltitle">Frases Fixas / Chunks</div><div class="lsub">Устойчивые выражения · expressões prontas que nativos usam todo dia</div></div><span class="ldur">paralelo</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">50 frases que todo iniciante precisa saber</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">📋</div><span>Deck Anki: 50 chunks essenciais</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson a1">
+            <div class="lesson-top"><span class="lnum">03</span><div class="ltitles"><div class="ltitle">Pronomes Pessoais</div><div class="lsub">Личные местоимения · я, ты, он, она, мы, вы, они</div></div><span class="ldur">2 dias</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Pronomes pessoais com exemplos práticos</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Frases com pronomes no cotidiano</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Escrever 5 frases originais com cada pronome</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson a1">
+            <div class="lesson-top"><span class="lnum">04</span><div class="ltitles"><div class="ltitle">5W — Perguntas Essenciais</div><div class="lsub">Кто? Что? Где? Когда? Почему? Как?</div></div><span class="ldur">3–5 dias</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Como fazer perguntas em russo</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>3 perguntas e respostas para cada palavra interrogativa</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson a1">
+            <div class="lesson-top"><span class="lnum">05</span><div class="ltitles"><div class="ltitle">Pronomes Possessivos</div><div class="lsub">Притяжательные местоимения · мой, твой, его, наш...</div></div><span class="ldur">3 dias</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Pronomes possessivos em russo com exemplos</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Descrever sua casa e família usando possessivos</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson a1">
+            <div class="lesson-top"><span class="lnum">06</span><div class="ltitles"><div class="ltitle">Conjugação Verbal Básica</div><div class="lsub">Спряжение глаголов · passado, presente, futuro</div></div><span class="ldur">2 semanas</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Conjugação no presente — 1ª e 2ª conjugação</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Passado — concordância de gênero</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Futuro simples e composto</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Conjugar 10 verbos nos 3 tempos com todos os pronomes</span></a>
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">🎙</div><span>Gravar 5 frases em cada tempo verbal</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson a1">
+            <div class="lesson-top"><span class="lnum">07</span><div class="ltitles"><div class="ltitle">Textos A1 + Apps e Recursos</div><div class="lsub">Тексты для начинающих · apps, YouTube, podcasts</div></div><span class="ldur">paralelo</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="https://www.youtube.com/@RussianWithMax" target="_blank"><div class="vico">▶</div><span class="vtxt">Russian With Max — canal A1 recomendado</span></a>
+                    <a class="vbtn" href="https://www.youtube.com/@comprehensiblerussian" target="_blank"><div class="vico">▶</div><span class="vtxt">Comprehensible Russian — imersão guiada</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">📖</div><span>Ler 1 texto A1 desta plataforma por dia</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson a1">
+            <div class="lesson-top"><span class="lnum">08</span><div class="ltitles"><div class="ltitle">Substantivos: Gênero, Plural e Casos (intro)</div><div class="lsub">Существительные · masculino, feminino, neutro</div></div><span class="ldur">1 semana</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Gênero dos substantivos — regras práticas</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Plural — terminações e exceções</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Classificar 20 substantivos por gênero e fazer o plural</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson extra">
+            <div class="lesson-top"><span class="lnum star">★</span><div class="ltitles"><div class="ltitle">Entonação Russa (ИК)</div><div class="lsub">Интонация · 7 padrões que mudam o significado da frase</div></div><span class="ldur">1 semana</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Os 7 tipos de entonação russa (ИК-1 ao ИК-7)</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">🎙</div><span>Gravar a mesma frase com 3 entonações e comparar</span></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- A2 -->
+        <div class="lvl-sep"><span class="lvl-pill">A2 · Consolidação</span></div>
+
+        <div class="lesson a2">
+            <div class="lesson-top"><span class="lnum">09</span><div class="ltitles"><div class="ltitle">Vocabulário Funcional A2–B1</div><div class="lsub">Лексика · rotina, família, trabalho, cidade</div></div><span class="ldur">contínuo</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">500 palavras mais usadas no russo cotidiano</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">📋</div><span>Adicionar 10 palavras novas ao Anki por dia</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson a2">
+            <div class="lesson-top"><span class="lnum">10</span><div class="ltitles"><div class="ltitle">Adjetivos: Concordância e Posição</div><div class="lsub">Прилагательные · красивый / красивая / красивое</div></div><span class="ldur">1–2 semanas</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Adjetivos — concordância com substantivos</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Descrever 5 objetos com 3 adjetivos cada</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson extra">
+            <div class="lesson-top"><span class="lnum star">★</span><div class="ltitles"><div class="ltitle">Redução Vocálica</div><div class="lsub">Аканье / иканье · О átono vira А — como nativos realmente falam</div></div><span class="ldur">1 semana</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Redução vocálica russa — аканье e иканье</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">🎙</div><span>Shadowing: imitar fala nativa prestando atenção nas vogais átonas</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson a2">
+            <div class="lesson-top"><span class="lnum">16</span><div class="ltitles"><div class="ltitle">Verbos no Presente, Aspecto e Reflexivos</div><div class="lsub">Настоящее время · глаголы на -ся/-сь</div></div><span class="ldur">2–3 semanas</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Verbos reflexivos — учиться, одеваться, нравиться</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Introdução ao aspecto verbal</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Criar frases com 10 verbos reflexivos da rotina diária</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson a2">
+            <div class="lesson-top"><span class="lnum">17</span><div class="ltitles"><div class="ltitle">Aspecto Verbal: Perfeito e Imperfeito</div><div class="lsub">Вид глагола · НСВ / СВ — a distinção mais importante do russo</div></div><span class="ldur">3–4 semanas</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">A diferença real entre НСВ e СВ</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Pares de aspecto mais comuns: писать / написать</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">📋</div><span>Deck Anki: 50 pares de aspecto com frases de contexto</span></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- B1 -->
+        <div class="lvl-sep"><span class="lvl-pill">B1 · Estrutura Avançada</span></div>
+
+        <div class="lesson b1">
+            <div class="lesson-top"><span class="lnum">18</span><div class="ltitles"><div class="ltitle">Casos (Declinações)</div><div class="lsub">Падежи · Nominativo, Acusativo, Genitivo, Dativo, Instrumental, Prepositivo</div></div><span class="ldur">2–3 meses</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Os 6 casos russos — visão geral e lógica</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Nominativo e Acusativo na prática</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Genitivo, Dativo e Instrumental com exemplos</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Declinar 10 substantivos em todos os 6 casos</span></a>
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">📋</div><span>Deck Anki: terminações por caso e classe (m/f/n)</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson b1">
+            <div class="lesson-top"><span class="lnum">19</span><div class="ltitles"><div class="ltitle">Numerais, Concordância e Datas</div><div class="lsub">Числительные · 1 / 2–4 / 5+ — concordâncias distintas</div></div><span class="ldur">2–3 semanas</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Numerais e concordância — 1 / 2–4 / 5+</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Datas em russo — dia, mês e ano</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Escrever 10 datas importantes em russo por extenso</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson b1">
+            <div class="lesson-top"><span class="lnum">20</span><div class="ltitles"><div class="ltitle">Preposições e Casos que Regem</div><div class="lsub">Предлоги + падежи · в+Ac vs в+Pr, на, с, без, для...</div></div><span class="ldur">2–3 semanas</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Preposições e seus casos obrigatórios</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Criar frases usando cada preposição no caso correto</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson b1">
+            <div class="lesson-top"><span class="lnum">21</span><div class="ltitles"><div class="ltitle">Negação, Perguntas, Partículas e Ordem de Palavras</div><div class="lsub">Отрицание · не, нет, ни... ни — ordem livre mas lógica</div></div><span class="ldur">2 semanas</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Negação — не vs нет vs ни</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Ordem de palavras e ênfase em russo</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Transformar 10 frases afirmativas em negativas e perguntas</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson b1">
+            <div class="lesson-top"><span class="lnum">22</span><div class="ltitles"><div class="ltitle">Verbos de Movimento e Pares de Aspecto</div><div class="lsub">Глаголы движения · идти/ходить, ехать/ездить</div></div><span class="ldur">3–4 semanas</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Verbos de movimento — unidirecional vs multidirecional</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Prefixos: при-, у-, за-, вы-, пере-</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Descrever uma viagem usando 5 verbos de movimento diferentes</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson extra">
+            <div class="lesson-top"><span class="lnum star">★</span><div class="ltitles"><div class="ltitle">Prefixos Verbais (Приставки)</div><div class="lsub">за-, вы-, при-, пере-, от- · sistema produtivo de formação de verbos</div></div><span class="ldur">2–3 semanas</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Como prefixos mudam o sentido dos verbos russos</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">📋</div><span>Deck Anki: 40 verbos preverbados com significados contrastantes</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson b1">
+            <div class="lesson-top"><span class="lnum">23</span><div class="ltitles"><div class="ltitle">Imperativo, Condicional e Modos Verbais</div><div class="lsub">Повелительное наклонение · Иди! Скажи! + condicional com бы</div></div><span class="ldur">2–3 semanas</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Imperativo — formação e uso</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Condicional com бы — se eu fosse...</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Criar uma receita ou instruções usando o imperativo</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson b1">
+            <div class="lesson-top"><span class="lnum">24</span><div class="ltitles"><div class="ltitle">Particípios, Adverbiais e Voz Passiva</div><div class="lsub">Причастия и деепричастия · estruturas da escrita formal</div></div><span class="ldur">1 mês</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Particípios — ativos e passivos</span></a>
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Gerúndios (деепричастия) na escrita formal</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Reescrever 5 frases substituindo orações relativas por particípios</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson extra">
+            <div class="lesson-top"><span class="lnum star">★</span><div class="ltitles"><div class="ltitle">Orações Subordinadas</div><div class="lsub">Союзы · что, чтобы, потому что, хотя, если, когда</div></div><span class="ldur">2 semanas</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Conjunções subordinativas mais usadas em russo</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Escrever 10 frases complexas com orações subordinadas diferentes</span></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- B2 -->
+        <div class="lvl-sep"><span class="lvl-pill">B2 · Domínio e Estilo</span></div>
+
+        <div class="lesson b2">
+            <div class="lesson-top"><span class="lnum">25</span><div class="ltitles"><div class="ltitle">Estilo, Coloquialismos e Registro</div><div class="lsub">Разговорный стиль · livro vs rua vs formal</div></div><span class="ldur">contínuo</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Russo coloquial vs formal — principais diferenças</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">🎙</div><span>Assistir Easy Russian e anotar 10 expressões coloquiais</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson extra">
+            <div class="lesson-top"><span class="lnum star">★</span><div class="ltitles"><div class="ltitle">Coesão Textual</div><div class="lsub">Вводные слова · во-первых, однако, кстати, наоборот</div></div><span class="ldur">1–2 semanas</span></div>
+            <div class="lesson-body">
+                <div class="blabel">▶ Aulas</div>
+                <div class="vlist">
+                    <a class="vbtn" href="SEU_LINK" target="_blank"><div class="vico">▶</div><span class="vtxt">Palavras parentéticas e conectores textuais em russo</span></a>
+                </div>
+                <div class="blabel">✦ Tarefas</div>
+                <div class="tlist">
+                    <a class="tbtn" href="SEU_LINK" target="_blank"><div class="tico">✎</div><span>Escrever um parágrafo usando 5 вводные слова diferentes</span></a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <footer><strong>Marcos Dantas</strong> — Russo do Zero · Фácil е Прático</footer>
+    </section>
+
+    <!-- ════════ TEXTOS ════════ -->
+    <section id="textos" class="section">
+    <div class="wrap">
+        <div class="texts-top">
+            <h2>Textos de Leitura</h2>
+            <p>Textos progressivos para o russo real do dia a dia.</p>
+        </div>
+        <div class="filter-row">
+            <button class="fbtn on" onclick="filter('todos',this)">Todos</button>
+            <button class="fbtn" onclick="filter('A1',this)">A1</button>
+            <button class="fbtn" onclick="filter('A2',this)">A2</button>
+            <button class="fbtn" onclick="filter('B1',this)">B1</button>
+            <button class="fbtn" onclick="filter('B2',this)">B2</button>
+        </div>
+        <div class="tgrid" id="tgrid"></div>
+        <div style="height:1rem;"></div>
+    </div>
+    <footer id="ftextos"><strong>Marcos Dantas</strong> — Russo do Zero · Фácil е Прático</footer>
+    </section>
+
+</main>
+
+<!-- ADMIN MODAL (textos) -->
+<div class="overlay" id="overlay" onclick="bgClose(event)">
+    <div class="modal">
+        <button class="mclose" onclick="closeModal()">✕</button>
+        <div id="vLogin">
+            <h3>🔐 Acesso Administrativo</h3>
+            <div class="mlogin">
+                <input type="password" id="mpw" placeholder="Senha" onkeydown="if(event.key==='Enter')checkPw()">
+                <button class="madd" onclick="checkPw()">Entrar</button>
+                <div class="merr" id="merr">Senha incorreta.</div>
+            </div>
+        </div>
+        <div id="vPanel" style="display:none;">
+            <h3>⚙️ Adicionar Texto</h3>
+            <div class="mfields">
+                <input id="atitle" placeholder="Título (ex: No Mercado)">
+                <input id="adesc"  placeholder="Descrição curta">
+                <input id="aurl"   placeholder="URL do arquivo HTML">
+                <div class="mrow">
+                    <select id="alvl">
+                        <option value="A1">A1 — Iniciante</option>
+                        <option value="A2">A2 — Básico</option>
+                        <option value="B1">B1 — Intermediário</option>
+                        <option value="B2">B2 — Avançado</option>
+                    </select>
+                    <input id="atag" placeholder="Tema (ex: Rotina)">
+                </div>
+            </div>
+            <button class="madd" onclick="addText()">+ Adicionar texto</button>
+        </div>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SISTEMA ORIGINAL PRESERVADO INTEGRALMENTE
+════════════════════════════════════════════ -->
+<script>
+    // ── Supabase (original) ──
+    const _supabase = supabase.createClient(
+        'https://mtuccfhpspgmpoehxmmr.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8'
+    );
+
+    // ── Verificação de acesso (original) ──
+    async function checkAccess() {
+        const { data: { session }, error } = await _supabase.auth.getSession();
+        if (!session || error) {
+            document.body.innerHTML = `
+            <div style="background:#000;color:#fff;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:sans-serif;padding:20px;">
+                <h1 style="color:#d4a843;font-size:2.5rem;margin-bottom:20px;">Acesso Negado</h1>
+                <p style="color:#aaa;font-size:1.1rem;max-width:500px;">Esta área é exclusiva para alunos. Realize o login para continuar.</p>
+                <div style="background:#111;padding:20px;border-radius:15px;border:1px solid #333;margin:30px 0;">
+                    <p>Dúvidas? Suporte: <b style="color:#d4a843">supereditor3049@gmail.com</b></p>
+                </div>
+                <a href="index.html" style="color:#d4a843;text-decoration:none;font-weight:bold;border:1px solid #d4a843;padding:10px 20px;border-radius:5px;">Ir para Login</a>
+            </div>`;
+        } else {
+            document.getElementById('content').style.display = 'block';
+            console.log("Acesso autorizado para:", session.user.email);
+        }
+    }
+
+    // ── Logout (original) ──
+    async function fazerLogout() {
+        await _supabase.auth.signOut();
+        window.location.href = 'index.html';
+    }
+
+    // ── Executa verificação (original) ──
+    checkAccess();
+
+    // ══════════════════════════════════════
+    // NAVEGAÇÃO DAS ABAS
+    // ══════════════════════════════════════
+    function go(id, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('visible');
+        btn.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ══════════════════════════════════════
+    // ADMIN DE TEXTOS — triplo clique no rodapé
+    // ══════════════════════════════════════
+    const PW = 'russo2024'; // ← troque a senha aqui
+    const KEY = 'rz_textos_v1';
+    let textos = [], cur = 'todos', clicks = 0, timer;
+
+    document.getElementById('ftextos').addEventListener('click', () => {
+        clicks++;
+        clearTimeout(timer);
+        timer = setTimeout(() => clicks = 0, 700);
+        if (clicks >= 3) {
+            clicks = 0;
+            document.getElementById('overlay').classList.add('open');
+            document.getElementById('vLogin').style.display = 'block';
+            document.getElementById('vPanel').style.display = 'none';
+            document.getElementById('merr').classList.remove('show');
+            document.getElementById('mpw').value = '';
+            setTimeout(() => document.getElementById('mpw').focus(), 80);
+        }
+    });
+
+    function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+    function bgClose(e)   { if (e.target === document.getElementById('overlay')) closeModal(); }
+    function checkPw() {
+        if (document.getElementById('mpw').value === PW) {
+            document.getElementById('vLogin').style.display = 'none';
+            document.getElementById('vPanel').style.display = 'block';
+        } else {
+            document.getElementById('merr').classList.add('show');
+            document.getElementById('mpw').value = '';
+            document.getElementById('mpw').focus();
+        }
+    }
+
+    function load() {
+        try { textos = JSON.parse(localStorage.getItem(KEY)) || samples(); }
+        catch(e) { textos = samples(); }
+    }
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(textos)); } catch(e){} }
+    function samples() {
+        return [
+            { title:'Меня зовут Анна',        desc:'Apresentação pessoal básica',          url:'#', level:'A1', tag:'Apresentação' },
+            { title:'В магазине',              desc:'Diálogo no supermercado',              url:'#', level:'A1', tag:'Cotidiano'    },
+            { title:'Мой день',                desc:'Rotina diária com verbos de movimento', url:'#', level:'A2', tag:'Rotina'      },
+            { title:'В кафе',                  desc:'Pedir comida e bebida num café',       url:'#', level:'A1', tag:'Alimentação'  },
+            { title:'Моя семья',               desc:'Família e pronomes possessivos',       url:'#', level:'A1', tag:'Família'      },
+            { title:'Москва — столица России', desc:'Moscou com uso do genitivo',           url:'#', level:'A2', tag:'Cultura'      },
+        ];
+    }
+    function addText() {
+        const t = document.getElementById('atitle').value.trim();
+        const d = document.getElementById('adesc').value.trim();
+        const u = document.getElementById('aurl').value.trim();
+        const l = document.getElementById('alvl').value;
+        const g = document.getElementById('atag').value.trim();
+        if (!t || !u) { alert('Título e URL são obrigatórios.'); return; }
+        textos.unshift({ title:t, desc:d, url:u, level:l, tag:g||l });
+        save(); render(cur); closeModal();
+        ['atitle','adesc','aurl','atag'].forEach(id => document.getElementById(id).value = '');
+    }
+    function filter(f, btn) {
+        cur = f;
+        document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
+        btn.classList.add('on');
+        render(f);
+    }
+    function render(f) {
+        const g = document.getElementById('tgrid');
+        const list = f === 'todos' ? textos : textos.filter(t => t.level === f);
+        if (!list.length) { g.innerHTML = '<p class="tempty">Nenhum texto nesta categoria ainda.</p>'; return; }
+        g.innerHTML = list.map(t => `
+            <a class="tcard" href="${t.url}" target="_blank">
+                <div class="tc-level">${t.level}</div>
+                <div class="tc-title">${t.title}</div>
+                <div class="tc-desc">${t.desc}</div>
+                <div class="tc-foot">
+                    <span class="tc-tag">${t.tag}</span>
+                    <span class="tc-arr">→</span>
+                </div>
+            </a>`).join('');
+    }
+
+    load(); render('todos');
+</script>
+</body>
+</html>
