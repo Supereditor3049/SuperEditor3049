@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>Russo do Zero – Método Marcos Dantas | Fácil e Rápido</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" type="image/png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #f5b042;      /* dourado premium */
+            --primary-dark: #d98f2b;
+            --secondary: #e63946;     /* vermelho russo */
+            --bg: #0a0a0c;
+            --card-bg: rgba(18, 18, 24, 0.9);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text: #ffffff;
+            --text-dim: #b0b0c0;
+            --glow: 0 8px 30px rgba(245, 176, 66, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+
+        /* background com textura sutil */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 15% 30%, rgba(245,176,66,0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+        }
+
+        /* Login Icon */
+        .login-trigger {
+            position: fixed;
+            top: 24px;
+            right: 28px;
+            cursor: pointer;
+            z-index: 100;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(8px);
+            padding: 10px;
+            border-radius: 60px;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .login-trigger:hover {
+            background: rgba(245,176,66,0.2);
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(245,176,66,0.15);
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: var(--primary);
+            margin-bottom: 24px;
+            backdrop-filter: blur(4px);
+        }
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #FFFFFF 20%, var(--primary) 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+        .hero-sub {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            max-width: 700px;
+            margin: 0 auto 32px;
+        }
+        /* video responsivo */
+        .video-wrapper {
+            max-width: 880px;
+            margin: 0 auto;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Cards Globais */
+        .card-premium {
+            background: var(--card-bg);
+            backdrop-filter: blur(2px);
+            border: 1px solid var(--card-border);
+            border-radius: 32px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+        .card-premium:hover {
+            border-color: rgba(245,176,66,0.4);
+            box-shadow: var(--glow);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-title i {
+            color: var(--primary);
+        }
+
+        /* Highlights grid */
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin: 40px 0;
+        }
+        .highlight-item {
+            background: rgba(255,255,255,0.02);
+            border-radius: 24px;
+            padding: 24px 16px;
+            text-align: center;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.03);
+            transition: 0.2s;
+        }
+        .highlight-item:hover { border-color: var(--primary); background: rgba(245,176,66,0.05);}
+        .highlight-icon { font-size: 2.2rem; margin-bottom: 12px; color: var(--primary);}
+        .highlight-item h3 { font-size: 1.3rem; margin-bottom: 6px; font-weight: 700;}
+        .highlight-item p { color: var(--text-dim); font-size: 0.9rem;}
+
+        /* modulo grid */
+        .modulos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+        .modulo-card {
+            background: rgba(255,255,255,0.02);
+            border-radius: 24px;
+            padding: 24px;
+            border-left: 3px solid var(--primary);
+        }
+        .modulo-card h3 { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; font-size: 1.3rem;}
+        .modulo-card ul { list-style: none; padding: 0; }
+        .modulo-card li { margin-bottom: 12px; display: flex; gap: 10px; align-items: baseline; font-size: 0.95rem; color: #ddd;}
+
+        /* callout promessa */
+        .promessa-card {
+            background: linear-gradient(135deg, rgba(245,176,66,0.1), rgba(0,0,0,0.2));
+            border-radius: 32px;
+            padding: 32px;
+            margin: 40px 0;
+            border: 1px solid rgba(245,176,66,0.3);
+            text-align: center;
+        }
+        .promessa-card h2 { font-size: 1.8rem; margin-bottom: 16px; }
+        .promessa-card .big-text { font-size: 1.2rem; color: #e0e0e0; max-width: 800px; margin: 0 auto;}
+
+        /* pricing premium */
+        .pricing-card {
+            text-align: center;
+            background: linear-gradient(135deg, #111118, #0a0a0e);
+            position: relative;
+            overflow: hidden;
+        }
+        .price-badge {
+            background: var(--secondary);
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 60px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+        .price-old { font-size: 1.8rem; text-decoration: line-through; color: #888; margin-bottom: 8px; }
+        .price-new { font-size: 4rem; font-weight: 800; color: var(--primary); line-height: 1; }
+        .price-new small { font-size: 1.2rem; font-weight: 400; }
+        .btn-main {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            border: none;
+            color: #000;
+            font-weight: 800;
+            font-size: 1.2rem;
+            padding: 18px 32px;
+            border-radius: 60px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 380px;
+            transition: 0.2s;
+            box-shadow: 0 10px 25px -5px rgba(245,176,66,0.4);
+            margin: 20px auto 0;
+        }
+        .btn-main:hover { transform: translateY(-3px); filter: brightness(1.05); box-shadow: 0 20px 30px -8px rgba(245,176,66,0.5);}
+        .limited-timer {
+            background: rgba(0,0,0,0.5);
+            border-radius: 48px;
+            padding: 12px 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px auto 0;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+        }
+        .garantia {
+            background: rgba(0,255,150,0.05);
+            border-radius: 20px;
+            padding: 16px;
+            margin-top: 28px;
+            font-size: 0.85rem;
+        }
+
+        /* footer */
+        footer {
+            margin-top: 80px;
+            padding: 48px 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container { padding: 24px 16px; }
+            h1 { font-size: 2.2rem; }
+            .section-title { font-size: 1.6rem; }
+            .card-premium { padding: 24px; }
+            .highlights-grid { gap: 16px; }
+            .promessa-card h2 { font-size: 1.4rem; }
+            .price-new { font-size: 3rem; }
+        }
+        @media (max-width: 480px) {
+            .hero-badge { font-size: 0.7rem; }
+            .modulos-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Modal (preservado estilo premium) */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #111216;
+            border: 1px solid rgba(245,176,66,0.4);
+            padding: 40px;
+            border-radius: 36px;
+            width: 90%;
+            max-width: 440px;
+            text-align: center;
+            position: relative;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            border-radius: 60px;
+            border: 1px solid #2a2a2e;
+            background: #0a0a0c;
+            color: white;
+            font-size: 1rem;
+        }
+        .modal-content input:focus { border-color: var(--primary); outline: none; }
+        .close-modal { position: absolute; top: 20px; right: 24px; cursor: pointer; color: #aaa; }
+        .support-notice {
+            background: rgba(245,176,66,0.08);
+            padding: 12px;
+            border-radius: 20px;
+            margin-top: 16px;
+            font-size: 0.8rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-trigger" onclick="openModal(true)">
+    <i data-lucide="user-circle" style="width: 28px; height: 28px;"></i>
+</div>
+
+<div class="container">
+    <div class="hero">
+        <div class="hero-badge">⚡ MÉTODO EXCLUSIVO • MARCOS DANTAS</div>
+        <h1>Russo do Zero<br><span style="background: linear-gradient(135deg,#f5b042,#ffdd88); -webkit-background-clip:text; background-clip:text; color:transparent;">Fácil, Rápido e sem travas</span></h1>
+        <p class="hero-sub">Aprenda de verdade — sem passar anos na gramática. Resultados reais em semanas, com um sistema progressivo e imersivo.</p>
+        <div class="video-wrapper">
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/SEU_VIDEO_AQUI" title="Vídeo Copy Russo do Zero" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Highlights / pontos fortes -->
+    <div class="highlights-grid">
+        <div class="highlight-item"><div class="highlight-icon">🎯</div><h3>+250M falantes</h3><p>Comunique-se com milhões</p></div>
+        <div class="highlight-item"><div class="highlight-icon">🎵</div><h3>Método musical</h3><p>Palavras grudam na memória</p></div>
+        <div class="highlight-item"><div class="highlight-icon">⚡</div><h3>8–12 meses</h3><p>Base sólida com 1h/dia</p></div>
+        <div class="highlight-item"><div class="highlight-icon">🧠</div><h3>Sem decoreba</h3><p>Gramática na ordem certa</p></div>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="card-premium">
+        <div class="section-title"><i data-lucide="target"></i> O que você vai dominar</div>
+        <div class="modulos-grid">
+            <div class="modulo-card"><h3><i data-lucide="book-open"></i> Fundação sólida</h3><ul><li>✅ Alfabeto com pronúncia real</li><li>✅ Saudações e frases fixas</li><li>✅ 7 padrões de entonação</li><li>✅ Redução vocálica (nativo)</li></ul></div>
+            <div class="modulo-card"><h3><i data-lucide="sliders"></i> Gramática na ordem certa</h3><ul><li>✅ Pronomes pessoais e possessivos</li><li>✅ 5W – perguntas e respostas</li><li>✅ Conjugação (passado/presente/futuro)</li><li>✅ Gênero, plural e os 6 casos</li></ul></div>
+            <div class="modulo-card"><h3><i data-lucide="mic"></i> Métodos para fluência</h3><ul><li>✅ Vocabulário com músicas russas</li><li>✅ Shadowing + fala ativa</li><li>✅ Anki + repetição espaçada</li><li>✅ IA p/ diálogos personalizados</li></ul></div>
+            <div class="modulo-card"><h3><i data-lucide="waves"></i> Imersão real</h3><ul><li>✅ Textos A1–B1 para leitura ativa</li><li>✅ Filmes e séries (método 2 etapas)</li><li>✅ Comprehensible Russian no YouTube</li><li>✅ Particípios e coesão textual</li></ul></div>
+        </div>
+        <div style="background: rgba(245,176,66,0.07); border-radius: 20px; padding: 18px; margin-top: 12px;">
+            <i data-lucide="music" style="color: var(--primary); vertical-align: middle;"></i> <strong>🎵 Método secreto:</strong> Aprenda vocabulário através de músicas lentas (романсы, Земфира, Вертинский) — ativa memória emocional e prosódica. Palavras fixam por anos.
+        </div>
+    </div>
+
+    <!-- Promessa alta + resultado rápido -->
+    <div class="promessa-card">
+        <i data-lucide="rocket" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 12px;"></i>
+        <h2>Resultado rápido & Promessa real</h2>
+        <div class="big-text">🚀 Com apenas <strong>30 min por dia</strong>, em 30 dias você já estará lendo o alfabeto, formando frases simples e entendendo diálogos reais.<br><br>
+        <span style="color: var(--primary); font-weight: 700;">✅ Consistência de 1–2h/dia = base sólida em 8–12 meses. Você nunca mais trava ao falar.</span></div>
+    </div>
+
+    <!-- Bônus e valor agregado -->
+    <div class="card-premium">
+        <div class="section-title"><i data-lucide="gift"></i> Bônus exclusivos (SÓ HOJE)</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 20px;">
+            <div><i data-lucide="check-circle-2" class="check-icon" style="color: var(--primary);"></i> 📚 <strong>50+ textos A1–B1 com áudio</strong></div>
+            <div><i data-lucide="check-circle-2" class="check-icon" style="color: var(--primary);"></i> 🃏 <strong>Deck Anki pronto (1000+ palavras)</strong></div>
+            <div><i data-lucide="check-circle-2" class="check-icon" style="color: var(--primary);"></i> 🎧 <strong>Lista músicas lentas + traduções</strong></div>
+            <div><i data-lucide="check-circle-2" class="check-icon" style="color: var(--primary);"></i> 📌 <strong>Calendário imersão 90 dias</strong></div>
+        </div>
+    </div>
+
+    <!-- PRICING + ESCASSEZ + TEMPO LIMITADO -->
+    <div class="card-premium pricing-card">
+        <div class="price-badge">🔥 ÚLTIMAS 50 VAGAS – PREÇO ESPECIAL 🔥</div>
+        <div class="price-old">De R$ 197,00</div>
+        <div class="price-new"><small>R$</small> 12,90</div>
+        <p style="margin: 8px 0;">Pagamento único • Acesso vitalício • Sem mensalidades</p>
+        <div class="limited-timer">
+            <i data-lucide="clock"></i> <span id="countdown">23:59:59</span> – Oferta encerra em
+        </div>
+        <button class="btn-main" onclick="openModal(false)">📘 QUERO COMEÇAR AGORA</button>
+        <div style="display: flex; gap: 20px; justify-content: center; margin-top: 24px; flex-wrap: wrap;">
+            <span><i data-lucide="shield-check"></i> Pagamento 100% seguro</span>
+            <span><i data-lucide="lock"></i> Mercado Pago</span>
+            <span><i data-lucide="zap"></i> Acesso imediato</span>
+        </div>
+        <div class="garantia">
+            <i data-lucide="shield"></i> <strong>Garantia incondicional de 7 dias:</strong> Teste o método. Se não ver evolução em 7 dias, devolvemos 100% do seu dinheiro. Sem burocracia.
+        </div>
+    </div>
+
+    <!-- Curiosidade final -->
+    <div style="text-align: center; margin-top: 32px; opacity: 0.8; font-style: italic;">
+        <i data-lucide="globe" style="width: 32px;"></i>
+        <p>“O russo é a língua nativa mais falada na Europa — com nosso método você chega na frente de 95% dos estudantes.” – Marcos Dantas</p>
+    </div>
+</div>
+
+<!-- MODAL IDÊNTICO (sistema intacto) -->
+<div id="modal">
+    <div class="modal-content">
+        <i data-lucide="x" class="close-modal" onclick="closeModal()"></i>
+        <i id="modalIcon" data-lucide="mail" style="color: var(--primary); width: 44px; height: 44px; margin-bottom: 12px;"></i>
+        <h3 id="modalTitle">Crie sua conta no curso</h3>
+        <p id="modalDesc" style="font-size: 0.9rem; color: var(--text-dim);">Digite e-mail e crie uma senha para acessar todo o conteúdo.</p>
+        <input type="email" id="customerEmail" placeholder="seu-melhor@email.com" required>
+        <input type="password" id="customerPassword" placeholder="Crie sua senha (mín. 6 caracteres)" required>
+        <button class="btn-main" id="payBtn" onclick="handleAuth()">IR PARA O PAGAMENTO</button>
+        <div id="supportNotice" class="support-notice">
+            <i data-lucide="info"></i> A recuperação de senha é manual. Só trocamos se o contato for feito pelo <b>mesmo e-mail da compra</b>.
+            <br><a href="javascript:void(0)" onclick="enviarEmailSuporte()" style="color: var(--primary);">SOLICITAR AGORA</a>
+        </div>
+        <p id="toggleText" style="margin-top: 20px; font-size: 0.8rem;">Já comprou? <a href="javascript:void(0)" onclick="openModal(true)" style="color: var(--primary);">Acesse sua conta</a></p>
+        <p id="showSupportLink" style="margin-top: 12px; font-size: 0.8rem; display: none;"><a href="javascript:void(0)" onclick="document.getElementById('supportNotice').style.display='block'; this.parentElement.style.display='none'" style="color: var(--text-dim);">Esqueceu a senha?</a></p>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-badges" style="display: flex; justify-content: center; gap: 30px; margin-bottom: 20px;">
+        <span><i data-lucide="lock"></i> SSL Seguro</span>
+        <span><i data-lucide="zap"></i> Entrega Instantânea</span>
+    </div>
+    <div style="margin-bottom: 20px;">
+        <a href="privacidade.html" style="color: #aaa; text-decoration: none; margin: 0 15px;">Privacidade</a>
+        <a href="termos.html" style="color: #aaa; text-decoration: none; margin: 0 15px;">Termos de Uso</a>
+        <a href="mailto:supereditor3049@gmail.com" style="color: #aaa; text-decoration: none; margin: 0 15px;">Suporte</a>
+    </div>
+    <p>© 2026 Marcos Dantas – Russo do Zero. Todos os direitos reservados.</p>
+</footer>
+
+<script>
+    lucide.createIcons();
+    const _supabase = supabase.createClient(
+        'https://mtuccfhpspgmpoehxmmr.supabase.co', 
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8'
+    );
+    const modal = document.getElementById('modal');
+    let isLoginMode = false;
+
+    function openModal(login = false) {
+        isLoginMode = login;
+        modal.style.display = 'flex';
+        document.getElementById('supportNotice').style.display = 'none';
+        document.getElementById('modalTitle').innerText = isLoginMode ? "Acesse sua conta" : "Crie sua conta no curso";
+        document.getElementById('modalDesc').innerText = isLoginMode ? "Entre com e-mail e senha." : "Digite e-mail e crie senha para acesso imediato.";
+        document.getElementById('payBtn').innerText = isLoginMode ? "ENTRAR NO CURSO" : "IR PARA O PAGAMENTO";
+        document.getElementById('modalIcon').setAttribute('data-lucide', isLoginMode ? 'lock' : 'mail');
+        document.getElementById('toggleText').style.display = isLoginMode ? 'none' : 'block';
+        document.getElementById('showSupportLink').style.display = isLoginMode ? 'block' : 'none';
+        lucide.createIcons();
+        document.getElementById('customerEmail').focus();
+    }
+    function closeModal() { modal.style.display = 'none'; }
+    window.onclick = (event) => { if (event.target == modal) closeModal(); }
+    function enviarEmailSuporte() {
+        const email = document.getElementById('customerEmail').value;
+        window.location.href = `mailto:supereditor3049@gmail.com?subject=Recuperação%20de%20Senha%20Russo%20Zero&body=E-mail%20da%20conta:%20${encodeURIComponent(email)}`;
+    }
+    async function handleAuth() { if (isLoginMode) await realizarLogin(); else await processarCompra(); }
+    async function realizarLogin() {
+        const email = document.getElementById('customerEmail').value;
+        const password = document.getElementById('customerPassword').value;
+        const btn = document.getElementById('payBtn');
+        if (!email || !password) { alert("Preencha todos os campos."); return; }
+        btn.innerText = "VERIFICANDO..."; btn.disabled = true;
+        for (let i = 0; i < 3; i++) {
+            const { error } = await _supabase.auth.signInWithPassword({ email, password });
+            if (!error) { window.location.href = "Editor.html"; return; }
+            if (i < 2) { btn.innerText = `Tentativa ${i+1}/3`; await new Promise(r => setTimeout(r, 4000)); }
+            else { alert("Acesso ainda não liberado. Se pagou agora, aguarde 30 segundos."); btn.innerText = "ENTRAR NO CURSO"; btn.disabled = false; }
+        }
+    }
+    async function processarCompra() {
+        const email = document.getElementById('customerEmail').value;
+        const password = document.getElementById('customerPassword').value;
+        const btn = document.getElementById('payBtn');
+        if (!email.includes("@") || password.length < 6) { alert("E-mail válido e senha com mínimo 6 caracteres."); return; }
+        btn.innerText = "PROCESSANDO..."; btn.disabled = true;
+        try {
+            const res = await fetch("https://mtuccfhpspgmpoehxmmr.supabase.co/functions/v1/bright-processor", {
+                method: "POST", headers: { "Content-Type": "application/json", "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dWNjZmhwc3BnbXBvZWh4bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMjM0MTMsImV4cCI6MjA4NDY5OTQxM30.X2K0tSteG0gPLTj3a_h8GEvzyE-X4uI9OJhgHrwC7n8" },
+                body: JSON.stringify({ email, password, product_id: "Editor" })
+            });
+            const data = await res.json();
+            if (data.checkout_url) window.location.href = data.checkout_url;
+            else throw new Error("Erro no checkout.");
+        } catch (err) { alert("Erro: " + err.message); btn.innerText = "IR PARA O PAGAMENTO"; btn.disabled = false; }
+    }
+    // countdown timer 24h
+    (function() {
+        let target = localStorage.getItem('russian_offer_end');
+        if (!target || isNaN(parseInt(target))) target = Date.now() + 24*3600000, localStorage.setItem('russian_offer_end', target);
+        const timer = setInterval(() => {
+            const diff = parseInt(target) - Date.now();
+            if (diff <= 0) { document.getElementById('countdown').innerText = "00:00:00"; clearInterval(timer); return; }
+            const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+            document.getElementById('countdown').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }, 1000);
+    })();
+</script>
+</body>
+</html>
