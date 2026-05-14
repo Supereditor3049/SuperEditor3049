@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site em Manutenção</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0c10;
+            background-image: radial-gradient(circle at 30% 20%, #161c24, #020405);
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .maintenance-card {
+            max-width: 650px;
+            width: 100%;
+            background: #12161c;
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.7), 0 8px 18px rgba(0, 0, 0, 0.5);
+            padding: 2rem 2rem 2.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .gear-icon {
+            font-size: 3.2rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: scale(1);}
+            50% { opacity: 1; transform: scale(1.05);}
+            100% { opacity: 0.7; transform: scale(1);}
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #f0f3fa, #cbd5e6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.75rem;
+        }
+
+        .message {
+            font-size: 1.2rem;
+            color: #e2e8f0;
+            background: #1f2a36;
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            margin-bottom: 1.6rem;
+            font-weight: 500;
+            border: 1px solid #2d3a48;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: #b9c7da;
+            line-height: 1.5;
+            max-width: 85%;
+            margin: 0 auto 1.8rem auto;
+            border-left: 3px solid #ffb34780;
+            padding-left: 1rem;
+            text-align: left;
+            background: #0f141b50;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .photo-container {
+            margin-top: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .putin-img {
+            max-width: 100%;
+            width: 280px;
+            height: auto;
+            border-radius: 1.8rem;
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.7), 0 0 0 2px #2d3748;
+            border: 2px solid #1f2a36;
+            transition: transform 0.25s ease, box-shadow 0.2s;
+            object-fit: cover;
+            background-color: #1a202c;
+        }
+
+        .putin-img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 24px 36px -12px black;
+            border-color: #ffb34760;
+        }
+
+        .footer-note {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #8da0bc;
+            border-top: 1px solid #242f3c;
+            padding-top: 1.2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            background: #2d1f1f;
+            color: #ffa098;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid #ff6b4a40;
+        }
+
+        @media (max-width: 550px) {
+            .maintenance-card {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 1.6rem;
+            }
+            .description {
+                max-width: 95%;
+                font-size: 0.9rem;
+            }
+            .putin-img {
+                width: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="maintenance-card">
+        <div class="gear-icon">
+            ⚙️ 🔧
+        </div>
+        
+        <h1>🔨 Estamos em manutenção</h1>
+        
+        <div class="message">
+            Retomaremos ao ar em breve
+        </div>
+        
+        <div class="description">
+            Estamos realizando melhorias técnicas para garantir uma experiência ainda melhor. 
+            Agradecemos pela paciência e em breve estaremos de volta com tudo no lugar.
+        </div>
+
+        <!-- NOVA FOTO DO PUTIN (funcional e rápida) -->
+        <div class="photo-container">
+            <img class="putin-img" 
+                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Vladimir_Putin_%282017-07-08%29.jpg/400px-Vladimir_Putin_%282017-07-08%29.jpg" 
+                 alt="Vladimir Putin"
+                 loading="eager"
+                 onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Vladimir_Putin_%282019-03-18%29.jpg/300px-Vladimir_Putin_%282019-03-18%29.jpg'">
+        </div>
+
+        <div class="footer-note">
+            <span>🕒 Previsão: breve</span>
+            <span class="status-badge">⚠️ Manutenção programada</span>
+            <span>📡 Equipe técnica atuando</span>
+        </div>
+    </div>
+</body>
+</html>
