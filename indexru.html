@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Английский по методу полиглота – легко и практично</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+
+        body {
+            background: #070b14;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: #e2e8f0;
+            line-height: 1.5;
+            padding: 1rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: #0b1120;
+            border-radius: 32px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            padding: 2rem 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            body { padding: 2rem; }
+            .container { padding: 2.5rem 3.5rem; }
+        }
+        @media (min-width: 1200px) {
+            .container { padding: 3rem 4.5rem; }
+        }
+
+        /* ===== Общие ===== */
+        .gold {
+            color: #facc15;
+        }
+        .btn {
+            display: inline-block;
+            background: #facc15;
+            color: #0f172a;
+            font-weight: 700;
+            padding: 0.9rem 2.4rem;
+            border-radius: 60px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.25s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(250, 204, 21, 0.35);
+        }
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 28px rgba(250, 204, 21, 0.5);
+            background: #fde047;
+        }
+        .btn-outline {
+            background: transparent;
+            color: #facc15;
+            box-shadow: none;
+            border: 2px solid #facc15;
+        }
+        .btn-outline:hover {
+            background: #facc15;
+            color: #0f172a;
+            box-shadow: 0 8px 20px rgba(250, 204, 21, 0.3);
+        }
+        .btn-lg {
+            font-size: 1.3rem;
+            padding: 1rem 3rem;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.8rem;
+            border-left: 6px solid #facc15;
+            padding-left: 1.2rem;
+            color: #fff;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.8rem;
+        }
+        @media (min-width: 720px) {
+            .grid-2 { grid-template-columns: 1fr 1fr; }
+        }
+
+        .card {
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 1.2rem;
+            padding: 1.5rem 1.8rem;
+            transition: 0.2s;
+        }
+        .card:hover {
+            background: rgba(255,255,255,0.07);
+            border-color: rgba(250,204,21,0.3);
+        }
+        .card .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .card h4 {
+            font-size: 1.2rem;
+            color: #facc15;
+            margin-bottom: 0.3rem;
+        }
+        .card p {
+            color: #cbd5e6;
+            font-size: 0.95rem;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
+            padding: 2rem 0 3rem;
+            border-bottom: 1px solid rgba(250, 204, 21, 0.15);
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(250, 204, 21, 0.15);
+            color: #facc15;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(250, 204, 21, 0.2);
+        }
+        .hero h1 {
+            font-size: clamp(2.8rem, 10vw, 4.8rem);
+            background: linear-gradient(135deg, #ffffff 25%, #facc15 75%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            line-height: 1.1;
+        }
+        .hero .sub {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-weight: 400;
+            color: #a5b4d0;
+            margin-bottom: 0.3rem;
+        }
+        .hero .autor {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #facc15;
+            margin-bottom: 1.2rem;
+        }
+        .hero .desc {
+            max-width: 720px;
+            margin: 0 auto 2.2rem;
+            color: #cbd5e6;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        .hero .desc strong {
+            color: #fff;
+        }
+        .hero .btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        /* ===== Destaque do autor ===== */
+        .autor-destaque {
+            background: linear-gradient(135deg, rgba(250,204,21,0.05), rgba(250,204,21,0.01));
+            border: 1px solid rgba(250,204,21,0.15);
+            border-radius: 1.5rem;
+            padding: 2rem 2rem;
+            margin: 2.5rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 2rem;
+        }
+        .autor-destaque .avatar {
+            font-size: 3.5rem;
+            background: #1e293b;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #facc15;
+            flex-shrink: 0;
+        }
+        .autor-destaque .info h3 {
+            color: #facc15;
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+        }
+        .autor-destaque .info p {
+            color: #a5b4d0;
+            max-width: 600px;
+        }
+
+        /* ===== O que você vai aprender ===== */
+        .learn-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.2rem;
+        }
+        @media (min-width: 600px) {
+            .learn-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .learn-item {
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-start;
+            background: rgba(255,255,255,0.03);
+            padding: 1rem 1.2rem;
+            border-radius: 0.8rem;
+            border-left: 3px solid #facc15;
+        }
+        .learn-item .emoji {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+        .learn-item .text {
+            color: #e2e8f0;
+            font-size: 0.95rem;
+        }
+        .learn-item .text strong {
+            color: #facc15;
+            display: block;
+            font-size: 1.05rem;
+        }
+
+        /* ===== Programa (módulos) ===== */
+        .program-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.2rem;
+        }
+        @media (min-width: 600px) {
+            .program-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .module {
+            background: rgba(255,255,255,0.03);
+            border-radius: 1rem;
+            padding: 1.2rem 1.5rem;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: 0.2s;
+        }
+        .module:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(250,204,21,0.2);
+        }
+        .module .title {
+            font-weight: 700;
+            color: #facc15;
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+        .module .desc {
+            color: #a5b4d0;
+            font-size: 0.9rem;
+        }
+
+        /* ===== Bônus ===== */
+        .bonus {
+            background: linear-gradient(135deg, rgba(250,204,21,0.08), rgba(250,204,21,0.02));
+            border: 1px solid rgba(250,204,21,0.25);
+            border-radius: 1.5rem;
+            padding: 2rem 2rem;
+            margin: 2.5rem 0;
+            text-align: center;
+        }
+        .bonus h3 {
+            font-size: 1.8rem;
+            color: #facc15;
+            margin-bottom: 0.8rem;
+        }
+        .bonus p {
+            max-width: 700px;
+            margin: 0 auto 0.5rem;
+            color: #cbd5e6;
+            font-size: 1.05rem;
+        }
+
+        /* ===== Ferramentas ===== */
+        .tools-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .tool {
+            background: rgba(255,255,255,0.04);
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            flex: 1 1 160px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .tool .name {
+            font-weight: 600;
+            color: #facc15;
+            font-size: 0.95rem;
+        }
+        .tool .desc {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 0.2rem;
+        }
+
+        /* ===== Resultado ===== */
+        .result {
+            background: rgba(255,255,255,0.02);
+            border-radius: 1.5rem;
+            padding: 2rem 2rem;
+            margin: 2.5rem 0;
+            border-left: 6px solid #facc15;
+        }
+        .result h3 {
+            font-size: 1.8rem;
+            color: #facc15;
+            margin-bottom: 0.5rem;
+        }
+        .result p {
+            font-size: 1.1rem;
+            color: #cbd5e6;
+        }
+        .result strong {
+            color: #fff;
+        }
+
+        /* ===== SEÇÃO DE PREÇO (melhorada) ===== */
+        .pricing-section {
+            margin: 2.5rem 0;
+            padding: 2rem 2rem;
+            background: linear-gradient(145deg, rgba(250,204,21,0.05), rgba(250,204,21,0.01));
+            border-radius: 2rem;
+            border: 1px solid rgba(250,204,21,0.15);
+            text-align: center;
+        }
+        .pricing-section .price-big {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #facc15;
+            letter-spacing: -1px;
+        }
+        .pricing-section .price-old {
+            font-size: 1.4rem;
+            color: #94a3b8;
+            text-decoration: line-through;
+            margin-right: 1rem;
+        }
+        .pricing-section .price-sub {
+            color: #a5b4d0;
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+        .pricing-section .price-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .pricing-section .price-info .item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #cbd5e6;
+            font-size: 0.95rem;
+        }
+        .pricing-section .price-info .item i {
+            color: #facc15;
+            font-size: 1.2rem;
+        }
+        .pricing-section .btn {
+            margin-top: 0.5rem;
+        }
+        .pricing-section .guarantee {
+            margin-top: 1.2rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 1.2rem;
+        }
+        .pricing-section .guarantee strong {
+            color: #facc15;
+        }
+
+        /* ===== LEGAL ===== */
+        .legal {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            text-align: center;
+        }
+        .legal a {
+            color: #94a3b8;
+            text-decoration: underline;
+            font-size: 0.9rem;
+            margin: 0 0.8rem;
+            transition: 0.2s;
+        }
+        .legal a:hover {
+            color: #facc15;
+        }
+
+        /* ===== CTA final ===== */
+        .cta-final {
+            text-align: center;
+            padding: 2.5rem 1.5rem 1.5rem;
+            border-top: 1px solid rgba(250,204,21,0.15);
+            margin-top: 2rem;
+        }
+        .cta-final h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        .footer span {
+            color: #facc15;
+        }
+
+        /* ===== Ajustes mobile ===== */
+        @media (max-width: 480px) {
+            .container { padding: 1rem; }
+            .hero h1 { font-size: 2.4rem; }
+            .section-title { font-size: 1.6rem; }
+            .btn { padding: 0.7rem 1.8rem; font-size: 1rem; }
+            .btn-lg { font-size: 1.1rem; padding: 0.8rem 2rem; }
+            .autor-destaque { flex-direction: column; text-align: center; }
+            .pricing-section .price-big { font-size: 2.2rem; }
+            .pricing-section .price-info { flex-direction: column; align-items: center; }
+        }
+
+        /* ===== Animações ===== */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 0.8s ease forwards;
+        }
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ===== HERO ===== -->
+    <section class="hero fade-up">
+      код: a355e42270779f55e5b5b099bc65c4329b52e59bcbce1aa14389204d24488ec3
+        <div class="hero-badge">🚀 Метод полиглота-самоучки</div>
+        <h1>Английский без заучивания</h1>
+        <div class="sub">Легко, практично и в своём темпе</div>
+        <div class="autor">От Marcos Dantas</div>
+        <p class="desc">
+            <strong>Никакой скучной грамматики на годы.</strong> Я выучил английский с нуля за 10 месяцев,
+            используя эту систему, и теперь говорю свободно. Этот курс — не теория, а живой метод,
+            который я проверил на себе. <span class="gold">Результат с первого дня.</span>
+        </p>
+        <div class="btns">
+            <!-- Botão âncora para a seção de preço -->
+            <a href="#pricing" class="btn">Начать обучение</a>
+            <a href="#program" class="btn btn-outline">Смотреть программу</a>
+        </div>
+    </section>
+
+    <!-- ===== DESTAQUE DO AUTOR ===== -->
+    <section class="autor-destaque fade-up delay-1">
+        <div class="avatar">🌍</div>
+        <div class="info">
+            <h3>Почему этот метод работает</h3>
+            <p>
+                Я — полиглот, который выучил английский самостоятельно за 10 месяцев, а затем русский по той же схеме.
+                Мой подход основан на <strong>интервальном повторении, погружении через музыку и фильмы</strong>,
+                а не на зубрёжке правил. В этом курсе я делюсь каждым шагом, который привёл меня к свободному владению.
+            </p>
+        </div>
+    </section>
+
+    <!-- ===== O QUE VOCÊ VAI APRENDER ===== -->
+    <section class="learn fade-up delay-2">
+        <h2 class="section-title">📖 Что вы узнаете</h2>
+        <div class="learn-grid">
+            <div class="learn-item">
+                <span class="emoji">🔤</span>
+                <div class="text"><strong>Фундамент без пробелов</strong> Алфавит с произношением, приветствия, которые вы запомните навсегда.</div>
+            </div>
+            <div class="learn-item">
+                <span class="emoji">📐</span>
+                <div class="text"><strong>Грамматика в правильном порядке</strong> Местоимения, 5W, артикли, времена, множественное число — без хаоса.</div>
+            </div>
+            <div class="learn-item">
+                <span class="emoji">🎵</span>
+                <div class="text"><strong>Секрет: музыка как двигатель</strong> Огромный словарь через песни — запоминаете на годы даже без повторения.</div>
+            </div>
+            <div class="learn-item">
+                <span class="emoji">📚</span>
+                <div class="text"><strong>Полная тематическая лексика</strong> Еда, время, дни, числа, цвета, чувства, дом, животные, месяцы, направления.</div>
+            </div>
+            <div class="learn-item">
+                <span class="emoji">🛠️</span>
+                <div class="text"><strong>Инструменты для памяти</strong> Спонтанные записи, ИИ для диалогов, Anki, Duolingo — система повторения.</div>
+            </div>
+            <div class="learn-item">
+                <span class="emoji">🎬</span>
+                <div class="text"><strong>Погружение в язык</strong> Тексты с аудио, фильмы с субтитрами, предлоги места — вы начнёте понимать живую речь.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PROGRAMA ===== -->
+    <section class="program fade-up delay-3" id="program">
+        <h2 class="section-title">📌 Программа курса (39 шагов)</h2>
+        <p style="color:#a5b4d0; margin-bottom:1.5rem;">
+            От алфавита до свободного общения. Каждый этап закрепляется в долговременной памяти.
+        </p>
+        <div class="program-grid">
+            <div class="module"><div class="title">1. Алфавит и произношение</div><div class="desc">Основа, которую большинство игнорирует.</div></div>
+            <div class="module"><div class="title">2. Приветствия и знакомство</div><div class="desc">До автоматизма.</div></div>
+            <div class="module"><div class="title">3. Личные местоимения + 5W</div><div class="desc">Строим вопросы и ответы.</div></div>
+            <div class="module"><div class="title">4. Спряжение глаголов</div><div class="desc">Прошедшее, настоящее, будущее.</div></div>
+            <div class="module"><div class="title">5. Артикли, притяжательные</div><div class="desc">Точность в речи.</div></div>
+            <div class="module"><div class="title">6. Глагол to be, отрицания</div><div class="desc">База для диалогов.</div></div>
+            <div class="module"><div class="title">7. Множественное число, глаголы</div><div class="desc">Have, do, go, can, want и сокращения.</div></div>
+            <div class="module"><div class="title">8. Прилагательные, объектные местоим.</div><div class="desc">Описываем мир.</div></div>
+            <div class="module"><div class="title">9. Лексика по темам</div><div class="desc">Еда, время, дни, числа, цвета, чувства, тело, одежда, дом, животные, месяцы.</div></div>
+            <div class="module"><div class="title">10. Время, направления, предлоги</div><div class="desc">Спрашиваем дорогу и отвечаем.</div></div>
+            <div class="module"><div class="title">11. Аудио, ИИ, видео</div><div class="desc">Погружение через контент.</div></div>
+            <div class="module"><div class="title">12. Грамматика: времена, возвратные</div><div class="desc">Present Perfect, Continuous, Past, Future, ложные друзья.</div></div>
+            <div class="module"><div class="title">13. Общая лексика, собеседование</div><div class="desc">Расширяем словарь.</div></div>
+            <div class="module"><div class="title">14. Итоговое повторение</div><div class="desc">Закрепление всего пройденного.</div></div>
+        </div>
+    </section>
+
+    <!-- ===== BÔNUS ===== -->
+    <section class="bonus fade-up delay-4">
+        <h3>🎶 Секретный метод: музыка как ключ к беглости</h3>
+        <p>
+            Изучайте лексику через песни — метод, благодаря которому вы будете помнить слова годами
+            без повторений. Полная инструкция с научно обоснованными приёмами (ручные записи + интервальное повторение).
+        </p>
+        <p style="margin-top:0.8rem; font-weight:600; color:#facc15;">⭐ Доступно только в полной версии курса</p>
+    </section>
+
+    <!-- ===== SEÇÃO DE PREÇO 1 (meio da página) ===== -->
+    <section class="pricing-section fade-up delay-4" id="pricing">
+        <span class="price-old">4 990 ₽</span>
+        <span class="price-big">2 990 ₽</span>
+        <div class="price-sub">Одноразовая оплата — доступ навсегда</div>
+        <div class="price-info">
+            <span class="item"><i>📘</i> Все уроки и материалы</span>
+            <span class="item"><i>🎵</i> Бонусный метод с музыкой</span>
+            <span class="item"><i>🔄</i> Поддержка и обновления</span>
+        </div>
+        <a href="#" class="btn btn-lg">Купить курс</a>
+        <div class="guarantee">
+            <strong>🔒 Гарантия 7 дней</strong> — если метод не подойдёт, вернём деньги
+        </div>
+    </section>
+
+    <!-- ===== FERRAMENTAS ===== -->
+    <section class="tools fade-up delay-4">
+        <h2 class="section-title">🛠️ Необходимые инструменты</h2>
+        <div class="tools-grid">
+            <div class="tool"><div class="name">📱 AnkiDroid (Android)</div><div class="desc">Скачайте перед стартом</div></div>
+            <div class="tool"><div class="name">🍏 AnkiMobile (iOS)</div><div class="desc">Доступно в App Store</div></div>
+            <div class="tool"><div class="name">💻 Anki (Desktop)</div><div class="desc">Для ПК и Mac</div></div>
+            <div class="tool"><div class="name">🎧 Аудио + текст</div><div class="desc">Beelinguapp и аналоги</div></div>
+            <div class="tool"><div class="name">🦉 Duolingo</div><div class="desc">15 минут в день</div></div>
+        </div>
+        <p style="text-align:center; color:#94a3b8; font-size:0.9rem; margin-top:1rem;">
+            Ссылки для скачивания — внутри курса.
+        </p>
+    </section>
+
+    <!-- ===== RESULTADO ===== -->
+    <section class="result fade-up delay-4">
+        <h3>📊 Реалистичный результат</h3>
+        <p>
+            Занимаясь <strong>1–2 часа в день</strong>, вы получите прочную основу за <strong>8–11 месяцев</strong>.
+            Главное — последовательность, а не скорость. Каждый шаг отрабатывается до автоматизма.
+        </p>
+        <p style="margin-top:0.8rem; color:#facc15;">
+            ⏱️ Работайте в своём темпе — результат превзойдёт ожидания.
+        </p>
+    </section>
+
+    <!-- ===== CTA FINAL ===== -->
+    <section class="cta-final fade-up delay-4">
+        <h2>Начните говорить по-английски сегодня</h2>
+        <div style="margin: 1.5rem 0;">
+            <span class="price-old" style="font-size:1.5rem;">4 990 ₽</span>
+            <span style="font-size:3rem; font-weight:800; color:#facc15;">2 990 ₽</span>
+        </div>
+        <p style="color:#94a3b8; margin-bottom:1.5rem;">Одноразовая оплата — доступ навсегда</p>
+        <a href="#" class="btn btn-lg">Купить курс</a>
+        <div style="margin-top:1.2rem; color:#94a3b8; font-size:0.9rem;">
+            <span style="display:inline-block; margin:0 0.8rem;"> Все уроки и материалы⭐</span>
+            <span style="display:inline-block; margin:0 0.8rem;"> Бонусный метод с музыкой⭐</span>
+            <span style="display:inline-block; margin:0 0.8rem;"> Поддержка и обновления⭐</span>
+        </div>
+        <div class="guarantee" style="margin-top:1.2rem; color:#94a3b8; font-size:0.9rem;">
+            <strong style="color:#facc15;">🔒 Гарантия 7 дней</strong> — если метод не подойдёт, вернём деньги
+        </div>
+    </section>
+
+    <!-- ===== LEGAL ===== -->
+    <div class="legal">
+        <a href="politica-privacidade.html" target="_blank">Политика конфиденциальности</a>
+        <a href="termos-uso.html" target="_blank">Условия использования</a>
+        <a href="mailto:fastinglesbr@gmail.com" target="_blank">контакт</a>
+    </div>
+    
+
+    <!-- ===== FOOTER ===== -->
+    <div class="footer">
+        <p>📚 Английский по методу Marcos Dantas</p>
+        <p style="font-size:0.8rem; margin-top:0.3rem;">
+            Учитесь легко, практично и без скуки.
+        </p>
+        <p style="font-size:0.8rem; margin-top:0.5rem; color:#64748b;">
+            ✔ Научно обоснованный подход ✔ Фокус на долговременную память ✔ Без грамматической воды
+        </p>
+    </div>
+
+</div>
+</body>
+</html>
