@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Изучение английского - Marcos Dantas | Лёгкий и практичный метод</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+        body {
+            background-color: #0a0f1a;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            padding: 0;
+        }
+        .curso-wrapper {
+            max-width: 1400px;
+            margin: 2rem auto;
+            background-color: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        .capa {
+            background: linear-gradient(135deg, #0b1120 0%, #121a2f 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+            border-bottom: 5px solid #facc15;
+        }
+        .capa h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #facc15);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+        .capa h2 {
+            font-size: clamp(1.3rem, 4vw, 1.9rem);
+            font-weight: 400;
+            color: #cbd5e6;
+            margin-bottom: 1rem;
+        }
+        .autor {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #facc15;
+            margin-top: 0.5rem;
+        }
+        .capa p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 2rem auto 0;
+            border-top: 1px solid rgba(250,204,21,0.3);
+            padding-top: 1.5rem;
+            color: #a5b4d0;
+        }
+        .conteudo {
+            padding: 2rem 1.8rem;
+            background: white;
+        }
+        @media (min-width: 768px) {
+            .conteudo {
+                padding: 2.5rem 3rem;
+            }
+        }
+        @media (min-width: 1200px) {
+            .conteudo {
+                padding: 3rem 4rem;
+            }
+        }
+        h3 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #0f2b3d;
+            margin: 2rem 0 1rem 0;
+            border-left: 6px solid #facc15;
+            padding-left: 1.2rem;
+        }
+        h4 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin: 1.8rem 0 1rem 0;
+            border-bottom: 2px solid #facc15;
+            padding-bottom: 0.4rem;
+        }
+        .grid-dois {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 1.2rem 1.5rem;
+            flex: 1 1 280px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .card strong {
+            color: #ca8a04;
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 0.7rem;
+        }
+        .ferramentas-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: #f8fafc;
+            border-radius: 1.2rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #e2e8f0;
+        }
+        .ferramenta {
+            background: white;
+            border-radius: 1rem;
+            padding: 1rem 1.2rem;
+            flex: 1 1 200px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .ferramenta a {
+            text-decoration: none;
+            font-weight: 600;
+            color: #ca8a04;
+        }
+        .btn-download {
+            display: inline-block;
+            background: #1e293b;
+            color: white !important;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            margin-top: 0.6rem;
+            font-size: 0.8rem;
+        }
+        .aviso-tempo {
+            background: #fef9e3;
+            border-left: 6px solid #facc15;
+            padding: 1.2rem 1.8rem;
+            margin: 1.5rem 0;
+            border-radius: 1rem;
+        }
+        .passos-numerados {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.8rem;
+            margin: 2rem 0;
+        }
+        .passo-item {
+            background: #f1f5f9;
+            border-radius: 0.75rem;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            border: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        .passo-numero {
+            background-color: #facc15;
+            color: #0f172a;
+            font-weight: 800;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        .passo-tempo {
+            background-color: #e2e8f0;
+            border-radius: 20px;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #334155;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+        .aula {
+            background: #ffffff;
+            border-left: 5px solid #facc15;
+            border-radius: 1rem;
+            padding: 1.5rem 1.8rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #eef2ff;
+        }
+        .aula-titulo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #b45309;
+            margin-bottom: 0.8rem;
+        }
+        .aula-texto {
+            color: #334155;
+            margin-bottom: 1rem;
+        }
+        .links-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        .btn-video {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #1e293b;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-video:hover {
+            background: #facc15;
+            color: #0f172a;
+            transform: scale(1.02);
+        }
+        .btn-video::before {
+            content: "▶";
+            font-size: 0.75rem;
+        }
+        .metodo-secreto {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 1.2rem;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        footer {
+            background: #0f172a;
+            text-align: center;
+            padding: 2rem 1.5rem;
+            color: #cbd5e6;
+        }
+        @media (max-width: 640px) {
+            .conteudo {
+                padding: 1.2rem;
+            }
+            .passo-item {
+                flex-wrap: wrap;
+            }
+            .passo-tempo {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="curso-wrapper">
+    <div class="capa">
+        <h1>🌟 Изучение английского</h1>
+        <h2>Легко и практично</h2>
+        <div class="autor">От Marcos Dantas</div>
+        <p>Изучайте английский нестандартным методом – легко, быстрее и в своём темпе, без застревания в грамматике на годы</p>
+    </div>
+    <div class="conteudo">
+        <h3>📖 СОДЕРЖАНИЕ КУРСА</h3>
+        <h4>🎯 ЧТО ВЫ УЗНАЕТЕ</h4>
+        <div class="grid-dois">
+            <div class="card"><strong>🔤 Фундамент, который работает</strong> • Алфавит с акцентом на произношение – основа, которую большинство игнорирует, но которая помогает правильно произносить новые слова в будущем.<br>• Приветствия и представления – тренировка до долговременной памяти, а не просто зазубривание</div>
+            <div class="card"><strong>📐 Базовая грамматика легко и в правильном порядке</strong> • Личные местоимения с примерами • 5W + How, How much, How many – основа для вопросов и ответов • Артикли (a, an, the) • Притяжательные местоимения • Глагол to be • Множественное число (правильное и неправильное) • Основные глаголы: have, do, go, can, want • Спряжение глаголов (прошедшее, настоящее, будущее) • Базовые противоположные прилагательные • Объектные местоимения</div>
+            <div class="card"><strong>🎵 Секретные методы для беглости</strong> • Огромный словарный запас через песни – метод, позволяющий запоминать слова на годы даже без повторения • Пошаговая инструкция до свободного владения • Научно обоснованные методы (ручные записи + интервальное повторение)</div>
+            <div class="card"><strong>📚 Полная тематическая лексика</strong> • Основные продукты • Время суток • Дни недели • Числа • Цвета • Чувства • Прилагательные • Предметы дома • Названия животных • Месяцы года • Времена года • Как говорить о времени и указывать направление • Предлоги места (in, on, at, under, next to, between)</div>
+            <div class="card"><strong>🛠️ Практические инструменты, чтобы никогда не забывать</strong> • Метод спонтанных записей – переводите и записывайте именно те фразы, которые нужны вам каждый день • Использование ИИ (ChatGPT) для создания персонализированных диалогов • Система повторения с приложениями (Anki, Duolingo, приложения с текстом и аудио для начинающих, YouTube)</div>
+            <div class="card"><strong>🎬 Реальное погружение в язык</strong> • Тексты с аудио для начинающих – читайте и слушайте одновременно • Фильмы, сериалы и видео с субтитрами – метод 2 шагов: сначала субтитры на родном языке, потом на английском • Предлоги места и времени – научитесь спрашивать дорогу и отвечать с указанием местоположения</div>
+            <div class="card"><strong>✨ Грамматика без загадок</strong> • Возвратные глаголы • Present Perfect • Present Continuous • Past Tense • Future Tense • Предлоги, вспомогательные глаголы и ложные друзья переводчика</div>
+            <div class="card"><strong>🚀 Продвинутый общий словарный запас</strong> • Общая лексика с примерами записей</div>
+        </div>
+
+        <h4>🛠️ НЕОБХОДИМЫЕ ИНСТРУМЕНТЫ (СКАЧАЙТЕ ПЕРЕД НАЧАЛОМ)</h4>
+        <div class="ferramentas-grid">
+            <div class="ferramenta">📱 <strong>AnkiDroid (Android)</strong><br><a href="https://play.google.com/store/apps/details?id=com.ichi2.anki" target="_blank" class="btn-download">Скачать из Play Store</a></div>
+            <div class="ferramenta">🍏 <strong>AnkiMobile (iOS)</strong><br><a href="https://apps.apple.com/ru/app/ankimobile-flashcards/id373493387" target="_blank" class="btn-download">Скачать из App Store</a></div>
+            <div class="ferramenta">💻 <strong>Anki (Desktop)</strong><br><a href="https://apps.ankiweb.net/" target="_blank" class="btn-download">Скачать для ПК/Mac</a></div>
+            <div class="ferramenta">🎧 <strong>Приложение с текстом и аудио</strong><br><span style="font-size:0.8rem">Например: "English Listening and Speaking", "Beelinguapp", "News in Slow English". Найдите в магазине приложений то, где есть текст и озвучка на английском.</span></div>
+            <div class="ferramenta">🦉 <strong>Duolingo</strong><br><span style="font-size:0.8rem">Занимайтесь около 15 минут в день для разнообразной лексики.</span></div>
+        </div>
+
+        <div class="metodo-secreto">
+            <h4>🎶 СЕКРЕТНЫЙ МЕТОД: МУЗЫКА КАК ИНСТРУМЕНТ ДЛЯ СВОБОДНОГО ВЛАДЕНИЯ</h4>
+            <p>Изучайте огромный объём лексики через песни – метод, благодаря которому вы будете помнить слова годами, даже без повторения. Полная пошаговая инструкция до свободного владения с научно обоснованными методами (ручные записи + интервальное повторение).</p>
+        </div>
+
+        <h3>📌 ПОЛНЫЙ ПОШАГОВЫЙ ПЛАН (39 ШАГОВ)</h3>
+        <div class="aviso-tempo">
+            ⏱️ <strong>Важное предупреждение:</strong> Не торопитесь! Занимайтесь в своём темпе, ежедневно, <strong>1–2 часа в день</strong>, каждый день. Сосредоточьтесь на текущем этапе и переходите к следующему только когда уверенно освоили предыдущий. Указанные сроки – это оценки при активном обучении и постоянной практике.
+        </div>
+        <div class="passos-numerados">
+            <div class="passo-item"><span class="passo-numero">1</span> Алфавит <span class="passo-tempo">1–2 дня</span></div>
+            <div class="passo-item"><span class="passo-numero">2</span> Основные приветствия <span class="passo-tempo">2–3 дня</span></div>
+            <div class="passo-item"><span class="passo-numero">3</span> Личные местоимения <span class="passo-tempo">2 дня</span></div>
+            <div class="passo-item"><span class="passo-numero">4</span> 5W + How <span class="passo-tempo">3–5 дней</span></div>
+            <div class="passo-item"><span class="passo-numero">5</span> Песни + Anki <span class="passo-tempo">1 неделя (постоянно)</span></div>
+            <div class="passo-item"><span class="passo-numero">6</span> Спряжение глаголов <span class="passo-tempo">2 недели</span></div>
+            <div class="passo-item"><span class="passo-numero">7</span> Артикли (a/an/the) <span class="passo-tempo">3–5 дней</span></div>
+            <div class="passo-item"><span class="passo-numero">8</span> Притяжательные местоимения <span class="passo-tempo">3 дня</span></div>
+            <div class="passo-item"><span class="passo-numero">9</span> Глагол to be <span class="passo-tempo">3–5 дней</span></div>
+            <div class="passo-item"><span class="passo-numero">10</span> Как задавать вопросы <span class="passo-tempo">1 неделя</span></div>
+            <div class="passo-item"><span class="passo-numero">11</span> Как отрицать <span class="passo-tempo">3–5 дней</span></div>
+            <div class="passo-item"><span class="passo-numero">12</span> Множественное число <span class="passo-tempo">3 дня</span></div>
+            <div class="passo-item"><span class="passo-numero">13</span> Основные глаголы <span class="passo-tempo">2 недели</span></div>
+            <div class="passo-item"><span class="passo-numero">14</span> Противоположные прилагательные <span class="passo-tempo">1 неделя</span></div>
+            <div class="passo-item"><span class="passo-numero">15</span> Объектные местоимения <span class="passo-tempo">3–5 дней</span></div>
+            <div class="passo-item"><span class="passo-numero">16</span> Создание фраз и запись <span class="passo-tempo">2 недели (постоянная практика)</span></div>
+            <div class="passo-item"><span class="passo-numero">17</span> Основные продукты <span class="passo-tempo">3–5 дней</span></div>
+            <div class="passo-item"><span class="passo-numero">18</span> Время суток <span class="passo-tempo">1–2 дня</span></div>
+            <div class="passo-item"><span class="passo-numero">19</span> Дни недели <span class="passo-tempo">1–2 дня</span></div>
+            <div class="passo-item"><span class="passo-numero">20</span> Числа <span class="passo-tempo">3–5 дней</span></div>
+            <div class="passo-item"><span class="passo-numero">21</span> Цвета <span class="passo-tempo">1–2 дня</span></div>
+            <div class="passo-item"><span class="passo-numero">22</span> Чувства <span class="passo-tempo">3–5 дней</span></div>
+            <div class="passo-item"><span class="passo-numero">23</span> Части тела <span class="passo-tempo">3–5 дней</span></div>
+            <div class="passo-item"><span class="passo-numero">24</span> Одежда <span class="passo-tempo">3–5 дней</span></div>
+            <div class="passo-item"><span class="passo-numero">25</span> Прилагательные <span class="passo-tempo">2 недели</span></div>
+            <div class="passo-item"><span class="passo-numero">26</span> Предметы дома <span class="passo-tempo">1 неделя</span></div>
+            <div class="passo-item"><span class="passo-numero">27</span> Названия животных <span class="passo-tempo">1 неделя</span></div>
+            <div class="passo-item"><span class="passo-numero">28</span> Месяцы года <span class="passo-tempo">2–3 дня</span></div>
+            <div class="passo-item"><span class="passo-numero">29</span> Времена года <span class="passo-tempo">1–2 дня</span></div>
+            <div class="passo-item"><span class="passo-numero">30</span> Время и направления <span class="passo-tempo">1 неделя</span></div>
+            <div class="passo-item"><span class="passo-numero">31</span> Предлоги места <span class="passo-tempo">1 неделя</span></div>
+            <div class="passo-item"><span class="passo-numero">32</span> Тексты с аудио <span class="passo-tempo">2 недели</span></div>
+            <div class="passo-item"><span class="passo-numero">33</span> Вспомогательные глаголы и ложные друзья <span class="passo-tempo">2 недели</span></div>
+            <div class="passo-item"><span class="passo-numero">34</span> Тексты с ИИ <span class="passo-tempo">2 недели</span></div>
+            <div class="passo-item"><span class="passo-numero">35</span> Видео и сериалы <span class="passo-tempo">Постоянно (минимум 1 месяц)</span></div>
+            <div class="passo-item"><span class="passo-numero">36</span> Полная грамматика <span class="passo-tempo">2–3 месяца</span></div>
+            <div class="passo-item"><span class="passo-numero">37</span> Общая лексика <span class="passo-tempo">Постоянно (3–6 месяцев)</span></div>
+            <div class="passo-item"><span class="passo-numero">38</span> Лексика для собеседования <span class="passo-tempo">2–4 недели</span></div>
+            <div class="passo-item"><span class="passo-numero">39</span> Итоговое повторение <span class="passo-tempo">2 недели</span></div>
+        </div>
+        <div class="aviso-tempo" style="background: #e6f7e6; border-left-color: #2e7d32;">
+            📊 <strong>Реалистичный результат:</strong> Следуя шагам с усердием (1–2 часа в день), вы можете получить прочную основу за <strong>8–11 месяцев</strong>. Помните: у каждого свой темп. Важна последовательность, а не скорость.
+        </div>
+        <hr>
+        <h3>📘 ПОЛУЧАЙТЕ КОНТЕНТ И УДАЧИ:</h3>
+
+        <!-- УРОК 1 -->
+        <div class="aula">
+            <div class="aula-titulo">1. Алфавит</div>
+            <div class="aula-texto">многие не придают должного значения правильному изучению и запоминанию алфавита, но на самом деле это очень важная часть. В будущем это поможет вам произносить слова и фразы более правильно и быстрее адаптироваться к их произношению, а также «угадывать» правильное произношение новых слов.<br><br><strong>⚠️ Не забывайте:</strong> в случаях, когда у вас нет примера изучаемого слова, используйте воображение и с помощью переводчика создайте реальный контекст для фраз или слов, прежде чем добавлять их в Anki и тетрадь. Слова и фразы в контексте запоминаются легче. Отдельные фразы вне контекста забываются быстрее.</div>
+            <div class="links-container"><a href="https://youtu.be/9AwKXhOMTS8?si=Ee_pfOwnetLHK39f" class="btn-video" target="_blank">Смотреть урок</a><a href="https://youtu.be/0T40neFzgsg?si=kYm-BustIAb1cMt6" class="btn-video" target="_blank">Смотреть урок</a></div>
+        </div>
+
+        <!-- УРОК 2 -->
+        <div class="aula">
+            <div class="aula-titulo">2. Основные приветствия и знакомство</div>
+            <div class="aula-texto">(Вы можете использовать воображение и записывать приветствия, которые вы можете сказать людям, добавлять их в приложение для запоминания и многократно практиковать. Нужно многократно тренировать и повторять, пока они не перейдут в долговременную память. Созданные и изученные фразы должны быть добавлены в приложение для запоминания).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/pJDTcmxz76w?si=JxEBWG3scfdYKDoF" class="btn-video" target="_blank">Смотреть урок</a><a href="https://youtu.be/3UaWjL_ucSU?si=p2VNbC1ADm8Oaq08" class="btn-video" target="_blank">Смотреть урок</a><a href="https://youtu.be/M7FsphFYMaY?si=qQ7AT-Sd9o16Uu7-" class="btn-video" target="_blank">Смотреть урок</a></div>
+        </div>
+
+        <!-- УРОК 3 -->
+        <div class="aula">
+            <div class="aula-titulo">3. Личные местоимения</div>
+            <div class="aula-texto">(должно быть с примерами фраз, повторяться до тех пор, пока правильное использование местоимений не станет естественным и автоматическим).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/zcrgRO6CpkE?si=QX6azx2Gj3A0M9f2" class="btn-video" target="_blank">Смотреть урок</a><a href="https://youtu.be/6k4oYQFtC38?si=W7bgehrjbcBysJ9w" class="btn-video" target="_blank">Смотреть урок</a><a href="https://youtu.be/QmLs-LF4EkE?si=6IbbvriSRmVNTcrZ" class="btn-video" target="_blank">Смотреть урок</a></div>
+        </div>
+
+        <!-- УРОК 4 -->
+        <div class="aula">
+            <div class="aula-titulo">4. 5W с примерами фраз + How, How much, How many – полная версия</div>
+            <div class="aula-texto">(5W нужно использовать с примерами фраз и повторять для более быстрого запоминания. 5W дадут вам очень прочную основу для ориентации в английском языке, а также для вопросов и ответов, когда полностью запомнены).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/xu7zjl70YLA?si=ev-_cMSNBy9szxDy" class="btn-video" target="_blank">5W</a><a href="https://youtube.com/shorts/avlDBlMNcOY?si=KYotAxi2LE9dpQB0" class="btn-video" target="_blank">5W</a><a href="https://youtu.be/RpdLUv0CQRQ?si=5s94cW-oLgP_gKUB" class="btn-video" target="_blank">How much/many</a><a href="https://youtube.com/shorts/fWkQC7ji6zE?si=AoNRiq3ybkuK5u0x" class="btn-video" target="_blank">How</a><a href="https://youtube.com/shorts/A3DHjpBCI_c?si=SBEw9MCNnhtq_Wak" class="btn-video" target="_blank">How</a><a href="https://youtube.com/shorts/FE4wA8a9Guk?si=UT0bLkBz64rbvdZ6" class="btn-video" target="_blank">How</a></div>
+        </div>
+
+        <!-- УРОК 5 -->
+        <div class="aula">
+            <div class="aula-titulo">5. Песни и запись фраз в Anki (СЕКРЕТНЫЙ МЕТОД)</div>
+            <div class="aula-texto">Это одна из самых важных частей курса. Песни – один из инструментов, который даст вам разнообразную лексику очень быстро. Как только вы выучите текст песни, вы можете забыть выученную лексику через годы, даже не повторяя. Поэтому изучение большого количества песен, обучение пению и изучение их лексики может дать вам огромный словарный запас быстро и стать одним из самых больших помощников на пути к свободному владению. Постарайтесь, отнеситесь к песням серьёзно.<br><br><strong>Пошаговая инструкция:</strong> сначала напевайте песню, если вы её не знаете (ищите песни самостоятельно, желательно с разнообразной лексикой. Если смотрите на YouTube, ищите песни с субтитрами, но вы также можете слушать и читать субтитры на сайтах Google. Сделайте это несколько раз, чтобы уловить ритм). Когда вы уже более-менее умеете подражать певцу до конца песни, начинайте изучать песню, ставя на паузу и изучая фразу за фразой, используя переводчик для перевода того, чего не понимаете. Записывайте фразы песни в тетрадь (научно доказано, что когда вы записываете на бумаге, у вас гораздо больше шансов запомнить изученное содержание и перевести его в долговременную память, потому что вы не просто учите звук, но и учитесь формировать слово/фразу). Подражайте певцу для правильного произношения (это поможет вам в будущем с произношением слов и фраз). Делайте всё это несколько раз, пока не пройдёте всю песню и не будете знать её от начала до конца, или хотя бы 90% песни, если лексика очень сложная.<br><br>(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+        </div>
+
+        <!-- УРОК 6 -->
+        <div class="aula">
+            <div class="aula-titulo">6. Спряжение глаголов: прошедшее, настоящее, простое будущее</div>
+            <div class="aula-texto">Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/8adUQggsyJw?si=33RA6oy0ffXC2h8m" class="btn-video" target="_blank">Будущее</a><a href="https://youtube.com/shorts/VLC8jgcjKys?si=izzIcRNnvmmY2g61" class="btn-video" target="_blank">Будущее</a><a href="https://youtube.com/shorts/GtrgAsCWkR0?si=BjgYvKCmJ6CUCgME" class="btn-video" target="_blank">Прошедшее</a><a href="https://youtube.com/shorts/fxXR_oyAjCc?si=PCcRGZjMACAgEtIh" class="btn-video" target="_blank">Настоящее</a><a href="https://youtube.com/shorts/NQlh-pyk_3I?si=L12jPsXZ42NgPLql" class="btn-video" target="_blank">Прош/Наст/Буд</a><a href="https://youtube.com/shorts/SxtnrHKwwVs?si=9M_XZrcTxT0AImyT" class="btn-video" target="_blank">Спряжение</a><a href="https://youtube.com/shorts/zE5opzgd2Go?si=4pKEtjM-hqFHaMdc" class="btn-video" target="_blank">Спряжение</a></div>
+        </div>
+
+        <!-- УРОК 7 -->
+        <div class="aula">
+            <div class="aula-titulo">7. Артикли (a, an, the)</div>
+            <div class="aula-texto">Необходимо перед тем, как строить любую фразу. (Должно быть изучено с примерами фраз, повторением).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtube.com/shorts/gSR4depSd0k?si=M3ooQ7iUlBKDi5CE" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/lTzVazO3U2k?si=YPLHDTMHvcrubJ0B" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/KGvRS4SR3XE?si=azXVtGkDMIMF9O7w" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 8 -->
+        <div class="aula">
+            <div class="aula-titulo">8. Притяжательные местоимения с примерами фраз</div>
+            <div class="aula-texto">(Должно быть отработано с примерами фраз и добавлено в приложение для запоминания).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/FAFLdyhYqDc?si=7EkTS7s7rnWTu-4P" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/z0gSY0pHIqc?si=x-1NqwOF9nSrXAli" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/9Ohqpjedr2Y?si=9ZlMEnJSr6sofj8n" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/wND26Pwl-rw?si=ZBsX5yLKzBm4bJiO" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 9 -->
+        <div class="aula">
+            <div class="aula-titulo">9. Глагол to be</div>
+            <div class="aula-texto">Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtube.com/shorts/KWnkZTvTQBQ?si=FUDGgsDwI8CpjDGR" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/qOw91a2-oP8?si=X--YDIYxemQ1_PLd" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/JypzIo4NLqw?si=JBxzYVt2UFQ8l0F9" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 10 -->
+        <div class="aula">
+            <div class="aula-titulo">10. Как задавать вопросы на английском</div>
+            <div class="aula-texto">Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/IiL6Z3gpmLI?si=TJnnzt4zcrAPBKjD" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/swxuVsjbVq0?si=Xbn5TNy1S4q9wY2X" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/O8vqtL6-P2Y?si=yzoDavp25qfPIPrP" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/QoMsjX-hjKU?si=nKEjUbCJgzB647kE" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 11 -->
+        <div class="aula">
+            <div class="aula-titulo">11. Как отрицать на английском</div>
+            <div class="aula-texto">Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/Jjnl4jGSY_4?si=yq-Q6JINMO7Jw01X" class="btn-video" target="_blank">Урок (включите субтитры)</a><a href="https://youtube.com/shorts/_L2Fzompyto?si=m9NomHcj4AScXfYp" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/-Cm-PdOIvN0?si=dSV683QY3H1wUF3-" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/opPkd20Ecbw?si=Y2VnY9YpUWuvzMGC" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 12 -->
+        <div class="aula">
+            <div class="aula-titulo">12. Множественное число существительных (правильное и неправильное)</div>
+            <div class="aula-texto">Чтобы говорить о нескольких вещах во множественном числе.<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtube.com/shorts/wMFJKIrZue8?si=XOiGlzWsyAxVRDNX" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/JFCL2BE_XB8?si=FgztvajAV62oK77Z" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/SB0Ps9N1svo?si=Pe64i2RnihpqEr4l" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 13 -->
+        <div class="aula">
+            <div class="aula-titulo">13. Основные глаголы: have, do, go, can, want, would, gonna, wanna, gotta (сокращения)</div>
+            <div class="aula-texto">С примерами фраз с использованием местоимений.<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtube.com/shorts/G04KMiL5pvQ?si=8tmXNqq_DOIG3ycC" class="btn-video" target="_blank">Введение</a><a href="https://youtube.com/shorts/wJsahBVw_54?si=Us9aKl6NDPkGC--T" class="btn-video" target="_blank">Have</a><a href="https://youtube.com/shorts/8F5m5AYr3Xc?si=TBLmmvSo7eJl6i4T" class="btn-video" target="_blank">Have</a><a href="https://youtube.com/shorts/AjImUng2Ixw?si=xAXOVWSdQov-ewKe" class="btn-video" target="_blank">Have</a><a href="https://youtube.com/shorts/QnN5IVEAhkk?si=CBMk7elBJEnD77wE" class="btn-video" target="_blank">Do</a><a href="https://youtube.com/shorts/KqJ9oF1zzBE?si=XwEJn1dUrogtOGSe" class="btn-video" target="_blank">Do</a><a href="https://youtube.com/shorts/HpC7SIQshUo?si=-joh2zyOfNgOqYSP" class="btn-video" target="_blank">Do</a><a href="https://youtube.com/shorts/eJGJ9rfnjJM?si=83QC1qpVOCSIK0g5" class="btn-video" target="_blank">Do</a><a href="https://youtube.com/shorts/BIuuXNXlK_0?si=jTPp1Qi-TM_plHUg" class="btn-video" target="_blank">Go</a><a href="https://youtube.com/shorts/Dzo0Pw3qS_M?si=NtXNdFJeLuwbBYpS" class="btn-video" target="_blank">Go</a><a href="https://youtube.com/shorts/mXpGrDkbSfc?si=N05ydrKwn8e0eaQj" class="btn-video" target="_blank">Go</a><a href="https://youtube.com/shorts/eERG7mV9d1s?si=qWbxNrruerLq11aO" class="btn-video" target="_blank">Go</a><a href="https://youtube.com/shorts/7RINYDfglbs?si=POBaad9_jzSdiAxd" class="btn-video" target="_blank">Go</a><a href="https://youtube.com/shorts/k_WHKQ3S558?si=qXWJDuRrA4bM9-e9" class="btn-video" target="_blank">Can</a><a href="https://youtube.com/shorts/Romh-xnzz1U?si=xTTKrXu4uj3hGVYH" class="btn-video" target="_blank">Can</a><a href="https://youtube.com/shorts/p8z1zD4fvgM?si=v2R1o33Q87xJLei4" class="btn-video" target="_blank">Can</a><a href="https://youtube.com/shorts/IkGvTm-NDPI?si=sb964hTvUQMPYmhj" class="btn-video" target="_blank">Can</a><a href="https://youtube.com/shorts/zQ8uKWbC9n8?si=cDP64uEahykHbRDm" class="btn-video" target="_blank">Want</a><a href="https://youtube.com/shorts/WlZ_pYUcCq0?si=3cDlNzI5aytEBPFi" class="btn-video" target="_blank">Want</a><a href="https://youtube.com/shorts/z0xx-mfoUcc?si=8EgmzjqMcuG1_EKG" class="btn-video" target="_blank">Wanna</a><a href="https://youtube.com/shorts/idYUDnQxCqM?si=1kmY74g1FsvjN9ON" class="btn-video" target="_blank">Wanna</a><a href="https://youtube.com/shorts/zfBFS4BHmjI?si=rQ7qkja3qtXNkUvW" class="btn-video" target="_blank">Would</a><a href="https://youtube.com/shorts/_iXK1bkz7VY?si=8eGDEO38hPU8Vmse" class="btn-video" target="_blank">Would</a><a href="https://youtube.com/shorts/n5UMtBxwnc8?si=vE4Snvm0dRwh4eKV" class="btn-video" target="_blank">Gonna</a><a href="https://youtube.com/shorts/yZ97-WhqSuM?si=xhGXBt1S60-wILB6" class="btn-video" target="_blank">Gotta</a></div>
+        </div>
+
+        <!-- УРОК 14 -->
+        <div class="aula">
+            <div class="aula-titulo">14. Базовые противоположные прилагательные (big/small, hot/cold, new/old, beautiful/ugly)</div>
+            <div class="aula-texto">Для описания.<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/7x_fi6UwTrQ?si=G1P6vSOOvRDtw4KW" class="btn-video" target="_blank">Small/Big</a><a href="https://youtu.be/ZWeAq5b6K10?si=1SkZpTF3QO-00Zo2" class="btn-video" target="_blank">Little</a><a href="https://youtu.be/7x_fi6UwTrQ?si=pcFeyKd_uStgYKQB" class="btn-video" target="_blank">Small/Big</a><a href="https://youtu.be/8pYItSxAHMw?si=hxzO-aA8LvnzrJOr" class="btn-video" target="_blank">Hot/Cold</a><a href="https://youtube.com/shorts/iZdeoeHmbUM?si=zTE2IChnp6CbrDY_" class="btn-video" target="_blank">Hot/Cold</a><a href="https://youtu.be/29YyntHyCLA?feature=shared" class="btn-video" target="_blank">Beautiful/Ugly</a></div>
+        </div>
+
+        <!-- УРОК 15 -->
+        <div class="aula">
+            <div class="aula-titulo">15. Объектные местоимения</div>
+            <div class="aula-texto">Нужно создавать примеры фраз с объектными местоимениями и практиковаться.<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/iLThaLlOWK0?si=6HMxdrObaRal5XHd" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/yLiiHwR8-M4?si=g_Fk51dL3jZpgNds" class="btn-video" target="_blank">Me/Mine</a><a href="https://youtube.com/shorts/Cq1okXQjhic?si=f0XSoFKzBonYNMa2" class="btn-video" target="_blank">Me/Mine</a><a href="https://youtube.com/shorts/XtqSa0_LnHM?si=XuhkJZ8m3do55mZN" class="btn-video" target="_blank">He</a><a href="https://youtu.be/aGC0u8QNAJM?si=IRjMsXVMr7yzOPYH" class="btn-video" target="_blank">She</a><a href="https://youtube.com/shorts/foeRzthugR8?si=kZ5BOsZh_OkCOpRk" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/7q9tzazpeYw?si=GCpgF_lEGDKgy1JU" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/fuKv_wv9r-A?si=OBBNKgHiGxVAypwA" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/07UI8UozdD4?si=p84Sv4kh06CtA1OW" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/euLPObGPtUg?si=dP4W4wLGQ8ypDpZL" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 16 -->
+        <div class="aula">
+            <div class="aula-titulo">16. Создание фраз и запись в приложении для запоминания</div>
+            <div class="aula-texto">Спонтанно записывайте фразы, важные и частые события дня, которых вам не хватает в словарном запасе и которые вы хотели бы использовать, но ещё не знаете. Используйте Google Translate или Yandex, чтобы перевести эту фразу или слово на целевой язык. Если это изолированное слово, создайте для него контекст и запишите в приложение для запоминания, повторяйте и практикуйтесь многократно и вслух, пока оно не перейдёт в долговременную память. Это увеличит ваш общий словарный запас и заполнит пробелы в лексике.<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.<br><br><strong>Рекомендуемые инструменты ИИ:</strong> chat.openai.com | gemini.google.com | www.deepseek.com</div>
+        </div>
+
+        <!-- УРОК 17 -->
+        <div class="aula">
+            <div class="aula-titulo">17. Основные продукты питания</div>
+            <div class="aula-texto">Создавайте ситуации или тексты для начинающих с помощью ChatGPT или другого ИИ, моделируйте диалоги и реальные истории с лексикой и заметками, которые вы сделали (например, слова и фразы о продуктах и т.д.), и перечитывайте текст с лексикой в течение недели.<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/FWBa7dycVMM?si=7Gu31tIB5j89kkHe" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/kYjsAQP2c0g?si=0heLl2aORfjjd0MN" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/ZgXCj2murwU?si=ugIC9ug2TDJxiqUT" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/4Woyery2354?si=DfcdF7q1yk6qutmu" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/7McIHWE2izM?si=7ffcTp-bwjiTu77N" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/8JitI13Hc6g?si=mSLGqANJAQ5ymQgn" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/eCoCmmtOT4w?si=Blv9kjYSF98hfvg1" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/bHS1w_QxiqU?si=Gx4miV08KyzP0ZKg" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/QWTU4KMJuiI?si=0AD9c6NwyAwRDbYb" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/LmBMcoVTDVM?si=38zsqKRTiztPe8Vm" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/hrOfnSyRNZA?si=5wfSAws7Sf8DPUuo" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 18 -->
+        <div class="aula">
+            <div class="aula-titulo">18. Время суток</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtube.com/shorts/ItKFky5hTuw?si=wvfXDy9BS-nvIlR1" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/M6x7QlI4ChM?si=eGMwCb7q2zKanbQq" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 19 -->
+        <div class="aula">
+            <div class="aula-titulo">19. Дни недели</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/pHgm9QbRT08?feature=shared" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/iMKtZ9Im0FM?si=l09IJnT6JzVgnbyT" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 20 -->
+        <div class="aula">
+            <div class="aula-titulo">20. Числа</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/jRnpvB-nQV8?si=anohwhvwIGzgGN9l" class="btn-video" target="_blank">Числа</a><a href="https://youtube.com/shorts/iOkndB53wJE?feature=shared" class="btn-video" target="_blank">10</a><a href="https://youtube.com/shorts/anmIxwfTiAk?si=rc7szZLuB3frZFgN" class="btn-video" target="_blank">10-100</a><a href="https://youtube.com/shorts/MMkxp0ZNTKQ?si=JlIe2w2iTdeR7ieX" class="btn-video" target="_blank">10-100</a><a href="https://youtube.com/shorts/i6tzGKcCNz8?si=3L92F1dkfmAieMgT" class="btn-video" target="_blank">100-1M</a><a href="https://youtube.com/shorts/oCponYwxc4c?si=VBQA4nPmjYDAnbJM" class="btn-video" target="_blank">100-1M</a><a href="https://youtube.com/shorts/qpcTalRUUh4?si=BTxyTPlGD9ThJ1bL" class="btn-video" target="_blank">1-й</a></div>
+        </div>
+
+        <!-- УРОК 21 -->
+        <div class="aula">
+            <div class="aula-titulo">21. Цвета</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/_yj9URxwWAE?si=hpUSiVqg1OkRbZiI" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/6fdZKpTgJ70?feature=shared" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 22 -->
+        <div class="aula">
+            <div class="aula-titulo">22. Чувства</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtube.com/shorts/dAFUj3oAMok?si=z2Wmt9wjPhKidXnu" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/Vfz8Qw0MLy0?si=E2vJycIj48WdgP0d" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/NztjLiGTxpU?si=cMBrlp1OPOwpi3we" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/vBsQc_-pjXY?si=mj-AhBR531OBKU-p" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 23 -->
+        <div class="aula">
+            <div class="aula-titulo">23. Части тела</div>
+            <div class="aula-texto">Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/cVF9RFGSRwQ?si=eaIXUxJcO3vRPJ3G" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/146HOClHgNM?si=v944keDodxZ3N-4E" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/S3QimBKCjbc?si=zpW4pTxkUig92Vky" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/21dxJ-XhKQ8?si=esEbMUF79vYI-dvM" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 24 -->
+        <div class="aula">
+            <div class="aula-titulo">24. Одежда</div>
+            <div class="aula-texto">Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/2yz0hmg2hQE?si=cXvNKWPlI1hMLZ5Q" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/pNWHpZ7tzEs?si=mjBxXtvmWshpBQFc" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/fyQ7IJpbfhc?si=qM1MzN6dqOds29UN" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/YqfA-7iyYkI?si=MjHQoqOL9Iff4IuI" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 25 -->
+        <div class="aula">
+            <div class="aula-titulo">25. Прилагательные</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtube.com/shorts/Xwfa9tjzfX8?si=MqPU" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/W5i5GqfKLP0?si=ugfd_TWxVpkHO--s" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/XempH_xhfks?si=jS-y7WF4f0DqdF_Y" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/336UI_mrJCo?si=A-zy9FqUA5frMUlV" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/IKY1ks-YjzA?si=IcwRCOfDhOXbg0Os" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/TboqRv2sGd8?si=xOIDw2X4bFODwYNn" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/y3bT33AeZHQ?si=2aqK5psSn5m0K_Bw" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 26 -->
+        <div class="aula">
+            <div class="aula-titulo">26. Предметы и части дома</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/Cwe7TXS7l8o?si=gzdrBimWw-6e7PFx" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/m27Cck_LGHc?feature=shared" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/Fjmq052LwGw?si=jDyi27Ut0P46S1v3" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/CsKNYf1pnZ0?si=WrGL-rnucgLkPet8" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/dySEH_AFPMg?si=NoR35NRiOTQQUXgi" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/nUJIUNuhd-Y?si=cO50X6DRycDgZHHl" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/-awzwkC_opY?si=FR2p31vGL7Y606qI" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/QcF3j5fU7XM?si=ZghwKEPzv2QYKXUj" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 27 -->
+        <div class="aula">
+            <div class="aula-titulo">27. Названия животных</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/tBeajua1umA?feature=shared" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/T5XdTG0N3V4?feature=shared" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/dLsntuUWrd8?feature=shared" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/LHgyRcDZW9U?si=vltXpUAhCYr2oa1R" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/Xs5ylcRE7N0?si=6ra2LjzSSKYCThep" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/RGEW8jqTTqo?si=wR1jt01rbkWoTgqZ" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 28 -->
+        <div class="aula">
+            <div class="aula-titulo">28. Месяцы года</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/r-W21IdWhJA?si=nTqL37C2vegkPO1A" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/AzyqK7OkLMs?si=VcCOFWrCaLPgF5dK" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 29 -->
+        <div class="aula">
+            <div class="aula-titulo">29. Времена года</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtube.com/shorts/gMMLCmULqho?si=HIPb76PFlPlbUGLd" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/thSpb0EABvQ?si=V7mPPp3jVUDwViC1" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 30 -->
+        <div class="aula">
+            <div class="aula-titulo">30. Как говорить о времени и указывать направление</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/uhBIfizgvjM?si=_bSz25wT6LyyaVrr" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/mECQ9g9Nv1A?si=oL7pR1jF1xEPfK-o" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/cgYMtuFa8Iw?si=R4v0HVnh4BhW69t_" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 31 -->
+        <div class="aula">
+            <div class="aula-titulo">31. Предлоги места (in, on, at, under, next to, between)</div>
+            <div class="aula-texto">Логика здесь в том, что вы уже научились спрашивать направление, теперь учитесь отвечать с указанием местоположения.<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/_OGRQ3xsFZA?si=RRJ_I2VtGJ1AqI3G" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/u7DjCQO25wU?si=P4TTvJQe6WfXiPra" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/O7-F1iJHv0E?si=d_d4YZpZ-eKsAXd7" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/4ConhIz3eMo?si=9e4fwUjyaf4RjBN5" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 32 -->
+        <div class="aula">
+            <div class="aula-titulo">32. Тексты с аудио для начинающих</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Можно скачать любое хорошее приложение с текстом и аудио для начинающих, где есть человек, озвучивающий тексты. Желательно, чтобы это были короткие или средние тексты на разные темы.<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+        </div>
+
+        <!-- УРОК 33 -->
+        <div class="aula">
+            <div class="aula-titulo">33. Вспомогательные глаголы, ложные друзья переводчика</div>
+            <div class="aula-texto">(Изучайте содержание, создавайте фразы для начинающих с целевой лексикой и практикуйтесь в течение недели, добавляйте новый целевой контент в приложение для запоминания, повторяйте в течение недели, чтобы контент перешёл в долговременную память).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtu.be/9vcmBbsQCOg?si=OHRrGtZJHlIWzxmy" class="btn-video" target="_blank">Связующие слова</a><a href="https://youtu.be/_JirrxjqKgk?si=zhi1opaDUYrh0YNc" class="btn-video" target="_blank">Связующие слова</a><a href="https://youtube.com/shorts/hXA-KxVVT-E?si=Ilj8wI9oGbLaUdVR" class="btn-video" target="_blank">Связующие слова</a><a href="https://youtube.com/shorts/WZyA41TKn9k?si=AcohWYMJuLLqDCGd" class="btn-video" target="_blank">Связующие слова</a><a href="https://youtube.com/shorts/wyLW4OBJcCY?si=4q4rNY7I77fgmqD3" class="btn-video" target="_blank">Связующие слова</a><a href="https://youtube.com/shorts/WJtnDy-wENc?si=bXM4dIXU71IrNrdu" class="btn-video" target="_blank">Связующие слова</a><a href="https://youtube.com/shorts/OwwHod31tf8?si=kQQl8AWRsGzxoxEQ" class="btn-video" target="_blank">Ложные друзья</a></div>
+        </div>
+
+        <!-- УРОК 34 -->
+        <div class="aula">
+            <div class="aula-titulo">34. Персонализированные тексты с ИИ</div>
+            <div class="aula-texto">Создавайте ситуации или тексты для начинающих с помощью ChatGPT или другого ИИ, моделируйте диалоги и реальные истории с лексикой и заметками, которые вы сделали из изученного материала, например, фразы, повседневные ситуации, новые слова в контексте. Попросите ИИ создать диалог или историю и добавить весь желаемый словарный запас. Когда вы получите сгенерированный ИИ контент, читайте и перечитывайте текст с лексикой в течение недели, чтобы лексика перешла в долговременную память.</div>
+        </div>
+
+        <!-- УРОК 35 -->
+        <div class="aula">
+            <div class="aula-titulo">35. Видео, фильмы и сериалы</div>
+            <div class="aula-texto">Важно: возможно, потребуется посмотреть несколько раз повторно. Сначала посмотрите фильм, видео или серию с субтитрами на вашем родном языке и звуком на английском, затем посмотрите тот же эпизод/фильм/видео с субтитрами на английском (записывайте слова, которые вы не знаете, только самые важные, часто используемые в повседневной жизни, чтобы потом создавать лексику, тексты и диалоги и практиковаться до запоминания). Это поможет вам привыкнуть к звучанию и словам языка, а также познакомит с новой беглой лексикой. Рекомендуется начинать с разнообразных видео по вашим интересам, например, на YouTube.</div>
+        </div>
+
+        <!-- УРОК 36 -->
+        <div class="aula">
+            <div class="aula-titulo">36. Грамматика: возвратные глаголы, present perfect, present continuous, past tense, future tense</div>
+            <div class="links-container"><a href="https://youtu.be/ShR9N6l4FAE?si=O6MKYPDMwCVf2EFt" class="btn-video" target="_blank">Возвратные глаголы</a><a href="https://youtube.com/shorts/WoUKSKaeqcE?si=sbWZ50-Aa1jZsMr9" class="btn-video" target="_blank">Возвратные</a><a href="https://youtube.com/shorts/HvgUlWCQEi8?si=c9hAXVHYZq1Bumm9" class="btn-video" target="_blank">Возвратные</a><a href="https://youtube.com/shorts/BD1npGRCpNg?si=DyTqbK4zZvHeFrFf" class="btn-video" target="_blank">Present Continuous</a><a href="https://youtube.com/shorts/QYDUAvScD70?si=fSorandyxySCtVH0" class="btn-video" target="_blank">Present Continuous</a><a href="https://youtu.be/DInKEo2hiVM?si=V_aJXfixOT8aGZBH" class="btn-video" target="_blank">Present Perfect</a><a href="https://youtu.be/X6DXVf7fVtI?si=MLktEey7y2gdZub3" class="btn-video" target="_blank">Present Perfect</a><a href="https://youtu.be/nkoF9Yu2RnA?si=mFTmPtxyumfmhaEO" class="btn-video" target="_blank">Present Perfect</a><a href="https://youtu.be/jhAYfpFu1Wk?si=rFVzJ9p_JUUYMQeq" class="btn-video" target="_blank">Present Perfect</a><a href="https://youtu.be/grxPplCPF5E?si=33hlqthf0UVeDhmS" class="btn-video" target="_blank">Present Perfect</a></div>
+        </div>
+
+        <!-- УРОК 37 -->
+        <div class="aula">
+            <div class="aula-titulo">37. Общий словарный запас</div>
+            <div class="aula-texto">(Должно быть сделано с примерами записей).<br><br>Не забывайте создавать реальный контекст для этих фраз и слов перед добавлением в Anki и тетрадь.</div>
+            <div class="links-container"><a href="https://youtube.com/shorts/2ycO0wPNXZg?si=0Q2wcZdHOOC7mHnu" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/l2USqdYv2T8?si=2w3pVgsQPxJ4-vPZ" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 38 -->
+        <div class="aula">
+            <div class="aula-titulo">38. Лексика для собеседования</div>
+            <div class="links-container"><a href="https://youtu.be/1sbAwjSaArY?si=ReBj9hjvLF2U4B2z" class="btn-video" target="_blank">Урок</a><a href="https://youtube.com/shorts/__qLkW4dnAU?si=CXpF02GXHvROMHX-" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/1N_BHCT17zI?si=K0op9hpZbx1G-7fG" class="btn-video" target="_blank">Урок</a><a href="https://youtu.be/F68xR1kprG4?si=COy7XTbmDSLLjdeT" class="btn-video" target="_blank">Урок</a></div>
+        </div>
+
+        <!-- УРОК 39 -->
+        <div class="aula">
+            <div class="aula-titulo">39. Итоговое повторение и закрепление</div>
+            <div class="aula-texto">Повторите все предыдущие шаги. Практикуйтесь ежедневно. Пересматривайте свои заметки в тетради и Anki. Снова посмотрите видео, которые вызвали наибольшие трудности. Продолжайте практиковаться с песнями, фильмами и сериалами. Секрет в постоянстве!</div>
+        </div>
+
+        <div class="metodo-secreto">
+            <h4>🎁 БОНУС МЕТОДА</h4>
+            <p>"Пока школы берут дорого и заставляют вас годами изучать грамматику без прогресса, этот курс даёт вам прямую карту: полезную лексику, умное повторение и реальное погружение в язык с первого дня."</p>
+        </div>
+    </div>
+    <footer>
+        <p>📚 Изучение английского - Marcos Dantas</p>
+        <p>Учитесь в своём темпе, легко и практично. Нестандартный метод.</p>
+        <p>✔ Научно обоснованный метод ✔ Фокус на долговременную память ✔ Без грамматической воды</p>
+    </footer>
+</div>
+</body>
+</html>
